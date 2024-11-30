@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
+import org.firstinspires.ftc.teamcode.Climb.Climb;
 import org.firstinspires.ftc.teamcode.Modules.Drive.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Intake;
@@ -14,7 +15,8 @@ import org.firstinspires.ftc.teamcode.Modules.Others.Latch;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.Color;
-import org.firstinspires.ftc.teamcode.Wrappers.Imu;
+import org.firstinspires.ftc.teamcode.Wrappers.Odo;
+import org.opencv.core.Mat;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "Z")
 public class TeleOpWithSensors extends LinearOpMode {
@@ -24,7 +26,7 @@ public class TeleOpWithSensors extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         Hardware.init(hardwareMap);
-        Imu.init(hardwareMap);
+        Odo.init(hardwareMap , telemetry);
 
         Outtake outtake=new Outtake();
         MecanumDriveTrain driveTrain=new MecanumDriveTrain(MecanumDriveTrain.State.DRIVE);
@@ -32,16 +34,20 @@ public class TeleOpWithSensors extends LinearOpMode {
         Intake intake=new Intake();
         Latch latch=new Latch();
 
+        Outtake.prim=false;
+        boolean take=false;
+
+
+         boolean a=false;
+         org.firstinspires.ftc.teamcode.Climb.Climb climb=new Climb();
         boolean redAll=true;
 
-        ColorRangeSensor sensor;
         DigitalChannel bb;
 
         Color blueTarget = new Color(0, 0 ,255);
         Color redTarget = new Color(255, 0, 0);
         Color yellowTarget = new Color(255, 255, 0);
 
-        sensor=hardwareMap.get(ColorRangeSensor.class , "colorSensor");
         bb=hardwareMap.get(DigitalChannel.class , "bb");
 
         while(opModeInInit())
@@ -56,31 +62,45 @@ public class TeleOpWithSensors extends LinearOpMode {
 
         while(opModeIsActive()){
 
-            double x=gamepad1.left_stick_x;
-            double y=-gamepad1.left_stick_y;
+            double X=gamepad1.left_stick_x;
+            double Y=-gamepad1.left_stick_y;
             double rotation=gamepad1.right_trigger-gamepad1.left_trigger;
 
-            driveTrain.setPower( x , y , rotation );
+            double heading =-Odo.getHeading();
+
+            double x=X*Math.cos(heading)-Y*Math.sin(heading);
+            double y=X* Math.sin(heading)+Y*Math.cos(heading);
+
+            driveTrain.setTargetVector( x , y , rotation );
+
+            if(gamepad1.a && gamepad1.left_bumper)a=true;
+            if(gamepad1.b && gamepad1.left_bumper) a=false;
+
+            if(a==false){
+                if(gamepad1.right_bumper) climb.goUp();
+                else if(gamepad1.left_bumper)climb.goDown();
+                else climb.Default();}
+            else climb.Constant();
 
             double power=-gamepad1.right_stick_y;
             extendo.setVelocity(power);
             if(gamepad1.a)extendo.setIn();
 
 
-            if(gamepad1.options) Imu.reset();
+            if(gamepad1.options) Odo.reset();
 
             if(gamepad2.y)outtake.goDefault();
 
-            if((gamepad2.a || !bb.getState()) && outtake.state== Outtake.State.Deafult)
-            {outtake.grabSample();
-                latch.setState("goOpen");
-            }
-            if(latch.state==latch.states.get("open"))
+            if((gamepad2.a || (take==true && extendo.state==Extendo.State.IN)) && outtake.state== Outtake.State.Deafult)
             {
+                take=false;
                 outtake.grabSample();
             }
-            if(latch.state==latch.states.get("open") && outtake.state!=Outtake.State.TakingElement && outtake.arm.state!=outtake.arm.states.get("goWithElement"))
-                latch.setState("goClose");
+
+            if(gamepad1.circle && outtake.state==Outtake.State.Specimen)outtake.grabSample();
+
+
+
 
             if(gamepad2.dpad_up && outtake.state==Outtake.State.DeafultWithElement)outtake.goUp();
 
@@ -105,23 +125,16 @@ public class TeleOpWithSensors extends LinearOpMode {
             else intake.setState(Intake.State.REPAUS_UP);
 
 
-            if(!bb.getState())
+            if(!bb.getState() && outtake.state== Outtake.State.Deafult)
             {
-                int red=sensor.red();
-                int blue=sensor.blue();
-                int green=sensor.green();
-
-                Color color=new Color(red , blue , green);
-
-                double isRed= org.firstinspires.ftc.teamcode.Wrappers.Math.ColorDistance(color , redTarget);
-                double isBlue=org.firstinspires.ftc.teamcode.Wrappers.Math.ColorDistance(color , blueTarget);
-                double isYellow=org.firstinspires.ftc.teamcode.Wrappers.Math.ColorDistance(color , yellowTarget);
-
-                if(isRed>isBlue && isRed>isYellow && !redAll)intake.setState(Intake.State.REVERSE_DOWN);
-                else {extendo.setIn();intake.setState(Intake.State.INTAKE_UP);}
-                if(isBlue>isRed && isBlue>isYellow && redAll)intake.setState(Intake.State.REVERSE_DOWN);
-                else {extendo.setIn();intake.setState(Intake.State.INTAKE_UP);}
+                take=true;
+                extendo.setIn();intake.setState(Intake.State.INTAKE_UP);
+                latch.setState("goOpen");
             }
+            else {if(outtake.state!= Outtake.State.Deafult)take=false;}
+
+            if(bb.getState() && outtake.state!=Outtake.State.TakingElement)latch.setState("goClose");
+            else latch.setState("goOpen");
 
 
 
@@ -133,17 +146,16 @@ public class TeleOpWithSensors extends LinearOpMode {
             telemetry.addData("latch" , latch.state.name);
             telemetry.addData("claw" , outtake.claw.state.name);
             telemetry.addData("haveSample" , outtake.haveSample);
-            telemetry.addData("heading",driveTrain.getHeading());
+            telemetry.addData("heading",Odo.getHeading());
 
 
 
             telemetry.update();
-            driveTrain.update();
             outtake.update();
             extendo.update();
             intake.update();
             latch.update();
-            Imu.update();
+            Odo.update();
         }
     }
 }

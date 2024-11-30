@@ -20,6 +20,7 @@ public class BetterMotor {
     DcMotorEx encoder;
 
     public double targetPosition;
+    public int encoderReversed=-1;
 
     public BetterMotor(DcMotorEx motor , RunMode runMode , boolean reversed)
     {
@@ -38,6 +39,23 @@ public class BetterMotor {
 
         this.encoder=encoder;
         this.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        encoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        if(reversed)this.motor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+    }
+    public BetterMotor(DcMotorEx motor , RunMode runMode , boolean reversed , DcMotorEx encoder , boolean encoderReversed)
+    {
+        this.motor=motor;
+        this.runMode=runMode;
+
+        this.encoder=encoder;
+        this.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        encoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if(encoderReversed)this.encoderReversed=-1;
+        else this.encoderReversed=1;
 
         if(reversed)this.motor.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -70,12 +88,12 @@ public class BetterMotor {
 
     public double getPosition()
     {
-        return encoder.getCurrentPosition();
+        return encoder.getCurrentPosition() * encoderReversed;
     }
 
     public double getVelocity()
     {
-        return encoder.getVelocity();
+        return encoder.getVelocity() * encoderReversed;
     }
 
     public void resetPosition()
@@ -89,7 +107,7 @@ public class BetterMotor {
     {
         if(runMode==RunMode.RUN || power)return;
 
-        double power=pidController.calculate(targetPosition , encoder.getCurrentPosition());
+        double power=pidController.calculate(targetPosition , encoder.getCurrentPosition()*encoderReversed);
 
         motor.setPower(power);
 

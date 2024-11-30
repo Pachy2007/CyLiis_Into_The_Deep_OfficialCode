@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Modules.Intake;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
@@ -7,10 +8,11 @@ import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.BetterMotor;
 import org.firstinspires.ftc.teamcode.Wrappers.Encoder;
 
+@Config
 public class Extendo {
 
     public enum State{
-        IN , GOING_IN(IN) , OUT(GOING_IN);
+        IN , GOING_IN(IN) , OUT(GOING_IN) , GO_TO_POSITION();
 
         State nextState;
          State(State nextState)
@@ -25,21 +27,23 @@ public class Extendo {
     public State state;
 
 
+    int nr=0;
     public BetterMotor motor;
     public static boolean motor1Reversed=false;
-    public static double kP , kI , kD;
+    public static double kp=0.01 , ki , kd;
+    public static double targetPosition;
 
     private static double inPower=-0.1 , goingInPower=-1;
 
-    private static double maximExtendoPosition=700;
+    private static double maximExtendoPosition=1000;
 
     double velocity;
 
     public Extendo()
     {
-        motor=new BetterMotor(Hardware.meh2 , BetterMotor.RunMode.RUN , motor1Reversed , Hardware.mch3);
+        motor=new BetterMotor(Hardware.meh2 , BetterMotor.RunMode.RUN , motor1Reversed , Hardware.mch1 , false);
 
-        motor.setPidCoefficients(kP , kI , kD);
+        motor.setPidCoefficients(kp , ki , kd);
 
         state=State.OUT;
 
@@ -50,40 +54,59 @@ public class Extendo {
         if(Math.abs(velocity)<0.05){this.velocity=0;return;}
         this.velocity=velocity;
         state=State.OUT;
+        motor.setRunMode(BetterMotor.RunMode.RUN);
     }
     public void setIn()
     {
+        motor.setRunMode(BetterMotor.RunMode.RUN);
         if(state==State.GOING_IN || state==State.IN)return;
         state=State.GOING_IN;
+        motor.setPower(goingInPower);
     }
 
+    public void setTargetPosition(double position)
+    {
+        state=State.GO_TO_POSITION;
+        motor.setRunMode(BetterMotor.RunMode.PID);
+        motor.setPosition(targetPosition);
+        targetPosition=position;
+    }
 
     private void updateHardware()
     {
         switch (state)
         {
             case IN:
+                nr=0;
                 motor.setPower(inPower);
                 break;
             case OUT:
+                nr=0;
                 if(motor.getPosition()<maximExtendoPosition)
                 {motor.setPower(velocity);}
-                else {motor.setPower(0);}
-                if( Math.abs(velocity)<0.005 && Math.abs(motor.getPosition())<100){
+                else {motor.setPower(Math.min(velocity , 0.1));}
+                if( Math.abs(velocity)<0.005 && motor.getPosition()<100){
                     state=state.nextState;
+                    motor.setPower(goingInPower);
                 }
                 break;
             case GOING_IN:
                 motor.setPower(goingInPower);
-                if(Math.abs(motor.getVelocity())<0.000005){state=state.nextState;
-                motor.resetPosition();}
+                if(Math.abs(motor.getVelocity())<0.0001){
+                    nr++;
+                    if(nr>=5)
+                    {state=state.nextState;
+                motor.resetPosition();}}
+                break;
+            case GO_TO_POSITION:
+                motor.setPosition(targetPosition);
                 break;
         }
     }
 
     private void updateCoefficient()
     {
-        motor.setPidCoefficients(kP , kI , kD);
+        motor.setPidCoefficients(kp , ki , kd);
     }
 
 
@@ -92,6 +115,7 @@ public class Extendo {
     {
         updateCoefficient();
         updateHardware();
+        motor.update();
     }
 
 

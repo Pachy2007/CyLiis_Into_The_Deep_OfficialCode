@@ -17,8 +17,9 @@ public class Hardware {
     public static DcMotorEx meh0 , meh1 , meh2 , meh3;
 
 
-    public static CRServo sch4 , sch5;
-    public static Servo sch0 , sch1 , sch2 , sch3;
+    public static Servo sch4 , sch5;
+    public static CRServo sch0 , sch1;
+    public static Servo sch2 , sch3;
     public static Servo seh0 , seh1 , seh2 , seh3 , seh4 , seh5;
     public static IMU imu;
 
@@ -27,29 +28,28 @@ public class Hardware {
     {
         if(INIT)return;
         INIT=true;
-       /* mch0=hardwareMap.get(DcMotorEx.class , "ch0");
+        mch0=hardwareMap.get(DcMotorEx.class , "ch0");
         mch1=hardwareMap.get(DcMotorEx.class , "ch1");
         mch2=hardwareMap.get(DcMotorEx.class , "ch2");
-        mch3=hardwareMap.get(DcMotorEx.class , "ch3");*/
+        mch3=hardwareMap.get(DcMotorEx.class , "ch3");
 
-       /* meh0=hardwareMap.get(DcMotorEx.class , "eh0");
+        meh0=hardwareMap.get(DcMotorEx.class , "eh0");
         meh1=hardwareMap.get(DcMotorEx.class , "eh1");
         meh2=hardwareMap.get(DcMotorEx.class , "eh2");
-        meh3=hardwareMap.get(DcMotorEx.class , "eh3");*/
+        meh3=hardwareMap.get(DcMotorEx.class , "eh3");
 
-        /*sch0=hardwareMap.get(Servo.class , "sch0");
-        sch1=hardwareMap.get(Servo.class , "sch1");
+        sch0=hardwareMap.get(CRServo.class , "sch0");
+        sch1=hardwareMap.get(CRServo.class , "sch1");
         sch2=hardwareMap.get(Servo.class , "sch2");
-        sch3=hardwareMap.get(Servo.class , "sch3");*/
-        sch4=hardwareMap.get(CRServo.class , "sch4");
-        sch5=hardwareMap.get(CRServo.class , "sch5");
+        sch3=hardwareMap.get(Servo.class , "sch3");
+        sch4=hardwareMap.get(Servo.class , "sch4");
+        sch5=hardwareMap.get(Servo.class , "sch5");
 
-       /* seh0=hardwareMap.get(Servo.class , "seh0");
+        seh0=hardwareMap.get(Servo.class , "seh0");
         seh1=hardwareMap.get(Servo.class , "seh1");
         seh2=hardwareMap.get(Servo.class , "seh2");
         seh3=hardwareMap.get(Servo.class , "seh3");
         seh4=hardwareMap.get(Servo.class , "seh4");
-        seh5=hardwareMap.get(Servo.class , "seh5");(*/
-    }
+        seh5=hardwareMap.get(Servo.class , "seh5");}
 
 }

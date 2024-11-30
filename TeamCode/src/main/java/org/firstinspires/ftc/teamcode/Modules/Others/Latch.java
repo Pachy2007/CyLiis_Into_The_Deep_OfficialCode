@@ -13,14 +13,14 @@ public class Latch extends IServoModule {
 
     public static boolean reversed=false;
 
-    public static double close=0.85 , open=0.65;
-    public static double time=0.2;
+    public static double close=0.89 , open=0.65;
+    public static double time=0;
 
     public Latch()
     {
         moduleName="Latch";
         setServos(
-                new BetterServo("Latch" , Hardware.seh2  , BetterServo.RunMode.Time , close , reversed , time)
+                new BetterServo("Latch" , Hardware.seh4  , BetterServo.RunMode.Time , close , reversed , time)
         );
 
         setStates();

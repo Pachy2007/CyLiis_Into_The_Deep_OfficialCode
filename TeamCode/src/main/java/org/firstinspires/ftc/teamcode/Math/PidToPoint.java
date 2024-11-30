@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.Math;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
+@Config
 public class PidToPoint {
 
     public static double kp , ki , kd;
@@ -18,7 +20,7 @@ public class PidToPoint {
         controller.ki=ki;
         controller.kd=kd;
         double X = (x2-x1)*(x2-x1);
-        double Y= (y2-y1)*(y2-1);
+        double Y= (y2-y1)*(y2-y1);
 
         double distance=Math.sqrt(X+Y);
 

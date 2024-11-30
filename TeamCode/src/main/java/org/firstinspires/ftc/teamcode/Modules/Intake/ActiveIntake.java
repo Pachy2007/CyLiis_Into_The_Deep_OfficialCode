@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Wrappers.BetterMotor;
 
 public class ActiveIntake {
 
-    public static double repausPower=0 , intakePower=1 , reversePower=-0.75;
+    public static double repausPower=0 , intakePower=1 , reversePower=-0.85;
 
     public enum State{
         REPAUS(repausPower) , INTAKE(intakePower) , REVERSE(reversePower);
@@ -21,7 +21,7 @@ public class ActiveIntake {
     }
     State state;
 
-    public static boolean reversed=true;
+    public static boolean reversed=false;
     BetterMotor motor;
 
     public ActiveIntake()

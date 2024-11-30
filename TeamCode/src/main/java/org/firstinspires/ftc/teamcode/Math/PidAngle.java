@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.Math;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.opencv.core.Mat;
 
+@Config
 public class PidAngle {
 
     public static double kp , ki , kd;
@@ -26,7 +29,7 @@ public class PidAngle {
 
         if(Math.abs(z)>=Math.PI/2)z=Math.signum(-z)*(Math.PI*2-Math.abs(z));
 
-        double power= controller.calculate(0 , z);
+        double power= controller.calculate(z , 0);
 
         return power;
     }

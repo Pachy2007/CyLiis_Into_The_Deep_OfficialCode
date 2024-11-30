@@ -20,7 +20,7 @@ public class DropDown extends IServoModule {
     {
         moduleName="DropDOWN";
         setServos(
-                new BetterServo("Servo" , Hardware.seh1 , BetterServo.RunMode.PROFILE ,  rampUpPosition , rightServoReversed)
+                new BetterServo("Servo" , Hardware.seh3 , BetterServo.RunMode.PROFILE ,  rampUpPosition , rightServoReversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;
@@ -33,7 +33,7 @@ public class DropDown extends IServoModule {
     }
 
     @Override
-    public void setStates()  {
+    public void setStates(){
         states.addState("takeElement" , takeElementPosition);
         states.addState("jam" , jamPosition);
         states.addState("rampUp" , rampUpPosition);

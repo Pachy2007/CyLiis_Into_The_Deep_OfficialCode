@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Climb;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 
@@ -13,8 +14,9 @@ public class Climb {
 
     public Climb()
     {
-        servo1= Hardware.sch4;
-        servo2=Hardware.sch5;
+        servo1= Hardware.sch0;
+        servo2=Hardware.sch1;
+        servo1.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
 
@@ -36,5 +38,10 @@ public class Climb {
     {
         servo1.setPower(0);
         servo2.setPower(0);
+    }
+    public void Constant()
+    {
+        servo1.setPower(-0.25);
+        servo2.setPower(-0.25);
     }
 }

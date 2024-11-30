@@ -5,7 +5,8 @@ import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.internal.network.ApChannel;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
-import org.firstinspires.ftc.teamcode.Wrappers.Imu;
+import org.firstinspires.ftc.teamcode.Wrappers.Odo;
+import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 import org.opencv.core.Mat;
 
 @Config
@@ -36,17 +37,25 @@ public class Outtake {
     public Arm arm;
     public Lift lift;
     public Claw claw;
+    boolean take=false;
 
     boolean fromFront=false;
     boolean scoringFromFront=false;
 
-    public static int lowBasketPosition=650  , highBasketPosition=1280 , lowChamberUp=150 , lowChamberDown=150 , highChamberUp=650 , highChamberDown=300;
-
+    public static boolean prim=false;
+    public static int lowBasketPosition=650  , highBasketPosition=1280 , lowChamberUp=150 , lowChamberDown=150 , highChamberUp=680 , highChamberDown=370;
     public Outtake()
     {
         arm=new Arm();
         lift=new Lift();
         claw=new Claw();
+    }
+    public Outtake(State state)
+    {
+        this.state=state;
+        arm=new Arm("goWithElement");
+        lift=new Lift();
+        claw=new Claw("goCloseSpecimen");
     }
 
 
@@ -59,6 +68,7 @@ public class Outtake {
                 haveSample=true;
                 break;
 
+            case Specimen:take=true;
             case DeafultWithElement:
             case TakingElement:
             case Up:
@@ -75,7 +85,7 @@ public class Outtake {
 
     public void takeSpecimen()
     {
-        if(state==State.Up || state==State.DeafultWithElement || state==State.TakingElement)return;
+        if(state==State.Up || state==State.DeafultWithElement || state==State.TakingElement || state==State.Specimen)return;
         claw.setState("goOpen");
         state=State.Specimen;
     }
@@ -112,6 +122,11 @@ public class Outtake {
             state=State.Up;
     }
 
+    public boolean inPosition()
+    {
+        return arm.inPosition() && claw.inPosition() && lift.inPosition();
+    }
+
 
     private void updateHardware()
     {
@@ -125,28 +140,28 @@ public class Outtake {
                 lift.goDown();
             break;
             case Specimen:
-                if(arm.state==arm.states.get("default"))
-                    arm.setState("goBeforeTakeSpecimen");
+                    arm.setState("goTakeSpecimenBack");
                 haveSample=false;
-                if(arm.state==arm.states.get("beforeTakeSpecimen"))claw.setState("goTakeSpecimen");
-                if(claw.state==claw.states.get("takeSpecimen"))arm.setState("goTakeSpecimenBack");
-                if(arm.state==arm.states.get("takeSpecimenBack")  && claw.state==claw.states.get("takeSpecimen"))claw.setState("goClose");
-                if(claw.state==claw.states.get("close"))state=State.DeafultWithElement;
+                if(arm.inPosition() && take==false && arm.state==arm.states.get("takeSpecimenBack"))claw.setState("goTakeSpecimen");
+                if(take==true && claw.state==claw.states.get("takeSpecimen"))claw.setState("goCloseSpecimen");
+                if(claw.state==claw.states.get("closeSpecimen"))state=State.DeafultWithElement;
 
                 lift.goDown();
                 break;
             case TakingElement:
-                {if(arm.inPosition())claw.setState("goClose");
+            lift.goDown();
+                {   haveSample=true;
+                    if(arm.inPosition() && lift.state==Lift.State.DOWN)claw.setState("goClose");
                 if(claw.inPosition() && claw.state==claw.states.get("close"))state=State.DeafultWithElement;}
                 if(claw.inPosition() && claw.state==claw.states.get("close"))
                 {lift.setPosition(50);
                 lift.goUp();}
                 break;
             case Deafult:
-                if(claw.inPosition() && claw.state==claw.states.get("open"))
-                    if(arm.state!=arm.states.get("goDefault") && arm.state!=arm.states.get("default"))
+                take=false;
+                claw.setState("goOpen");
+                if(claw.state==claw.states.get("open"))
                         arm.setState("goDefault");
-                    claw.setState("goOpen");
                  if(arm.inPosition() && arm.state==arm.states.get("default"))
                 lift.goDown();
                 break;
@@ -158,6 +173,7 @@ public class Outtake {
                 lift.setPosition(50);
                 break;
             case GoDown:
+                take=false;
                 claw.setState("goOpen");
                 if(claw.inPosition() && arm.state!=arm.states.get("neutral") && arm.state!=arm.states.get("goNeutral"))arm.setState("goNeutral");
                 if(claw.inPosition() && arm.state==arm.states.get("neutral") && claw.state==claw.states.get("open"))lift.goDown();
@@ -167,90 +183,45 @@ public class Outtake {
                 break;
             case Up:
             {
-                double angle=Imu.getHeading();
 
-                angle=(2*Math.PI+angle)- Math.floor((2*Math.PI+angle)/(Math.PI*2))*Math.PI*2;
-
-                if(haveSample==true) {
-                    if(angle<Math.PI*1/4 || angle>Math.PI*5/4)
-                        scoringFromFront=false;
-                    else scoringFromFront=true;
-                }
-                else{
-                    if(angle<Math.PI/2 || angle>Math.PI*3/2)scoringFromFront=false;
-                    else scoringFromFront=true;
-                }
                 switch (scoring)
                 {
                     case LowBasket:
                         lift.goUp();
                         lift.setPosition(lowBasketPosition);
-                        if(scoringFromFront==false)arm.setState("goLowSampleFront");
-                        else arm.setState("goLowSampleBack");
+                        arm.setState("goLowSampleBack");
                         break;
                     case HighBasket:
                         lift.goUp();
                         lift.setPosition(highBasketPosition);
-                        if(scoringFromFront==false)arm.setState("goHighSampleFront");
-                        else arm.setState("goHighSampleBack");
+                         arm.setState("goHighSampleBack");
                         break;
                     case LowChamber:
                         lift.goUp();
-                        if(scoringFromFront==true)arm.setState("goLowSpecimenFront");
-                        else arm.setState("goLowSpecimenBack");
+                        arm.setState("goLowSpecimenFront");
 
-                        if(scoringFromFront==true)
-                        {
-                            if(fromFront==true)lift.setPosition(lowChamberUp);
-                            else lift.setPosition(lowChamberDown);
-                        }
-                        else
-                        {
-                            if(fromFront==true)lift.setPosition(lowChamberDown);
-                            else lift.setPosition(lowChamberUp);
-                        }
+                        lift.setPosition(lowChamberDown);
+
                         break;
                     case HighChamber:
                         lift.goUp();
-                        if(scoringFromFront==true)arm.setState("goHighSpecimenFront");
+                        if(!prim)
+                            arm.setState("goHighSpecimenFront");
                         else arm.setState("goHighSpecimenBack");
 
-                        if(scoringFromFront==true)
-                        {
-                            if(fromFront==true)lift.setPosition(highChamberUp);
-                            else lift.setPosition(highChamberDown);
-                        }
-                        else
-                        {
-                            if(fromFront==true)lift.setPosition(highChamberDown);
-                            else lift.setPosition(highChamberUp);
-                        }
+                        lift.setPosition(highChamberDown);
+
                         break;
                     case ScoringLowChamber:
-                        if(scoringFromFront==true)
-                        {
-                            if(fromFront==true)lift.setPosition(lowChamberDown);
-                            else lift.setPosition(lowChamberUp);
-                        }
-                        else
-                        {
-                            if(fromFront==true)lift.setPosition(lowChamberUp);
-                            else lift.setPosition(lowChamberDown);
-                        }
+                        lift.setPosition(lowChamberUp);
+
                         if(lift.inPosition())state=State.GoDown;
 
                         break;
                     case ScoringHighChamber:
-                        if(scoringFromFront==true)
-                        {
-                            if(fromFront==true)lift.setPosition(highChamberDown);
-                            else lift.setPosition(highChamberUp);
-                        }
-                        else
-                        {
-                            if(fromFront==true)lift.setPosition(highChamberUp);
-                            else lift.setPosition(highChamberDown);
-                        }
+
+                        lift.setPosition(highChamberUp);
+
                         if(lift.inPosition())state=State.GoDown;
 
                         break;

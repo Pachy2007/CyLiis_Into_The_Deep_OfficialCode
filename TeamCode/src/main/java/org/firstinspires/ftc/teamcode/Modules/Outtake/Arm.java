@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Robot.IServoModule;
+import org.firstinspires.ftc.teamcode.Robot.State;
 import org.firstinspires.ftc.teamcode.Wrappers.BetterServo;
 
 @Config
@@ -11,15 +12,15 @@ public class Arm extends IServoModule {
 
     public static boolean leftServoReversed=true , rightServoReversed=false;
 
-    public static double defaultLeft=0.24 , defaultRight=0.53;
+    public static double defaultLeft=0.2 , defaultRight=0.86;
 
-    public static double depositLeft=0.23 , depositRight=0.43;
+    public static double depositLeft=0.43 , depositRight=0.87   ;
 
-    public static double takeSpecimenBackLeft=0.675 , takeSpecimenBackRight=0.5;
+    public static double takeSpecimenBackLeft=0.16 , takeSpecimenBackRight=0;
 
     public static double takeSpecimenFrontLeft=0.5 , takeSpecimenFrontRight=0.5;
 
-    public static double withElementLeft=0.39 , withElementRight=0.65;
+    public static double withElementLeft=0 , withElementRight=0.6;
 
     public static double releaseSampleFrontLeft=0.5 , releaseSampleFrontRight=0.5;
 
@@ -31,28 +32,31 @@ public class Arm extends IServoModule {
 
     public static double highSampleFrontLeft=0.4 , highSampleFrontRight=0.5;
 
-    public static double putHighSampleBackLeft=0.65 , putHighSampleBackRight=0.5;
+    public static double putHighSampleBackLeft=0.15 , putHighSampleBackRight=0.1;
 
     public static double lowSpecimenFrontLeft=0.5 , lowSpecimenFrontRight=0.5;
 
     public static double lowSpecimenBackLeft=0.5 , lowSpecimenBackRight=0.5;
 
-    public static double highSpecimenFrontLeft=0.4 , highSpecimenFrontRight=0.565;
+    public static double highSpecimenFrontLeft=0.29 , highSpecimenFrontRight=0.48;
 
-    public static double highSpecimenBackLeft=0.5 , highSpecimenBackRight=0.5;
+    public static double highSpecimenBackLeft=0.2 , highSpecimenBackRight=0.12;
 
     public static double beforeTakeSpecimenLeft=0.55 , beforeTakeSpecimenRight=0.5;
 
-    public static double MaxVelocoty=15 , Acceleration=12  , Deceleration=12;
+    public static double MaxVelocoty=16 , Acceleration=24  , Deceleration=24;
 
-    public static double neutralLeft=0.5 , neutralRight=0.5;
+    public static double neutralLeft=0.3 , neutralRight=0.3;
+
+
+    State initState;
 
     public Arm()
     {
         moduleName="ARM";
 
-        setServos(new BetterServo("ServoLeft" , Hardware.seh4 , BetterServo.RunMode.PROFILE , defaultLeft , leftServoReversed),
-                new BetterServo("ServoRight" , Hardware.seh3 , BetterServo.RunMode.PROFILE ,  defaultRight , rightServoReversed)
+        setServos(new BetterServo("ServoLeft" , Hardware.sch4 , BetterServo.RunMode.PROFILE , defaultLeft , leftServoReversed),
+                new BetterServo("ServoRight" , Hardware.sch3 , BetterServo.RunMode.PROFILE ,  defaultRight , rightServoReversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;
@@ -60,6 +64,25 @@ public class Arm extends IServoModule {
 
         setProfileCoefficients();
         setStates();
+        initState=states.get("goDefault");
+        atStart();
+
+    }
+
+    public Arm(String string)
+    {
+        moduleName="ARM";
+
+        setStates();
+        initState=states.get(string);
+        setServos(new BetterServo("ServoLeft" , Hardware.sch4 , BetterServo.RunMode.PROFILE , initState.getPosition(0) , leftServoReversed),
+                new BetterServo("ServoRight" , Hardware.sch3 , BetterServo.RunMode.PROFILE ,  initState.getPosition(1) , rightServoReversed)
+        );
+        this.maxVelocity=MaxVelocoty;
+        this.acceleration=Acceleration;
+        this.deceleration=Deceleration;
+
+        setProfileCoefficients();
         atStart();
 
     }
@@ -180,6 +203,6 @@ public class Arm extends IServoModule {
 
     @Override
     public void atStart()  {
-        state=states.get("default");
+        state=initState;
     }
 }
