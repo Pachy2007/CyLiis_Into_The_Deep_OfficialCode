@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 
 @Config
-@TeleOp
+@TeleOp(group = "z")
 public class ExtendoTest extends LinearOpMode {
     public static double position;
     @Override
@@ -25,7 +25,7 @@ public class ExtendoTest extends LinearOpMode {
         {
             extendo.setTargetPosition(position);
             extendo.update();
-            telemetry.addData( "position", extendo.motor.getPosition());
+            //telemetry.addData( "position", extendo.motor.getPosition());
             telemetry.update();
         }
     }

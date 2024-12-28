@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 import org.firstinspires.ftc.teamcode.Wrappers.Pose2D;
 
 @Config
-@TeleOp
+@TeleOp(group = "z")
 public class drivetrainAutoTest extends LinearOpMode {
 
     public static double x1=200 , y1=-400 , heading1=3.14;

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Math.BetterMotionProfile;
 import org.firstinspires.ftc.teamcode.Math.PIDController;
@@ -20,6 +21,8 @@ public class MecanumDriveTrain {
 
 
 
+
+    DcMotorEx motor;
     public enum State{
         DRIVE , PID , CLIMB;
     }
@@ -28,29 +31,32 @@ public class MecanumDriveTrain {
     BetterMotor frontLeft , frontRight;
     BetterMotor backLeft , backRight;
 
-    public  double targetX , targetY ;
+    public  double targetX , targetY ,x=0 ,y=0 ;
             public static double targetHeading;
     public static double error;
     double rotation;
+    public boolean usingTargetHeading=true;
 
-    public static boolean frontLeftreversed=false , frontRightreversed=true , backLeftreversed=false , backRightreversed=true;
+    public static boolean frontLeftreversed=true , frontRightreversed=false , backLeftreversed=true , backRightreversed=false;
 
     public static double lateralMultiplier=2;
     public static  double realHeading;
 
-    public static double kp=0.01 , ki=0 , kd=0.0012;
-    public static double KP=2 , KI , KD=0.21;
-    PIDController controllerX=new PIDController(kp , ki , kd) , controllerY=new PIDController(kp , ki , kd) , controllerHeading=new PIDController(KP , KI , KD);
+    public static double kp=0.009 , ki=0 , kd=0.001;
+    public static double KP=1.65 , KI , KD=0.19;
+   public  PIDController controllerX=new PIDController(kp , ki , kd) , controllerY=new PIDController(kp , ki , kd) , controllerHeading=new PIDController(KP , KI , KD);
 
     public MecanumDriveTrain(State initialState)
     {
         state=initialState;
 
-        frontLeft=new BetterMotor(Hardware.mch3 , BetterMotor.RunMode.RUN , frontLeftreversed);
-        frontRight=new BetterMotor(Hardware.mch2 , BetterMotor.RunMode.RUN , frontRightreversed);
+        frontLeft=new BetterMotor(Hardware.mch2 , BetterMotor.RunMode.RUN , frontLeftreversed);
+        frontRight=new BetterMotor(Hardware.mch3 , BetterMotor.RunMode.RUN , frontRightreversed);
 
-        backLeft=new BetterMotor(Hardware.mch0 , BetterMotor.RunMode.RUN , backLeftreversed);
-        backRight=new BetterMotor(Hardware.mch1 , BetterMotor.RunMode.RUN , backRightreversed);
+        backLeft=new BetterMotor(Hardware.mch1 , BetterMotor.RunMode.RUN , backLeftreversed);
+        backRight=new BetterMotor(Hardware.mch0 , BetterMotor.RunMode.RUN , backRightreversed);
+
+        setTargetVector(0 , 0 , 0);
 
     }
     public boolean inPosition()
@@ -62,10 +68,10 @@ public class MecanumDriveTrain {
         error=targetHeading-realHeading;
         if(Math.abs(error)>Math.PI)error=-Math.signum(error)*(2*Math.PI-Math.abs(error));
 
-        if(Math.abs(targetX-Odo.getX())<50 && Math.abs(targetY-Odo.getY())<50 && Math.abs(error)<0.06)return true;
+        if(Math.abs(targetX-Odo.getX())<25 && Math.abs(targetY-Odo.getY())<25 && Math.abs(error)<0.08)return true;
         return false;
     }
-    public boolean inPosition( double x , double y , double error)
+    public boolean inPosition( double x , double y , double Error)
     {
         double heading= Odo.getHeading();
         if(heading<0)realHeading=Math.abs(heading);
@@ -74,7 +80,7 @@ public class MecanumDriveTrain {
         error=targetHeading-realHeading;
         if(Math.abs(error)>Math.PI)error=-Math.signum(error)*(2*Math.PI-Math.abs(error));
 
-        if(Math.abs(targetX-Odo.getX())<x && Math.abs(targetY-Odo.getY())<y && this.error<error)return true;
+        if(Math.abs(targetX-Odo.getX())<x && Math.abs(targetY-Odo.getY())<y && Math.abs(error)<Error)return true;
         return false;
     }
 
@@ -103,7 +109,7 @@ public class MecanumDriveTrain {
         targetX=x;
         targetY=y;
         targetHeading=heading-Math.floor((heading/ (Math.PI*2)))*Math.PI*2;
-
+        usingTargetHeading=true;
 
     }
     public void setTargetPosition(Pose2d position)
@@ -111,14 +117,22 @@ public class MecanumDriveTrain {
         targetX=position.getX();
         targetY=position.getY();
         targetHeading=position.getHeading();
+        usingTargetHeading=true;
+    }
 
-
+    public void setTargetSpecialPosition(double targetX , double targetY , double targetHeading)
+    {
+        this.targetX=targetX;
+        this.targetY=targetY;
+        rotation=targetHeading;
+        usingTargetHeading=false;
     }
     public void setTargetPosition(Pose2D position)
     {
         targetX=position.x;
         targetY=position.y;
         targetHeading=position.heading;
+        usingTargetHeading=true;
     }
 
 
@@ -141,10 +155,11 @@ public class MecanumDriveTrain {
 
 
 
-            double x;
-            double y;
 
-
+        if(Double.isNaN(Odo.getX()) || Double.isNaN(Odo.getY()) || Double.isNaN(Odo.getHeading()))
+        {
+            return;
+        }
 
 
             x = controllerX.calculate(targetX, Odo.getX());
@@ -157,9 +172,10 @@ public class MecanumDriveTrain {
             if(heading<0)realHeading=Math.abs(heading);
             else realHeading=2*Math.PI-heading;
 
-            error=targetHeading-realHeading;
+        if(usingTargetHeading==true)
+        {error=targetHeading-realHeading;
             if(Math.abs(error)>Math.PI)error=-Math.signum(error)*(2*Math.PI-Math.abs(error));
-            rotation= controllerHeading.calculate(error , 0);
+            rotation= controllerHeading.calculate(error , 0);}
 
 
             setTargetVector(y*Math.cos(-heading) - x*Math.sin(-heading) , y*Math.sin(-heading)+x*Math.cos(-heading) , rotation);

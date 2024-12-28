@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.Modules.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "Z")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "a")
 public class TeleOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -122,7 +122,7 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("claw" , outtake.claw.state.name);
             telemetry.addData("haveSample" , outtake.haveSample);
             telemetry.addData("heading",Odo.getHeading());
-            telemetry.addData("liftPosition" , outtake.lift.motorLeft.getPosition());
+         //   telemetry.addData("liftPosition" , outtake.lift.motorLeft.getPosition());
             telemetry.addData("latch" , latch.state.name);
             telemetry.addData("arm" , outtake.arm.state.name);
 

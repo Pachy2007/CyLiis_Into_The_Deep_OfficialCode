@@ -12,11 +12,11 @@ public class Arm extends IServoModule {
 
     public static boolean leftServoReversed=true , rightServoReversed=false;
 
-    public static double defaultLeft=0.2 , defaultRight=0.86;
+    public static double defaultLeft=0.14 , defaultRight=0.9;
 
-    public static double depositLeft=0.43 , depositRight=0.87   ;
+    public static double depositLeft=0.56 , depositRight=0.89;
 
-    public static double takeSpecimenBackLeft=0.16 , takeSpecimenBackRight=0;
+    public static double takeSpecimenBackLeft=0.16 , takeSpecimenBackRight=0.0;
 
     public static double takeSpecimenFrontLeft=0.5 , takeSpecimenFrontRight=0.5;
 
@@ -28,7 +28,7 @@ public class Arm extends IServoModule {
 
     public static double lowSampleFrontLeft=0.4 , lowSampleFrontRight=0.4;
 
-    public static double lowSampleBackLeft=0.6 , lowSampleBackRight=0.6;
+    public static double lowSampleBackLeft=0.2 , lowSampleBackRight=0.05;
 
     public static double highSampleFrontLeft=0.4 , highSampleFrontRight=0.5;
 
@@ -38,13 +38,15 @@ public class Arm extends IServoModule {
 
     public static double lowSpecimenBackLeft=0.5 , lowSpecimenBackRight=0.5;
 
-    public static double highSpecimenFrontLeft=0.29 , highSpecimenFrontRight=0.48;
+    public static double highSpecimenFrontLeft=0.315 , highSpecimenFrontRight=0.47;
 
-    public static double highSpecimenBackLeft=0.2 , highSpecimenBackRight=0.12;
+    public static double highSpecimenBackLeft=0.218 , highSpecimenBackRight=0.145;
 
     public static double beforeTakeSpecimenLeft=0.55 , beforeTakeSpecimenRight=0.5;
 
     public static double MaxVelocoty=16 , Acceleration=24  , Deceleration=24;
+
+    public static double buruAdviceLeft=0.05 , buruAdviceRight=0.05;
 
     public static double neutralLeft=0.3 , neutralRight=0.3;
 
@@ -55,7 +57,9 @@ public class Arm extends IServoModule {
     {
         moduleName="ARM";
 
-        setServos(new BetterServo("ServoLeft" , Hardware.sch4 , BetterServo.RunMode.PROFILE , defaultLeft , leftServoReversed),
+        setStates();
+        initState=states.get("goDefault");
+        setServos(new BetterServo("ServoLeft" , Hardware.sch2 , BetterServo.RunMode.PROFILE , defaultLeft , leftServoReversed),
                 new BetterServo("ServoRight" , Hardware.sch3 , BetterServo.RunMode.PROFILE ,  defaultRight , rightServoReversed)
         );
         this.maxVelocity=MaxVelocoty;
@@ -63,8 +67,6 @@ public class Arm extends IServoModule {
         this.deceleration=Deceleration;
 
         setProfileCoefficients();
-        setStates();
-        initState=states.get("goDefault");
         atStart();
 
     }
@@ -75,8 +77,8 @@ public class Arm extends IServoModule {
 
         setStates();
         initState=states.get(string);
-        setServos(new BetterServo("ServoLeft" , Hardware.sch4 , BetterServo.RunMode.PROFILE , initState.getPosition(0) , leftServoReversed),
-                new BetterServo("ServoRight" , Hardware.sch3 , BetterServo.RunMode.PROFILE ,  initState.getPosition(1) , rightServoReversed)
+        setServos(new BetterServo("ServoLeft" , Hardware.sch2 , BetterServo.RunMode.PROFILE , defaultLeft , leftServoReversed),
+                new BetterServo("ServoRight" , Hardware.sch3 , BetterServo.RunMode.PROFILE ,  defaultRight , rightServoReversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;
@@ -90,6 +92,8 @@ public class Arm extends IServoModule {
     @Override
     public void setStates()  {
 
+        states.addState("buruAdvice" , buruAdviceLeft , buruAdviceRight);
+        states.addState("goBuruAdvice" , states.get("buruAdvice") , buruAdviceLeft , buruAdviceRight);
 
         states.addState("default" , defaultLeft , defaultRight);
         states.addState("goDefault" , states.get("default") , defaultLeft , defaultRight);
@@ -146,6 +150,9 @@ public class Arm extends IServoModule {
 
     @Override
     public void updateStatesPosition(){
+
+        states.get("buruAdvice").updatePositions(buruAdviceLeft , buruAdviceRight);
+        states.get("goBuruAdvice").updatePositions(buruAdviceLeft , buruAdviceRight);
 
 
         states.get("neutral").updatePositions(neutralLeft , neutralRight);

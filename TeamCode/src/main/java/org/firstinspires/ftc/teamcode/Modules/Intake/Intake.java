@@ -9,9 +9,9 @@ public class Intake {
         REPAUS_DOWN , REPAUS_UP , INTAKE_UP , INTAKE_DOWN , REVERSE_UP , REVERSE_DOWN
     }
     public State state;
-    ActiveIntake activeIntake;
+    public ActiveIntake activeIntake;
     DropDown dropDown;
-    Ramp ramp;
+    public Ramp ramp;
 
     ElapsedTime timer=new ElapsedTime();
 

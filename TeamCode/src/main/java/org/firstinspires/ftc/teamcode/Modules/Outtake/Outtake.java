@@ -41,9 +41,11 @@ public class Outtake {
 
     boolean fromFront=false;
     boolean scoringFromFront=false;
+    boolean sample=false;
 
     public static boolean prim=false;
-    public static int lowBasketPosition=650  , highBasketPosition=1280 , lowChamberUp=150 , lowChamberDown=150 , highChamberUp=680 , highChamberDown=370;
+    public static int lowBasketPosition=730  , highBasketPosition=1300 , lowChamberUp=150 , lowChamberDown=150 , highChamberUp=700 , highChamberDown=365;
+
     public Outtake()
     {
         arm=new Arm();
@@ -108,10 +110,11 @@ public class Outtake {
         if(state!=State.Up || !arm.inPosition())return;
         if(scoring==Scoring.LowBasket || scoring==Scoring.HighBasket)
         {
+            sample=true;
             state=State.GoDown;
         }
 
-        if(scoring== Scoring.LowChamber)scoring=Scoring.ScoringLowChamber;
+        if(scoring== Scoring.LowChamber)scoring=Scoring.ScoringHighChamber;
         if(scoring==Scoring.HighChamber)scoring=Scoring.ScoringHighChamber;
     }
 
@@ -154,7 +157,7 @@ public class Outtake {
                     if(arm.inPosition() && lift.state==Lift.State.DOWN)claw.setState("goClose");
                 if(claw.inPosition() && claw.state==claw.states.get("close"))state=State.DeafultWithElement;}
                 if(claw.inPosition() && claw.state==claw.states.get("close"))
-                {lift.setPosition(50);
+                {lift.setPosition(150);
                 lift.goUp();}
                 break;
             case Deafult:
@@ -170,12 +173,15 @@ public class Outtake {
                 if(haveSample)
                 claw.setState("goClose");
                 else claw.setState("goCloseSpecimen");
-                lift.setPosition(50);
+                lift.setPosition(150);
                 break;
             case GoDown:
+
+                if(sample){sample=false; arm.setState("goBuruAdvice");arm.update();}
+
                 take=false;
                 claw.setState("goOpen");
-                if(claw.inPosition() && arm.state!=arm.states.get("neutral") && arm.state!=arm.states.get("goNeutral"))arm.setState("goNeutral");
+                if(claw.inPosition() && arm.state!=arm.states.get("neutral") && arm.state!=arm.states.get("goNeutral") && arm.inPosition())arm.setState("goNeutral");
                 if(claw.inPosition() && arm.state==arm.states.get("neutral") && claw.state==claw.states.get("open"))lift.goDown();
                 if(lift.state== Lift.State.DOWN)
                     state = State.Deafult;
@@ -241,7 +247,7 @@ public class Outtake {
         }
         else{
             if(high)scoring=Scoring.HighChamber;
-            if(!high)scoring=Scoring.LowChamber;
+            if(!high)scoring=Scoring.HighChamber;
         }
     }
     private void updateSpecimen()

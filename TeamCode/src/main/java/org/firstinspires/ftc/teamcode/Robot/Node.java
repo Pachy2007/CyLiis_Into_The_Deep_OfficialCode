@@ -28,7 +28,6 @@ public class Node {
 
     public void run()
     {
-
         operation.run();
 
     }
@@ -36,4 +35,6 @@ public class Node {
     {
         return condition.get();
     }
+
+
 }

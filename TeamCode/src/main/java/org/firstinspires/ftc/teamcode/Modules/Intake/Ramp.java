@@ -12,7 +12,7 @@ public class Ramp extends IServoModule {
 
     public static boolean rightServoReversed=false;
 
-    public static double upPosition=0.53 , downPosition=0.43;
+    public static double upPosition=0.36 , downPosition=0.2;
 
     public static double MaxVelocoty=20 , Acceleration=32  , Deceleration=32;
 

@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Robot.Hardware;
 
 
 @Config
-@TeleOp
+@TeleOp(group = "b")
 public class HubTest  extends LinearOpMode {
 
 

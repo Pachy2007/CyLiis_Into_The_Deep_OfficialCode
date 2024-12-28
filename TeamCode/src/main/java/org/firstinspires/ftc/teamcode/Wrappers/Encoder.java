@@ -23,7 +23,7 @@ public class Encoder {
     }
     public double getPosition()
     {
-        return encoder.getCurrentPosition();
+        return encoder.getCurrentPosition()/50;
     }
 
     public double getVelocity(){return encoder.getVelocity();}

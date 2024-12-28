@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 
-@TeleOp
+@TeleOp(group = "z")
 public class Climb extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

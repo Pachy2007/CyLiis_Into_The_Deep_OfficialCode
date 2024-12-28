@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Math;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Wrappers.Odo;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -45,6 +47,9 @@ public class PIDController {
     private double lastError=0;
     private double integralSum=0;
     public double calculate(double reference , double state){
+
+        if(Double.isNaN(reference) || Double.isNaN(state) || Double.isNaN(timer.seconds()))return 0;
+
         double error=reference-state;
         integralSum+=timer.seconds()*error;
 
@@ -59,8 +64,19 @@ public class PIDController {
         double derivative=(error-lastError)/timer.seconds();
         double output=kp*error+kd*derivative;
         if(error>0)output+=integralSum*ki;
-        else output-=integralSum*ki;
+        else output+=integralSum*ki;
         output+=ff1+ff2*state;
+        timer.reset();
+        lastError=error;
+        return output;
+    }
+
+    public double calculateMecanum(double reference , double state){
+        double error=reference-state;
+
+
+        double derivative=(error-lastError)/timer.seconds();
+        double output=kp*error+kd*derivative;
         timer.reset();
         lastError=error;
         return output;

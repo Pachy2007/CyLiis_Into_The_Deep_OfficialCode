@@ -15,7 +15,7 @@ public class Extendo {
         IN , GOING_IN(IN) , OUT(GOING_IN) , GO_TO_POSITION();
 
         State nextState;
-         State(State nextState)
+        State(State nextState)
         {
             this.nextState=nextState;
         }
@@ -29,7 +29,7 @@ public class Extendo {
 
     int nr=0;
     public BetterMotor motor;
-    public static boolean motor1Reversed=false;
+    public static boolean motor1Reversed=true;
     public static double kp=0.01 , ki , kd;
     public static double targetPosition;
 
@@ -41,7 +41,7 @@ public class Extendo {
 
     public Extendo()
     {
-        motor=new BetterMotor(Hardware.meh2 , BetterMotor.RunMode.RUN , motor1Reversed , Hardware.mch1 , false);
+        motor=new BetterMotor(Hardware.meh2 , BetterMotor.RunMode.RUN , motor1Reversed , Hardware.mch2 , false);
 
         motor.setPidCoefficients(kp , ki , kd);
 
@@ -72,6 +72,11 @@ public class Extendo {
         targetPosition=position;
     }
 
+    public boolean inPosition()
+    {
+        return state==State.IN || state!=State.GOING_IN || Math.abs(motor.getPosition()-targetPosition)<40;
+    }
+
     private void updateHardware()
     {
         switch (state)
@@ -94,9 +99,9 @@ public class Extendo {
                 motor.setPower(goingInPower);
                 if(Math.abs(motor.getVelocity())<0.0001){
                     nr++;
-                    if(nr>=5)
+                    if(nr>=2)
                     {state=state.nextState;
-                motor.resetPosition();}}
+                        motor.resetPosition();}}
                 break;
             case GO_TO_POSITION:
                 motor.setPosition(targetPosition);

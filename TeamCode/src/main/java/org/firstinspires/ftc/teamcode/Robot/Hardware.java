@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -15,19 +17,18 @@ public class Hardware {
     public static DcMotorEx mch0 , mch1 , mch2 , mch3;
 
     public static DcMotorEx meh0 , meh1 , meh2 , meh3;
-
+    public static ColorSensor colorSensor;
 
     public static Servo sch4 , sch5;
     public static CRServo sch0 , sch1;
     public static Servo sch2 , sch3;
     public static Servo seh0 , seh1 , seh2 , seh3 , seh4 , seh5;
-    public static IMU imu;
 
     public static void
     init(HardwareMap hardwareMap)
     {
-        if(INIT)return;
-        INIT=true;
+        colorSensor=hardwareMap.get(ColorSensor.class , "colorSensor");
+
         mch0=hardwareMap.get(DcMotorEx.class , "ch0");
         mch1=hardwareMap.get(DcMotorEx.class , "ch1");
         mch2=hardwareMap.get(DcMotorEx.class , "ch2");
@@ -50,6 +51,7 @@ public class Hardware {
         seh2=hardwareMap.get(Servo.class , "seh2");
         seh3=hardwareMap.get(Servo.class , "seh3");
         seh4=hardwareMap.get(Servo.class , "seh4");
-        seh5=hardwareMap.get(Servo.class , "seh5");}
+        seh5=hardwareMap.get(Servo.class , "seh5");
+           }
 
 }
