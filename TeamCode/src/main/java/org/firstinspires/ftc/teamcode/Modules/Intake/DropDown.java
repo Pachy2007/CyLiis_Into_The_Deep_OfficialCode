@@ -20,7 +20,7 @@ public class DropDown extends IServoModule {
     {
         moduleName="DropDOWN";
         setServos(
-                new BetterServo("Servo" , Hardware.seh3 , BetterServo.RunMode.PROFILE ,  rampUpPosition , rightServoReversed)
+                new BetterServo("Servo" , Hardware.seh0 , BetterServo.RunMode.PROFILE ,  rampUpPosition , rightServoReversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;

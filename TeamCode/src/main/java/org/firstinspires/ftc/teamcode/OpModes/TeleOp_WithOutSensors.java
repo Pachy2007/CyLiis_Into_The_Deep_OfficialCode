@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Climb.Climb;
 import org.firstinspires.ftc.teamcode.Modules.Drive.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake.ActiveIntake;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
@@ -95,12 +94,6 @@ public class TeleOp_WithOutSensors extends LinearOpMode {
 
             if(gamepad1.a && gamepad1.left_bumper)a=true;
             if(gamepad1.b && gamepad1.left_bumper) a=false;
-
-            if(a==false){
-                if(gamepad1.right_bumper) climb.goUp();
-                else if(gamepad1.left_bumper)climb.goDown();
-                else climb.Default();}
-            else climb.Constant();
 
             double power=-gamepad1.right_stick_y;
             if(!take)

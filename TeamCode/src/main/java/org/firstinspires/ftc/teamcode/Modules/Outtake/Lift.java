@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode.Modules.Outtake;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.teamcode.Math.PIDController;
+import org.firstinspires.ftc.teamcode.Modules.Others.Differential;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.BetterMotor;
 import org.firstinspires.ftc.teamcode.Wrappers.Encoder;
+import org.opencv.core.Mat;
 
 @Config
 public class Lift {
@@ -22,28 +25,26 @@ public class Lift {
             this.nextState=this;
         }
     }
-    public State state=State.DOWN;
-    public BetterMotor motorLeft , motorRight;
+    public State state=State.GOING_DOWN;
     public static boolean motorLeftReversed=true;
     public static boolean motorRightReversed=true;
     public static int maxPosition=1600;
+    public double prevVelocity=0;
     int nr=0;
 
-    public static double kP=0.0102 , kI=0 , kD=0.0000001;
+    public static double kP=0.012 , kI=0 , kD=0.0000;
 
+    PIDController controller;
+    Encoder encoder;
 
     public static double position;
     public static double position1;
-    public static boolean encoderReversed=true;
+    public static boolean encoderReversed=false;
     public Lift()
     {
-
-        motorLeft=new BetterMotor(Hardware.meh0 , BetterMotor.RunMode.PID , motorLeftReversed  , Hardware.mch3 , encoderReversed);
-        motorRight=new BetterMotor(Hardware.meh1 , BetterMotor.RunMode.PID , motorRightReversed  , Hardware.mch3 , encoderReversed);
-
-        motorLeft.setPidCoefficients(kP , kD , kI);
-        motorRight.setPidCoefficients(kP , kI , kD);
-
+        Differential.init();
+        controller=new PIDController(kP , kI , kD);
+        encoder=new Encoder(Hardware.mch3 , encoderReversed);
     }
 
 
@@ -69,7 +70,7 @@ public class Lift {
 
     public boolean inPosition()
     {
-        if(Math.abs(position- motorLeft.getPosition())<40 || state==State.DOWN || state==State.GOING_DOWN)return true;
+        if(Math.abs(position- encoder.getPosition())<70 || state==State.DOWN || state==State.GOING_DOWN)return true;
         return false;
     }
     public void decreasePosition(int extra)
@@ -82,7 +83,7 @@ public class Lift {
         switch(state)
         {
             case GOING_UP:
-                if(Math.abs(position+ motorLeft.getPosition())<70)state=state.nextState;
+                if(Math.abs(position+ encoder.getPosition())<70)state=state.nextState;
                 nr=0;
                 break;
             case UP:
@@ -90,10 +91,10 @@ public class Lift {
                 nr=0;
                 break;
             case GOING_DOWN:
-                if(Math.abs(motorLeft.getVelocity())<0.001)
+                if(Math.abs(encoder.getVelocity())<200)
                 {   nr++;
-                    if(nr>=10)
-                    {state=state.nextState; motorLeft.resetPosition(); motorRight.resetPosition();}}
+                    if(nr>=2)
+                    {state=state.nextState; encoder.resetPosition();}}
                 break;
         }
     }
@@ -103,33 +104,38 @@ public class Lift {
         {
             case GOING_UP:
             case UP:
-                motorLeft.setPosition(position);
-                motorRight.setPosition(position);
+                double power=controller.calculate(position , encoder.getPosition());
+
+                Differential.liftPower=power;
                 break;
             case DOWN:
-                motorLeft.setPower(-0.05);
-                motorRight.setPower(-0.05);
+                Differential.liftPower=-0;
+                //motorLeft.setPower(-0.05);
+                //motorRight.setPower(-0.05);
                 break;
             case GOING_DOWN:
-                motorLeft.setPower(-1);
-                motorRight.setPower(-1);
+                Differential.liftPower=-1;
+                //motorLeft.setPower(-1);
+                //motorRight.setPower(-1);
                 break;
         }
     }
 
     private void updateCoefficient()
     {
-        motorLeft.setPidCoefficients(kP , kD , kI);
-        motorRight.setPidCoefficients(kP , kI , kD);
+        controller.kp=kP;
+        controller.ki=kI;
+        controller.kd=kD;
     }
 
     public void update()
     {
+
+        updateHardware();
+        Differential.update();
         updateCoefficient();
         updateState();
-        updateHardware();
-        motorRight.update();
-        motorLeft.update();
+        prevVelocity=encoder.getVelocity();
     }
 
 

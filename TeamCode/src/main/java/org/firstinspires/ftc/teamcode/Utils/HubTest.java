@@ -70,7 +70,7 @@ public class HubTest  extends LinearOpMode {
 
 
 
-        servo=Hardware.sch2;
+        servo=Hardware.sch0;
         motor=Hardware.mch0;
 
             waitForStart();

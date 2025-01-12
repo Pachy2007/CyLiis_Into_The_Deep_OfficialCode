@@ -26,9 +26,9 @@ public class Odo {
         telemetry=telemetryy;
         INIT=true;
         odo=hardwareMap.get(GoBildaPinpointDriver.class , "odo");
-
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED , GoBildaPinpointDriver.EncoderDirection.REVERSED);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setOffsets(125.5 , 0);
+        odo.setOffsets(-131.225 , -1.344);
         odo.resetPosAndIMU();
 
        // if(!plsMergi)
@@ -43,9 +43,9 @@ public class Odo {
         telemetry=telemetryy;
         INIT=true;
         odo=hardwareMap.get(GoBildaPinpointDriver.class , "odo");
-
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED , GoBildaPinpointDriver.EncoderDirection.REVERSED);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setOffsets(125.5 , 0);
+        odo.setOffsets(-131.225 , -1.344);
 
         if(!plsMergi)
         {

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
+import org.firstinspires.ftc.teamcode.Modules.Others.Differential;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Lift;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 
@@ -65,6 +66,9 @@ public class DifferentialTest extends LinearOpMode {
 
         telemetry.addData("LiftCurrent" , Hardware.mch0.getCurrent(CurrentUnit.AMPS));
         telemetry.addData("extendoCurrent" , Hardware.mch3.getCurrent(CurrentUnit.AMPS));
+
+        telemetry.addData("powe1" , Differential.power1);
+        telemetry.addData("power2" , Differential.power2);
         telemetry.update();
 
         }

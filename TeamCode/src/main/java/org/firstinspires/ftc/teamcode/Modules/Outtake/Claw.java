@@ -12,13 +12,13 @@ public class Claw extends IServoModule {
 
     public static boolean rightServoReversed=false;
 
-    public static double closeSample=0.6 ,  closeSpecimen=0.77 , openPosition=0.4 , takeSpecimenPosition=0.08;
+    public static double closeSample=0.15 ,  closeSpecimen=0.22 , openPosition=0.06 , takeSpecimenPosition=0 , scoring=0.1;
     State initState;
     public Claw()
     {
         moduleName="CLAW";
         setServos(
-                new BetterServo("Servo" , Hardware.sch4 , BetterServo.RunMode.Time ,  openPosition , rightServoReversed , 0.15)
+                new BetterServo("Servo" , Hardware.seh5 , BetterServo.RunMode.Time ,  openPosition , rightServoReversed , 0.15)
         );
         setStates();
         initState=states.get("goOpen");
@@ -28,11 +28,11 @@ public class Claw extends IServoModule {
 
     public Claw(String string)
     {
+        moduleName="CLAW";
         setStates();
         initState=states.get(string);
-        moduleName="CLAW";
         setServos(
-                new BetterServo("Servo" , Hardware.sch4 , BetterServo.RunMode.Time ,  initState.getPosition(0) , rightServoReversed , 0.15)
+                new BetterServo("Servo" , Hardware.seh5 , BetterServo.RunMode.Time ,  initState.getPosition(0) , rightServoReversed , 0.2)
         );
 
         atStart();
@@ -45,14 +45,22 @@ public class Claw extends IServoModule {
         states.addState("takeSpecimen" , takeSpecimenPosition);
         states.addState("closeSpecimen" , closeSpecimen);
 
+        states.addState("scoring" , scoring);
+
         states.addState("goOpen" , states.get("open"), openPosition);
         states.addState("goClose",  states.get("close"), closeSample);
         states.addState("goTakeSpecimen" , states.get("takeSpecimen") , takeSpecimenPosition);
         states.addState("goCloseSpecimen" , states.get("closeSpecimen") , closeSpecimen);
+
+        states.addState("goScoring" , states.get("scoring"), scoring);
     }
 
     @Override
     public void updateStatesPosition(){
+
+        states.get("scoring").updatePositions(scoring);
+        states.get("goScoring").updatePositions(scoring);
+
         states.get("close").updatePositions(closeSample);
         states.get("open").updatePositions(openPosition);
         states.get("takeSpecimen").updatePositions(takeSpecimenPosition);

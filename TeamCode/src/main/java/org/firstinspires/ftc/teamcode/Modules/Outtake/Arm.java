@@ -10,46 +10,29 @@ import org.firstinspires.ftc.teamcode.Wrappers.BetterServo;
 @Config
 public class Arm extends IServoModule {
 
-    public static boolean leftServoReversed=true , rightServoReversed=false;
+    public static boolean leftServoReversed=true , rightServoReversed=false ;
 
-    public static double defaultLeft=0.14 , defaultRight=0.9;
 
-    public static double depositLeft=0.56 , depositRight=0.89;
+    public static double deposit=0.04;
 
-    public static double takeSpecimenBackLeft=0.16 , takeSpecimenBackRight=0.0;
+    public static double takeSpecimen=0.923;
 
-    public static double takeSpecimenFrontLeft=0.5 , takeSpecimenFrontRight=0.5;
+    public static double withElementSample=0.045 , withElementSpecimen=0.27;
 
-    public static double withElementLeft=0 , withElementRight=0.6;
+    public static double releaseSample=0.2;
 
-    public static double releaseSampleFrontLeft=0.5 , releaseSampleFrontRight=0.5;
+    public static double lowSample=0.62;
 
-    public static double releaseSampleBackLeft=0.5 , releaseSampleBackRight=0.5;
+    public static double putHighSample=0.62;
 
-    public static double lowSampleFrontLeft=0.4 , lowSampleFrontRight=0.4;
+    public static double lowSpecimen=0.27;
 
-    public static double lowSampleBackLeft=0.2 , lowSampleBackRight=0.05;
+    public static double neutralSpecimen=0.85 , neutralSample=0.04;
 
-    public static double highSampleFrontLeft=0.4 , highSampleFrontRight=0.5;
+    public static double highSpecimen=0.27;
 
-    public static double putHighSampleBackLeft=0.15 , putHighSampleBackRight=0.1;
-
-    public static double lowSpecimenFrontLeft=0.5 , lowSpecimenFrontRight=0.5;
-
-    public static double lowSpecimenBackLeft=0.5 , lowSpecimenBackRight=0.5;
-
-    public static double highSpecimenFrontLeft=0.315 , highSpecimenFrontRight=0.47;
-
-    public static double highSpecimenBackLeft=0.218 , highSpecimenBackRight=0.145;
-
-    public static double beforeTakeSpecimenLeft=0.55 , beforeTakeSpecimenRight=0.5;
 
     public static double MaxVelocoty=16 , Acceleration=24  , Deceleration=24;
-
-    public static double buruAdviceLeft=0.05 , buruAdviceRight=0.05;
-
-    public static double neutralLeft=0.3 , neutralRight=0.3;
-
 
     State initState;
 
@@ -58,9 +41,9 @@ public class Arm extends IServoModule {
         moduleName="ARM";
 
         setStates();
-        initState=states.get("goDefault");
-        setServos(new BetterServo("ServoLeft" , Hardware.sch2 , BetterServo.RunMode.PROFILE , defaultLeft , leftServoReversed),
-                new BetterServo("ServoRight" , Hardware.sch3 , BetterServo.RunMode.PROFILE ,  defaultRight , rightServoReversed)
+        initState=states.get("deposit");
+        setServos(new BetterServo("ServoLeft" , Hardware.sch0 , BetterServo.RunMode.PROFILE , deposit , leftServoReversed),
+                new BetterServo("ServoRight" , Hardware.sch4 , BetterServo.RunMode.PROFILE ,  deposit , rightServoReversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;
@@ -77,8 +60,8 @@ public class Arm extends IServoModule {
 
         setStates();
         initState=states.get(string);
-        setServos(new BetterServo("ServoLeft" , Hardware.sch2 , BetterServo.RunMode.PROFILE , defaultLeft , leftServoReversed),
-                new BetterServo("ServoRight" , Hardware.sch3 , BetterServo.RunMode.PROFILE ,  defaultRight , rightServoReversed)
+        setServos(new BetterServo("ServoLeft" , Hardware.sch0 , BetterServo.RunMode.PROFILE , deposit , leftServoReversed),
+                new BetterServo("ServoRight" , Hardware.sch4 , BetterServo.RunMode.PROFILE ,  deposit , rightServoReversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;
@@ -92,119 +75,76 @@ public class Arm extends IServoModule {
     @Override
     public void setStates()  {
 
-        states.addState("buruAdvice" , buruAdviceLeft , buruAdviceRight);
-        states.addState("goBuruAdvice" , states.get("buruAdvice") , buruAdviceLeft , buruAdviceRight);
+        states.addState("deposit" , deposit , deposit);
+        states.addState("goDeposit" , states.get("deposit") , deposit , deposit);
 
-        states.addState("default" , defaultLeft , defaultRight);
-        states.addState("goDefault" , states.get("default") , defaultLeft , defaultRight);
+        states.addState("withElementSample" , withElementSample, withElementSample);
+        states.addState("goWithElementSample" , states.get("withElementSample") , withElementSample, withElementSample);
 
-        states.addState("deposit" , depositLeft , depositRight);
-        states.addState("goDeposit" , states.get("deposit") , depositLeft , depositRight);
+        states.addState("withElementSpecimen" , withElementSpecimen, withElementSpecimen);
+        states.addState("goWithElementSpecimen" , states.get("withElementSpecimen") , withElementSpecimen, withElementSpecimen);
 
-        states.addState("takeSpecimenBack" , takeSpecimenBackLeft , takeSpecimenBackRight);
-        states.addState("goTakeSpecimenBack" , states.get("takeSpecimenBack") , takeSpecimenBackLeft , takeSpecimenBackRight);
-        states.addState("takeSpecimenFront" , takeSpecimenFrontLeft , takeSpecimenFrontRight);
+        states.addState("releaseSampleBack" , releaseSample , releaseSample);
+        states.addState("goReleaseSampleBack" , states.get("releaseSampleBack") , releaseSample , releaseSample);
 
-        states.addState("withElement" , withElementLeft, withElementRight);
-        states.addState("goWithElement" , states.get("withElement") , withElementLeft, withElementRight);
+        states.addState("lowSample", lowSample , lowSample);
+        states.addState("goLowSample" , states.get("lowSample") , lowSample , lowSample);
 
-        states.addState("releaseSampleFront" , releaseSampleFrontLeft, releaseSampleFrontRight);
-        states.addState("goReleaseSampleFront" , states.get("releaseSampleFront") , releaseSampleFrontLeft, releaseSampleFrontRight);
+        states.addState("highSample" , putHighSample , putHighSample);
+        states.addState("goHighSample" , states.get("highSample") , putHighSample , putHighSample);
 
-        states.addState("releaseSampleBack" , releaseSampleBackLeft , releaseSampleBackRight);
-        states.addState("goReleaseSampleBack" , states.get("releaseSampleBack") , releaseSampleBackLeft , releaseSampleBackRight);
+        states.addState("lowSpecimen" , lowSpecimen , lowSpecimen);
+        states.addState("goLowSpecimen" , states.get("lowSpecimen") , lowSpecimen , lowSpecimen);
 
-        states.addState("lowSampleFront" , lowSampleFrontLeft , lowSampleFrontRight);
-        states.addState("goLowSampleFront" , states.get("lowSampleFront") , lowSampleFrontLeft , lowSampleFrontRight);
+        states.addState("highSpecimen" , highSpecimen , highSpecimen);
+        states.addState("goHighSpecimen" , states.get("highSpecimen") , highSpecimen , highSpecimen);
 
-        states.addState("lowSampleBack", lowSampleBackLeft , lowSampleBackRight);
-        states.addState("goLowSampleBack" , states.get("lowSampleBack") , lowSampleBackLeft , lowSampleBackRight);
+        states.addState("takeSpecimen" , takeSpecimen , takeSpecimen);
+        states.addState("goTakeSpecimen" , states.get("takeSpecimen") , takeSpecimen , takeSpecimen);
 
-        states.addState("highSampleFront" , highSampleFrontLeft , highSampleFrontRight);
-        states.addState("goHighSampleFront" , states.get("highSampleFront") , highSampleFrontLeft , highSampleFrontRight);
+        states.addState("neutralSpecimen" , neutralSpecimen , neutralSpecimen);
+        states.addState("goNeutralSpecimen" , states.get("neutralSpecimen"), neutralSpecimen , neutralSpecimen);
 
-        states.addState("highSampleBack" , putHighSampleBackLeft , putHighSampleBackRight);
-        states.addState("goHighSampleBack" , states.get("highSampleBack") , putHighSampleBackLeft , putHighSampleBackRight);
-
-        states.addState("lowSpecimenFront" , lowSpecimenFrontLeft , lowSpecimenFrontRight);
-        states.addState("goLowSpecimenFront" , states.get("lowSpecimenFront") , lowSpecimenFrontLeft , lowSpecimenFrontRight);
-
-        states.addState("lowSpecimenBack" , lowSpecimenBackLeft , lowSpecimenBackRight);
-        states.addState("goLowSpecimenBack" , states.get("lowSpecimenBack") , lowSpecimenBackLeft , lowSpecimenBackRight);
-
-        states.addState("highSpecimenFront" , highSpecimenFrontLeft , highSpecimenFrontRight);
-        states.addState("goHighSpecimenFront" , states.get("highSpecimenFront") , highSpecimenFrontLeft , highSpecimenFrontRight);
-
-        states.addState("highSpecimenBack" , highSpecimenBackLeft , highSpecimenBackRight);
-        states.addState("goHighSpecimenBack" , states.get("highSpecimenBack") , highSpecimenBackLeft , highSpecimenBackRight);
-
-        states.addState("goTakeSpecimenFront" , states.get("takeSpecimenFront") , takeSpecimenFrontLeft , takeSpecimenFrontRight);
-
-        states.addState("neutral" , neutralLeft , neutralRight);
-        states.addState("goNeutral" , states.get("neutral"), neutralLeft , neutralRight);
-
-        states.addState("beforeTakeSpecimen" , beforeTakeSpecimenLeft , beforeTakeSpecimenRight);
-        states.addState("goBeforeTakeSpecimen" ,  states.get("beforeTakeSpecimen"),beforeTakeSpecimenLeft , beforeTakeSpecimenRight);
+        states.addState("neutralSample" , neutralSample , neutralSample);
+        states.addState("goNeutralSample" , states.get("neutralSample"), neutralSample , neutralSample);
 
     }
 
     @Override
     public void updateStatesPosition(){
 
-        states.get("buruAdvice").updatePositions(buruAdviceLeft , buruAdviceRight);
-        states.get("goBuruAdvice").updatePositions(buruAdviceLeft , buruAdviceRight);
+        states.get("neutralSample").updatePositions(neutralSample , neutralSample);
+        states.get("goNeutralSample").updatePositions(neutralSample , neutralSample);
 
+        states.get("neutralSpecimen").updatePositions(neutralSpecimen , neutralSpecimen);
+        states.get("goNeutralSpecimen").updatePositions(neutralSpecimen , neutralSpecimen);
 
-        states.get("neutral").updatePositions(neutralLeft , neutralRight);
-        states.get("goNeutral").updatePositions(neutralLeft , neutralRight);
+        states.get("deposit").updatePositions(deposit , deposit);
+        states.get("goDeposit").updatePositions(deposit , deposit);
 
-        states.get("default").updatePositions(defaultLeft , defaultRight);
-        states.get("goDefault").updatePositions(defaultLeft , defaultRight);
+        states.get("takeSpecimen").updatePositions(takeSpecimen , takeSpecimen);
+        states.get("goTakeSpecimen").updatePositions(takeSpecimen , takeSpecimen);
 
-        states.get("deposit").updatePositions(depositLeft , depositRight);
-        states.get("goDeposit").updatePositions(depositLeft , depositRight);
+        states.get("withElementSample").updatePositions(withElementSample , withElementSample);
+        states.get("goWithElementSample").updatePositions(withElementSample , withElementSample);
 
-        states.get("takeSpecimenBack").updatePositions(takeSpecimenBackLeft , takeSpecimenBackRight);
-        states.get("goTakeSpecimenBack").updatePositions(takeSpecimenBackLeft , takeSpecimenBackRight);
+        states.get("withElementSpecimen").updatePositions(withElementSpecimen , withElementSpecimen);
+        states.get("goWithElementSpecimen").updatePositions(withElementSpecimen , withElementSpecimen);
 
-        states.get("takeSpecimenFront").updatePositions(takeSpecimenFrontLeft , takeSpecimenFrontRight);
-        states.get("goTakeSpecimenFront").updatePositions(takeSpecimenFrontLeft , takeSpecimenFrontRight);
+        states.get("releaseSampleBack").updatePositions(releaseSample , releaseSample);
+        states.get("goReleaseSampleBack").updatePositions(releaseSample , releaseSample);
 
-        states.get("withElement").updatePositions(withElementLeft , withElementRight);
-        states.get("goWithElement").updatePositions(withElementLeft , withElementRight);
+        states.get("lowSample").updatePositions(lowSample, lowSample);
+        states.get("goLowSample").updatePositions(lowSample , lowSample);
 
-        states.get("releaseSampleFront").updatePositions(releaseSampleFrontLeft , releaseSampleFrontRight);
-        states.get("goReleaseSampleFront").updatePositions(releaseSampleFrontLeft , releaseSampleFrontRight);
+        states.get("highSample").updatePositions(putHighSample , putHighSample);
+        states.get("goHighSample").updatePositions(putHighSample , putHighSample);
 
-        states.get("releaseSampleBack").updatePositions(releaseSampleBackLeft , releaseSampleBackRight);
-        states.get("goReleaseSampleBack").updatePositions(releaseSampleBackLeft , releaseSampleBackRight);
+        states.get("lowSpecimen").updatePositions(lowSpecimen , lowSpecimen);
+        states.get("goLowSpecimen").updatePositions(lowSpecimen , lowSpecimen);
 
-        states.get("lowSampleFront").updatePositions(lowSampleFrontLeft , lowSampleFrontRight);
-        states.get("goLowSampleFront").updatePositions(lowSampleFrontLeft , lowSampleFrontRight);
-
-        states.get("lowSampleBack").updatePositions(lowSampleBackLeft , lowSampleBackRight);
-        states.get("goLowSampleBack").updatePositions(lowSampleBackLeft , lowSampleBackRight);
-
-        states.get("highSampleFront").updatePositions(highSampleFrontLeft , highSampleFrontRight);
-        states.get("goHighSampleFront").updatePositions(highSampleFrontLeft , highSampleFrontRight);
-
-        states.get("highSampleBack").updatePositions(putHighSampleBackLeft , putHighSampleBackRight);
-        states.get("goHighSampleBack").updatePositions(putHighSampleBackLeft , putHighSampleBackRight);
-
-        states.get("lowSpecimenFront").updatePositions(lowSpecimenFrontLeft , lowSpecimenFrontRight);
-        states.get("goLowSpecimenFront").updatePositions(lowSpecimenFrontLeft , lowSpecimenFrontRight);
-
-        states.get("lowSpecimenBack").updatePositions(lowSpecimenBackLeft , lowSpecimenBackRight);
-        states.get("goLowSpecimenBack").updatePositions(lowSpecimenBackLeft , lowSpecimenBackRight);
-
-        states.get("highSpecimenFront").updatePositions(highSpecimenFrontLeft , highSpecimenFrontRight);
-        states.get("goHighSpecimenFront").updatePositions(highSpecimenFrontLeft , highSpecimenFrontRight);
-
-        states.get("highSpecimenBack").updatePositions(highSpecimenBackLeft , highSpecimenBackRight);
-        states.get("goHighSpecimenBack").updatePositions(highSpecimenBackLeft , highSpecimenBackRight);
-
-        states.get("beforeTakeSpecimen").updatePositions(beforeTakeSpecimenLeft , beforeTakeSpecimenRight);
-        states.get("goBeforeTakeSpecimen").updatePositions(beforeTakeSpecimenLeft , beforeTakeSpecimenRight);
+        states.get("highSpecimen").updatePositions(highSpecimen , highSpecimen);
+        states.get("goHighSpecimen").updatePositions(highSpecimen , highSpecimen);
 
     }
 

@@ -8,12 +8,13 @@ public class Encoder {
 
 
     public DcMotorEx encoder;
+    public  double reverse=1;
 
 
     public Encoder(DcMotorEx encoder , boolean reversed)
     {
         this.encoder=encoder;
-        if(reversed)encoder.setDirection(DcMotorSimple.Direction.REVERSE);
+        if(reversed)reverse=-1;
     }
 
     public void resetPosition()
@@ -23,9 +24,9 @@ public class Encoder {
     }
     public double getPosition()
     {
-        return encoder.getCurrentPosition()/50;
+        return encoder.getCurrentPosition()/50*reverse;
     }
 
-    public double getVelocity(){return encoder.getVelocity();}
+    public double getVelocity(){return encoder.getVelocity()*reverse;}
 
 }

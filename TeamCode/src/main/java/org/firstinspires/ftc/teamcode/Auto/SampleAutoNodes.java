@@ -5,22 +5,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Climb.Climb;
 import org.firstinspires.ftc.teamcode.Modules.Drive.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.Modules.Intake.ActiveIntake;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Modules.Others.Latch;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Arm;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Lift;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Outtake;
-import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Robot.Node;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 import org.firstinspires.ftc.teamcode.Wrappers.Pose2D;
-import org.opencv.core.Mat;
-
-import java.util.concurrent.TimeUnit;
 
 public class SampleAutoNodes {
 
@@ -46,7 +40,6 @@ public class SampleAutoNodes {
 
     ElapsedTime timerTakeSamples;
     ElapsedTime timer;
-    Climb climb;
     Node putSample , takefromFloor , park;
     public Node currentNode;
     boolean take=false;
@@ -56,7 +49,6 @@ public class SampleAutoNodes {
 
         if(!INIT)
         {
-            climb=new Climb();
             timer=new ElapsedTime();
             INIT=true;
             putSample=new Node("putSample");
@@ -141,8 +133,6 @@ public class SampleAutoNodes {
 
                         Outtake.prim=true;
                         Outtake.highChamberDown=415;
-                        Arm.highSpecimenBackLeft=0.045;
-                        Arm.highSpecimenBackRight=0.045;
                         outtake.haveSample=false;
                         outtake.state= Outtake.State.Up;
                         driveTrain.setTargetPosition(parkPosition);

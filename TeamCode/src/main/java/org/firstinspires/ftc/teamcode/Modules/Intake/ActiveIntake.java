@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Wrappers.BetterMotor;
 
 public class ActiveIntake {
 
-    public static double repausPower=0 , intakePower=1 , reversePowerTeleOp=-0.4 , reversePowerAuto=-1;
+    public static double repausPower=0 , intakePower=1 , reversePowerTeleOp=-0.5 , reversePowerAuto=-1;
 
 
 
@@ -28,7 +28,7 @@ public class ActiveIntake {
 
     public ActiveIntake()
     {
-        motor= new BetterMotor(Hardware.meh3 , BetterMotor.RunMode.RUN , reversed);
+        motor= new BetterMotor(Hardware.meh2 , BetterMotor.RunMode.RUN , reversed);
         state=State.REPAUS;
         motor.motor.setCurrentAlert(7.5 , CurrentUnit.AMPS);
     }

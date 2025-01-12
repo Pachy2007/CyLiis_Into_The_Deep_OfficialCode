@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-import org.firstinspires.ftc.teamcode.Climb.Climb;
 import org.firstinspires.ftc.teamcode.Modules.Drive.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Intake;
@@ -53,12 +52,6 @@ public class TeleOp extends LinearOpMode {
 
             if(gamepad1.a && gamepad1.dpad_down)a=true;
             if(gamepad1.b && gamepad1.dpad_down) a=false;
-
-            if(a==false){
-                if(gamepad1.dpad_up) climb.goUp();
-                else if(gamepad1.dpad_down)climb.goDown();
-                else climb.Default();}
-            else climb.Constant();
 
             driveTrain.setTargetVector( x , y , rotation );
 

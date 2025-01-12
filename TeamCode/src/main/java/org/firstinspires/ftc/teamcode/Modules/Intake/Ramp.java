@@ -12,7 +12,7 @@ public class Ramp extends IServoModule {
 
     public static boolean rightServoReversed=false;
 
-    public static double upPosition=0.36 , downPosition=0.2;
+    public static double upPosition=0.37 , downPosition=0.57;
 
     public static double MaxVelocoty=20 , Acceleration=32  , Deceleration=32;
 
@@ -20,7 +20,7 @@ public class Ramp extends IServoModule {
     {
         moduleName="RAMP";
         setServos(
-                new BetterServo("Servo" , Hardware.seh5 , BetterServo.RunMode.PROFILE , upPosition, rightServoReversed)
+                new BetterServo("Servo" , Hardware.seh2 , BetterServo.RunMode.PROFILE , upPosition, rightServoReversed)
         );        this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;
         this.deceleration=Deceleration;
