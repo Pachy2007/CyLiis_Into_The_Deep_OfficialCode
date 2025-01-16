@@ -4,28 +4,25 @@ import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Robot.IServoModule;
-import org.firstinspires.ftc.teamcode.Wrappers.BetterMotor;
 import org.firstinspires.ftc.teamcode.Wrappers.BetterServo;
 
 @Config
-public class Latch extends IServoModule {
-
+public class ExtendoBlocker extends IServoModule {
 
     public static boolean reversed=false;
 
-    public static double close=0.8 , open=0.3;
-    public static double time=0.2   ;
+    public static double close=0.74 , open=0.6;
+    public static double time=0.007;
 
-    public Latch()
-    {
-        moduleName="Latch";
+    public ExtendoBlocker(){
+        moduleName="ExtendoBlocker";
         setServos(
-                new BetterServo("Latch" , Hardware.seh3  , BetterServo.RunMode.Time , close , reversed , time)
+                new BetterServo("Latch" , Hardware.seh4  , BetterServo.RunMode.Time , open , reversed , time)
         );
 
         setStates();
         atStart();
-        state=states.get("goClose");
+        state=states.get("goOpen");
     }
 
     @Override
@@ -48,6 +45,6 @@ public class Latch extends IServoModule {
 
     @Override
     public void atStart() {
-        state=states.get("close");
+
     }
 }

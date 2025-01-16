@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Modules.Drive.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Modules.Others.Latch;
+import org.firstinspires.ftc.teamcode.Modules.Outtake.Arm;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
@@ -24,43 +25,23 @@ public class Sper_ca_Merge_Sample extends LinearOpMode {
          SampleAutoNodes nodes=new SampleAutoNodes();
 
         Hardware.init(hardwareMap);
-
-        DigitalChannel bb=hardwareMap.get(DigitalChannel.class , "bb");
-        Intake intake=new Intake();
-        Outtake outtake=new Outtake(Outtake.State.DeafultWithElement);
-        Extendo extendo=new Extendo();
-        Latch latch=new Latch();
-
-        outtake.haveSample=true;
-
+        nodes.run(hardwareMap  , telemetry);
 
         while(opModeInInit())
         {
-            intake.update();
-            outtake.update();
-            extendo.update();
-            latch.update();
+            nodes.intake.update();
+            nodes.outtake.update();
+            nodes.extendo.update();
+            nodes.latch.update();
+            Hardware.IMUOFFSET=-Math.PI/2;
+            Arm.withElementSample=0.27;
         }
         waitForStart();
         while (opModeIsActive())
         {
+            Arm.withElementSample=0.045;
             Odo.update();
             nodes.run(hardwareMap  , telemetry);
-
-
-            telemetry.addData("x" , nodes.driveTrain.controllerX.calculate( nodes.driveTrain.targetX, Odo.getX()));
-            telemetry.addData("y" , nodes.driveTrain.controllerY.calculate( nodes.driveTrain.targetY, Odo.getY()));
-
-            telemetry.addData("x1" , nodes.driveTrain.targetX);
-            telemetry.addData("y1" , nodes.driveTrain.targetY);
-
-            telemetry.addData("error" , MecanumDriveTrain.realHeading-MecanumDriveTrain.targetHeading);
-            telemetry.addData("outtakeState" , nodes.outtake.state.name());
-            telemetry.addData("State" , nodes.currentNode.name);
-            telemetry.addData("X" , Odo.getX());
-            telemetry.addData("Y" , Odo.getY());
-            telemetry.addData("heading" , Odo.getHeading());
-            telemetry.update();
         }
     }
 }

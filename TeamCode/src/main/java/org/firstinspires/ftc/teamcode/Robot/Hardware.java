@@ -4,12 +4,16 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+
+import java.io.BufferedReader;
 
 public class Hardware {
 
@@ -25,9 +29,11 @@ public class Hardware {
     public static CRServo sch2 , sch3;
     public static Servo seh0 , seh1 , seh2 , seh3 , seh4 , seh5;
 
-    public static void
-    init(HardwareMap hardwareMap)
+    public static double IMUOFFSET=0;
+
+    public static void init(HardwareMap hardwareMap)
     {
+        IMUOFFSET=0;
         colorSensor=hardwareMap.get(ColorSensor.class , "colorSensor");
 
         mch0=hardwareMap.get(DcMotorEx.class , "ch0");
@@ -53,6 +59,11 @@ public class Hardware {
         seh3=hardwareMap.get(Servo.class , "seh3");
         seh4=hardwareMap.get(Servo.class , "seh4");
         seh5=hardwareMap.get(Servo.class , "seh5");
-           }
+
+
+
+
+
+    }
 
 }

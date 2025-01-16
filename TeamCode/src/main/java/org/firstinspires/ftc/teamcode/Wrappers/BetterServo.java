@@ -21,12 +21,13 @@ public class BetterServo {
     public ElapsedTime timer=new ElapsedTime();
     public double time;
 
-    RunMode runMode;
+    public RunMode runMode;
 
     public BetterMotionProfile profile;
 
     public double position;
 
+    public boolean INIT=false;
     public boolean reachedPosition=true;
 
     public Servo servo;
@@ -61,7 +62,12 @@ public class BetterServo {
     {
         if(runMode!=RunMode.PROFILE)return;
 
-        profile=new BetterMotionProfile(maxVelocity , acceleration , deceleration);
+        if(!INIT)
+        {profile=new BetterMotionProfile(maxVelocity , acceleration , deceleration);INIT=true;}
+        else {profile.maxVelocity=maxVelocity;
+        profile.deceleration=deceleration;
+        profile.acceleration=acceleration;}
+
         profile.setMotion(position , position , 0);
     }
 

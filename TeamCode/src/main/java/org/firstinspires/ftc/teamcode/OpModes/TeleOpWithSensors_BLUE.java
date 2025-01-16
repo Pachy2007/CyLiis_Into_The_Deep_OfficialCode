@@ -7,13 +7,19 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Modules.Drive.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake.ActiveIntake;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Intake;
+import org.firstinspires.ftc.teamcode.Modules.Others.Differential;
+import org.firstinspires.ftc.teamcode.Modules.Others.ExtendoBlocker;
 import org.firstinspires.ftc.teamcode.Modules.Others.Latch;
 import org.firstinspires.ftc.teamcode.Modules.Others.PTO;
 import org.firstinspires.ftc.teamcode.Modules.Others.SampleColor;
+import org.firstinspires.ftc.teamcode.Modules.Others.Wheelie;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
@@ -33,6 +39,8 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
 
 
 
+
+        Odo.odo.setPosition(new Pose2D(DistanceUnit.MM , 0 ,0 , AngleUnit.RADIANS , Odo.getHeading()-Hardware.IMUOFFSET));
         ElapsedTime verifyChangeColor=new ElapsedTime();
         ElapsedTime reverseTimer=new ElapsedTime();
         ElapsedTime bbtimer=new ElapsedTime();
@@ -41,6 +49,7 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
         boolean prevBB=true;
 
         ElapsedTime timer=new ElapsedTime();
+        DigitalChannel bbGuide=hardwareMap.get(DigitalChannel.class , "bbGuide");
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         Hardware.init(hardwareMap);
@@ -52,21 +61,30 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
         Extendo extendo=new Extendo();
         Intake intake=new Intake();
         Latch latch=new Latch();
+        ExtendoBlocker extendoBlocker=new ExtendoBlocker();
+
+        ElapsedTime climbTimer=new ElapsedTime();
+
+        boolean prevPs=false;
+        PTO pto=new PTO();
+
+        boolean a=false;
+
+        boolean enableClimb=false;
+
+        Wheelie wheelie=new Wheelie();
+
+
 
 
         Outtake.prim=false;
         boolean take=false;
         boolean BB=true;
 
-        boolean a=false;
-        Climb climb=new Climb();
-        boolean redAll=true;
-
-        boolean prevPS=false;
-        PTO pto=new PTO();
         DigitalChannel bb;
 
         bb=hardwareMap.get(DigitalChannel.class , "bb");
+
 
         while(opModeInInit())
         {
@@ -74,21 +92,43 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
             intake.update();
             extendo.update();
             latch.update();
+            extendoBlocker.update();
         }
         waitForStart();
 
         while(opModeIsActive()){
 
 
-            if(gamepad1.ps && !prevPS)
-            {
-                if(pto.state==pto.states.get("normal"))pto.setState("goClimb");
-                else pto.setState("goNormal");
-            }
-            prevPS=gamepad1.ps;
+            if(!enableClimb){
+                if(gamepad1.right_bumper){wheelie.goDown();wheelie.up=false;wheelie.goDown=true;}
+                else if(gamepad1.left_bumper){wheelie.goDown();wheelie.up=true;wheelie.goDown=true;}
+                else wheelie.keepUp();}
 
-            double X=gamepad1.left_stick_x;
-            double Y=-gamepad1.left_stick_y;
+            if(gamepad1.ps && !prevPs)
+            {
+                if(pto.state==pto.states.get("normal"))pto.setState("climb");
+                else if(pto.state==pto.states.get("climb"))pto.setState("normal");
+            }
+            prevPs=gamepad1.ps;
+            if(gamepad1.dpad_up)
+            {
+                a=true;
+                Differential.liftPower=1;
+                Differential.update();
+            }
+            else if(gamepad1.dpad_down)
+            {
+                a=true;
+                Differential.liftPower=-1;
+                Differential.update();
+            }
+            else a=false;
+
+
+
+
+            double X=gamepad1.left_stick_x * gamepad1.left_stick_x * Math.signum(gamepad1.left_stick_x);
+            double Y=gamepad1.left_stick_y * gamepad1.left_stick_y * -Math.signum(gamepad1.left_stick_y);
             double rotation=gamepad1.right_trigger-gamepad1.left_trigger;
 
             double heading =-Odo.getHeading();
@@ -98,14 +138,19 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
 
             driveTrain.setTargetVector( x , y , rotation );
 
-            if(gamepad1.a && gamepad1.left_bumper)a=true;
-            if(gamepad1.b && gamepad1.left_bumper) a=false;
+
 
 
 
             double power=-gamepad1.right_stick_y;
             if(!take)
-                extendo.setVelocity(power);
+            {
+                if(power!=0 || extendo.state!= Extendo.State.IN)extendoBlocker.setState("goOpen");
+
+                if(extendoBlocker.state==extendoBlocker.states.get("open"))
+                    extendo.setVelocity(power);
+                extendo.update();
+            }
             if(gamepad1.a)extendo.setIn();
 
 
@@ -119,14 +164,15 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
                 outtake.grabSample();
             }
 
-            if(gamepad1.circle && outtake.state==Outtake.State.Specimen)outtake.grabSample();
+            if((gamepad1.circle) && outtake.state==Outtake.State.Specimen)outtake.grabSample();
 
 
 
+            if(gamepad2.x)outtake.retry();
 
             if(gamepad2.dpad_up && outtake.state==Outtake.State.DeafultWithElement)outtake.goUp();
 
-            if(gamepad1.circle && (outtake.state==Outtake.State.DeafultWithElement || outtake.state== Outtake.State.ReleaseSample))
+            if((gamepad1.circle || !bbGuide.getState()) && (outtake.state==Outtake.State.DeafultWithElement || outtake.state== Outtake.State.ReleaseSample) && outtake.haveSample==true)
             {
                 outtake.releaseSample();
             }
@@ -136,7 +182,7 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
             if(gamepad2.dpad_left)outtake.goForLow();
             if(gamepad2.dpad_right)outtake.goForHigh();
 
-            if(gamepad2.circle && outtake.state== Outtake.State.Deafult)
+            if(gamepad2.circle)
             {
                 outtake.takeSpecimen();
             }
@@ -184,6 +230,8 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
 
 
 
+            if(extendo.state== Extendo.State.IN && power==0)extendoBlocker.setState("goClose");
+
             prevBB=BB;
             BB=bb.getState();
 
@@ -192,8 +240,10 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
             color.update();
 
 
-
-            outtake.update();
+            extendoBlocker.update();
+            wheelie.update();
+            if(!a)
+                outtake.update();
             extendo.update();
             intake.update();
             latch.update();
@@ -212,6 +262,8 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
             telemetry.addData("claw" , outtake.claw.state.name);
             telemetry.addData("arm" , outtake.arm.state.name);
             telemetry.addData("heading" , Odo.getHeading());
+            telemetry.addData("climbTimer" , climbTimer.seconds());
+            telemetry.addData("IMUOFFSET" , Hardware.IMUOFFSET);
 
 
 

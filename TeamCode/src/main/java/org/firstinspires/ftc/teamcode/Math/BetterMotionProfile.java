@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class BetterMotionProfile {
 
-    double maxVelocity , acceleration , deceleration;
+    public double maxVelocity , acceleration , deceleration;
     double initialPosition;
     public double finalPosition;
     double initialVelocity;

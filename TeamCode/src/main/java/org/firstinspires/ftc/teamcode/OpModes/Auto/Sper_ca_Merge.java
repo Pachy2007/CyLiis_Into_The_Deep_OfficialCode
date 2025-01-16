@@ -28,6 +28,7 @@ public class Sper_ca_Merge extends LinearOpMode {
 
 
 
+
         nodes.run(hardwareMap , telemetry);
 
         while(opModeInInit())
@@ -36,6 +37,8 @@ public class Sper_ca_Merge extends LinearOpMode {
             nodes.outtake.update();
             nodes.extendo.update();
             nodes.latch.update();
+            Hardware.IMUOFFSET=Math.PI;
+            nodes.timerOuttake.reset();
         }
         waitForStart();
         while (opModeIsActive())

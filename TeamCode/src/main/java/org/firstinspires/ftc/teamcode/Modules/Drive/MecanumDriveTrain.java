@@ -42,8 +42,8 @@ public class MecanumDriveTrain {
     public static double lateralMultiplier=2;
     public static  double realHeading;
 
-    public static double kp=0.009 , ki=0 , kd=0.001;
-    public static double KP=1.75 , KI , KD=0.19;
+    public static double kp=0.0091 , ki=0 , kd=0.0011;
+    public static double KP=1.4 , KI , KD=0.16;
    public  PIDController controllerX=new PIDController(kp , ki , kd) , controllerY=new PIDController(kp , ki , kd) , controllerHeading=new PIDController(KP , KI , KD);
 
     public MecanumDriveTrain(State initialState)
@@ -68,7 +68,7 @@ public class MecanumDriveTrain {
         error=targetHeading-realHeading;
         if(Math.abs(error)>Math.PI)error=-Math.signum(error)*(2*Math.PI-Math.abs(error));
 
-        if(Math.abs(targetX-Odo.getX())<25 && Math.abs(targetY-Odo.getY())<25 && Math.abs(error)<0.08)return true;
+        if(Math.abs(targetX-Odo.getX())<25 && Math.abs(targetY-Odo.getY())<25 && Math.abs(error)<0.115)return true;
         return false;
     }
     public boolean inPosition( double x , double y , double Error)
@@ -88,6 +88,7 @@ public class MecanumDriveTrain {
     {
         x*=lateralMultiplier;
 
+        if(state==State.DRIVE)rx=rx/1.25;
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double frontLeftPower = (y + x + rx) / denominator;
         double backLeftPower = (y - x + rx) / denominator;

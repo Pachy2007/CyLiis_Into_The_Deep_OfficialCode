@@ -10,7 +10,6 @@ public class Intake {
     }
     public State state;
     public ActiveIntake activeIntake;
-    DropDown dropDown;
     public Ramp ramp;
 
     ElapsedTime timer=new ElapsedTime();
@@ -19,7 +18,6 @@ public class Intake {
     {
         ramp=new Ramp();
         activeIntake=new ActiveIntake();
-        dropDown=new DropDown();
         timer.startTime();
         state=State.REPAUS_UP;
 
@@ -31,39 +29,32 @@ public class Intake {
         {
             case REPAUS_UP:
                 ramp.setState("goUp");
-                dropDown.setState("goRampUp");
                 activeIntake.setMode(ActiveIntake.State.REPAUS);
                 break;
             case INTAKE_UP:
                 ramp.setState("goUp");
-                dropDown.setState("goTakeElement");
                 activeIntake.setMode(ActiveIntake.State.INTAKE);
                 break;
             case REVERSE_UP:
                 ramp.setState("goUp");
-                dropDown.setState("goTakeElement");
                 activeIntake.setMode(ActiveIntake.State.REVERSE);
                 break;
             case REPAUS_DOWN:
                 ramp.setState("goDown");
-                dropDown.setState("goRampDown");
                 activeIntake.setMode(ActiveIntake.State.REPAUS);
                 break;
             case INTAKE_DOWN:
                 ramp.setState("goDown");
-                dropDown.setState("goTakeElement");
                 activeIntake.setMode(ActiveIntake.State.INTAKE);
 
                 if(activeIntake.motor.motor.isOverCurrent())
                 {
                     timer.reset();
                 }
-                if(timer.seconds()<0.5)dropDown.setState("goJam");
 
                 break;
             case REVERSE_DOWN:
                 ramp.setState("goDown");
-                dropDown.setState("goTakeElement");
                 activeIntake.setMode(ActiveIntake.State.REVERSE);
                 break;
         }
@@ -71,7 +62,7 @@ public class Intake {
 
     public boolean inPosition()
     {
-       if(ramp.inPosition() && dropDown.inPosition())return true;
+       if(ramp.inPosition())return true;
         return false;
     }
 
@@ -82,7 +73,6 @@ public class Intake {
     public void update()
     {
         ramp.update();
-        dropDown.update();
         updateStates();
     }
 

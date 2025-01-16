@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Modules.Intake;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.teamcode.Modules.Outtake.Extension;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Robot.IServoModule;
 import org.firstinspires.ftc.teamcode.Wrappers.BetterServo;
@@ -12,9 +13,13 @@ public class Ramp extends IServoModule {
 
     public static boolean rightServoReversed=false;
 
-    public static double upPosition=0.37 , downPosition=0.57;
+    public static double upPosition=0.23 , downPosition=0.57;
 
     public static double MaxVelocoty=20 , Acceleration=32  , Deceleration=32;
+
+
+    public static double rampPositionIn=0.54 , rampPositionOut=0.42;
+    public static double extendoPositionIn=33 , extendoPositionOut=1014;
 
     public Ramp()
     {
@@ -56,4 +61,19 @@ public class Ramp extends IServoModule {
         state=states.get("goUp");
     }
 
+    private void updateRampPosition()
+    {
+        double x=Extendo.position;
+        downPosition=(Extendo.position-extendoPositionIn)*(rampPositionOut-rampPositionIn)/(extendoPositionOut-extendoPositionIn)+rampPositionIn;
+    }
+
+    @Override
+    public void update() {
+        if(state==states.get("goDown") || state==states.get("down"))servos[0].runMode= BetterServo.RunMode.GoToPosition;
+        else servos[0].runMode= BetterServo.RunMode.PROFILE;
+        updateRampPosition();
+        updateStatesPosition();
+        updateState();
+        updateHardware();
+    }
 }

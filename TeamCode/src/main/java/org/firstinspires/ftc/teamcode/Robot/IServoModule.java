@@ -35,7 +35,7 @@ public abstract class IServoModule{
     public abstract void atStart() ;
 
 
-    private void updateState()
+    public void updateState()
     {
          for(int i=0;i<servos.length ; i++)
              if(!   servos[i].inPosition())return;
@@ -53,7 +53,7 @@ public abstract class IServoModule{
     }
 
 
-    private void updateHardware()
+    public void updateHardware()
     {
         for(int i=servos.length-1;i>=0;i--) {
             servos[i].setPosition(state.getPosition(i));

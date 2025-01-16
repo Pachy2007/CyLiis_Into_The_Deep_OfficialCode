@@ -10,12 +10,12 @@ import org.firstinspires.ftc.teamcode.Wrappers.BetterServo;
 @Config
 public class Arm extends IServoModule {
 
-    public static boolean leftServoReversed=true , rightServoReversed=false ;
+    public static boolean leftServoReversed=true , rightServoReversed=true ;
 
 
     public static double deposit=0.04;
 
-    public static double takeSpecimen=0.923;
+    public static double takeSpecimen=0.916;
 
     public static double withElementSample=0.045 , withElementSpecimen=0.27;
 
@@ -23,16 +23,18 @@ public class Arm extends IServoModule {
 
     public static double lowSample=0.62;
 
-    public static double putHighSample=0.62;
+    public static double putHighSample=0.58;
 
     public static double lowSpecimen=0.27;
 
-    public static double neutralSpecimen=0.85 , neutralSample=0.04;
+    public static double neutralSpecimen=0.55 , neutralSample=0.55;
 
     public static double highSpecimen=0.27;
 
+    public static double scoreSample=0.7;
 
-    public static double MaxVelocoty=16 , Acceleration=24  , Deceleration=24;
+
+    public static double MaxVelocoty=20 , Acceleration=32  , Deceleration=32;
 
     State initState;
 
@@ -108,6 +110,11 @@ public class Arm extends IServoModule {
         states.addState("neutralSample" , neutralSample , neutralSample);
         states.addState("goNeutralSample" , states.get("neutralSample"), neutralSample , neutralSample);
 
+        states.addState("scoreSample" , scoreSample , scoreSample);
+        states.addState("goScoreSample", states.get("scoreSample"), scoreSample , scoreSample);
+
+
+
     }
 
     @Override
@@ -145,6 +152,9 @@ public class Arm extends IServoModule {
 
         states.get("highSpecimen").updatePositions(highSpecimen , highSpecimen);
         states.get("goHighSpecimen").updatePositions(highSpecimen , highSpecimen);
+
+        states.get("scoreSample").updatePositions(scoreSample , scoreSample);
+        states.get("goScoreSample").updatePositions(scoreSample , scoreSample);
 
     }
 

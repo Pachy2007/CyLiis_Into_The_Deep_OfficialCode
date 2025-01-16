@@ -33,11 +33,12 @@ public class Extendo {
     public PIDController controller;
     public Encoder encoder;
     public static boolean encoderReversed=false;
-    public static double kp=0.012 , ki , kd;
+    public static double kp=0.009 , ki , kd;
     public static double targetPosition;
 
     private static double inPower=-0.02 , goingInPower=-1;
 
+    public static double position;
     private static double maximExtendoPosition=900;
 
     double velocity=0;
@@ -95,7 +96,7 @@ public class Extendo {
                 break;
             case GOING_IN:
                 Differential.extendoPower=goingInPower;
-                if(Math.abs(encoder.getVelocity())<0.001){
+                if(Math.abs(encoder.getVelocity())<100){
                     nr++;
                     if(nr>=3)
                     {state=state.nextState;
@@ -120,6 +121,7 @@ public class Extendo {
 
     public void update()
     {
+        position=encoder.getPosition();
         updateCoefficient();
         updateHardware();
         Differential.update();
