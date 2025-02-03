@@ -50,7 +50,7 @@ public class Outtake {
     ElapsedTime retryTimer=new ElapsedTime();
 
     public static boolean prim=false;
-    public static int lowBasketPosition=400  , highBasketPosition=1100  , lowChamberDown=150 ,  highChamberDown=510, climbPosition=500 , autoClimbPosition=190;
+    public static int lowBasketPosition=400  , highBasketPosition=1100  , lowChamberDown=150 ,  highChamberDown=530, climbPosition=500 , autoClimbPosition=190;
 
     public Outtake()
     {
@@ -85,7 +85,9 @@ public class Outtake {
                 haveSample=true;
                 break;
 
-            case Specimen:take=true;
+            case Specimen:
+                if(arm.inPosition())
+                take=true;
             case DeafultWithElement:
             case TakingElement:
             case Up:
@@ -279,6 +281,7 @@ public class Outtake {
                         arm.setState("goHighSpecimen");
 
                         if(!retry)
+                        if(arm.state==arm.states.get("highSpecimen"))
                         extension.setState("goExtend");
                         if(retry)
                         {

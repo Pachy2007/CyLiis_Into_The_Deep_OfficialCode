@@ -18,7 +18,7 @@ public class Claw extends IServoModule {
     {
         moduleName="CLAW";
         setServos(
-                new BetterServo("Servo" , Hardware.seh5 , BetterServo.RunMode.Time ,  openPosition , rightServoReversed , 0.15)
+                new BetterServo("Servo" , Hardware.seh5 , BetterServo.RunMode.Time ,  openPosition , rightServoReversed , 0.015)
         );
         setStates();
         initState=states.get("goOpen");

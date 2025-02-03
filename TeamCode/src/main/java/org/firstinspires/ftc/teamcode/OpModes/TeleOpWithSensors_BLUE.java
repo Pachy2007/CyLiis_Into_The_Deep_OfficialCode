@@ -39,8 +39,11 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
 
 
 
+        if(Odo.INIT)
+            Odo.odo.setPosition(new Pose2D(DistanceUnit.MM , 0 ,0 , AngleUnit.RADIANS , Odo.getHeading()-Hardware.IMUOFFSET));
 
-        Odo.odo.setPosition(new Pose2D(DistanceUnit.MM , 0 ,0 , AngleUnit.RADIANS , Odo.getHeading()-Hardware.IMUOFFSET));
+        Hardware.init(hardwareMap);
+        Odo.init(hardwareMap , telemetry);
         ElapsedTime verifyChangeColor=new ElapsedTime();
         ElapsedTime reverseTimer=new ElapsedTime();
         ElapsedTime bbtimer=new ElapsedTime();
@@ -52,8 +55,7 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
         DigitalChannel bbGuide=hardwareMap.get(DigitalChannel.class , "bbGuide");
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        Hardware.init(hardwareMap);
-        Odo.init(hardwareMap , telemetry);
+
 
         SampleColor color=new SampleColor();
         Outtake outtake=new Outtake();
@@ -85,10 +87,13 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
 
         bb=hardwareMap.get(DigitalChannel.class , "bb");
 
+        outtake.extension.setState("goRetrect");
+        outtake.arm.setState("goHighSpecimen");
 
         while(opModeInInit())
         {
-            outtake.update();
+            outtake.extension.update();
+            outtake.arm.update();
             intake.update();
             extendo.update();
             latch.update();
@@ -172,7 +177,7 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
 
             if(gamepad2.dpad_up && outtake.state==Outtake.State.DeafultWithElement)outtake.goUp();
 
-            if((gamepad1.circle || !bbGuide.getState()) && (outtake.state==Outtake.State.DeafultWithElement || outtake.state== Outtake.State.ReleaseSample) && outtake.haveSample==true)
+            if((gamepad1.circle) && (outtake.state==Outtake.State.DeafultWithElement || outtake.state== Outtake.State.ReleaseSample) && outtake.haveSample==true)
             {
                 outtake.releaseSample();
             }

@@ -21,22 +21,25 @@ public class Wheelie {
 
     public Wheelie()
     {
-        servoLeft= Hardware.sch2;
-        servoRight=Hardware.sch3;
+        servoLeft= Hardware.sch3;
+        servoRight=Hardware.sch5;
         state=State.RELEASE;
     }
 
     public void keepUp()
     {
+
         state=State.RELEASE;
     }
     public void goDown()
     {
+
         state=State.GOING_DOWN;
     }
 
     private void updateHardware()
     {
+
         switch (state)
         {
             case RELEASE:

@@ -33,7 +33,7 @@ public class Extendo {
     public PIDController controller;
     public Encoder encoder;
     public static boolean encoderReversed=false;
-    public static double kp=0.009 , ki , kd;
+    public static double kp=0.007 , ki , kd;
     public static double targetPosition;
 
     private static double inPower=-0.02 , goingInPower=-1;
@@ -73,7 +73,7 @@ public class Extendo {
 
     public boolean inPosition()
     {
-        return state==State.IN || state!=State.GOING_IN || Math.abs(encoder.getPosition()-targetPosition)<40;
+        return (state==State.IN || Math.abs(encoder.getPosition()-targetPosition)<25 || encoder.getPosition()>1000) && state!=State.GOING_IN;
     }
 
     private void updateHardware()

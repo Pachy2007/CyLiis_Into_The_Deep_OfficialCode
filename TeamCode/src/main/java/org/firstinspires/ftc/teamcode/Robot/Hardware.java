@@ -24,12 +24,22 @@ public class Hardware {
     public static DcMotorEx meh0 , meh1 , meh2 , meh3;
     public static ColorSensor colorSensor;
 
-    public static Servo sch4 , sch5;
+    public static Servo sch4 ;
+    public static CRServo sch5;
     public static Servo sch0 , sch1;
-    public static CRServo sch2 , sch3;
+    public static Servo sch2;
+    public static CRServo sch3;
     public static Servo seh0 , seh1 , seh2 , seh3 , seh4 , seh5;
 
     public static double IMUOFFSET=0;
+
+
+    public static void unlock(DcMotorEx motor)
+    {
+        MotorConfigurationType mct = motor.getMotorType();
+        mct.setAchieveableMaxRPMFraction(1);
+        motor.setMotorType(mct);
+    }
 
     public static void init(HardwareMap hardwareMap)
     {
@@ -40,18 +50,27 @@ public class Hardware {
         mch1=hardwareMap.get(DcMotorEx.class , "ch1");
         mch2=hardwareMap.get(DcMotorEx.class , "ch2");
         mch3=hardwareMap.get(DcMotorEx.class , "ch3");
+        unlock(mch0);
+        unlock(mch1);
+        unlock(mch2);
+        unlock(mch3);
 
         meh0=hardwareMap.get(DcMotorEx.class , "eh0");
         meh1=hardwareMap.get(DcMotorEx.class , "eh1");
         meh2=hardwareMap.get(DcMotorEx.class , "eh2");
         meh3=hardwareMap.get(DcMotorEx.class , "eh3");
 
+        unlock(meh0);
+        unlock(meh1);
+        unlock(meh2);
+        unlock(meh3);
+
         sch0=hardwareMap.get(Servo.class , "sch0");
         sch1=hardwareMap.get(Servo.class , "sch1");
-        sch2=hardwareMap.get(CRServo.class , "sch2");
+        sch2=hardwareMap.get(Servo.class , "sch2");
         sch3=hardwareMap.get(CRServo.class , "sch3");
         sch4=hardwareMap.get(Servo.class , "sch4");
-        sch5=hardwareMap.get(Servo.class , "sch5");
+        sch5=hardwareMap.get(CRServo.class , "sch5");
 
         seh0=hardwareMap.get(Servo.class , "seh0");
         seh1=hardwareMap.get(Servo.class , "seh1");
@@ -59,6 +78,7 @@ public class Hardware {
         seh3=hardwareMap.get(Servo.class , "seh3");
         seh4=hardwareMap.get(Servo.class , "seh4");
         seh5=hardwareMap.get(Servo.class , "seh5");
+
 
 
 

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Modules.Drive.MecanumDriveTrain;
@@ -39,8 +40,11 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
 
 
-
+        if(Odo.INIT)
         Odo.odo.setPosition(new Pose2D(DistanceUnit.MM , 0 ,0 , AngleUnit.RADIANS , Odo.getHeading()-Hardware.IMUOFFSET));
+
+        Hardware.init(hardwareMap);
+        Odo.init(hardwareMap , telemetry);
         ElapsedTime verifyChangeColor=new ElapsedTime();
         ElapsedTime reverseTimer=new ElapsedTime();
         ElapsedTime bbtimer=new ElapsedTime();
@@ -52,8 +56,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         DigitalChannel bbGuide=hardwareMap.get(DigitalChannel.class , "bbGuide");
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        Hardware.init(hardwareMap);
-        Odo.init(hardwareMap , telemetry);
+
 
         SampleColor color=new SampleColor();
         Outtake outtake=new Outtake();
@@ -102,10 +105,10 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         while(opModeIsActive()){
 
 
-            if(!enableClimb){
-            if(gamepad1.right_bumper){wheelie.goDown();wheelie.up=false;wheelie.goDown=true;}
-            else if(gamepad1.left_bumper){wheelie.goDown();wheelie.up=true;wheelie.goDown=true;}
-            else wheelie.keepUp();}
+            //if(!enableClimb){
+            //if(gamepad1.right_bumper){wheelie.goDown();wheelie.up=false;wheelie.goDown=true;}
+            //else if(gamepad1.left_bumper){wheelie.goDown();wheelie.up=true;wheelie.goDown=true;}
+            //else wheelie.keepUp();}
 
             if(gamepad1.ps && !prevPs)
             {
@@ -161,7 +164,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
             if(gamepad2.y && outtake.state!= Outtake.State.Up && outtake.state!=Outtake.State.TakingElement)outtake.goDefault();
 
-            if((gamepad2.a || (take==true && extendo.state==Extendo.State.IN && timer.seconds()>0.35 && intake.ramp.state==intake.ramp.states.get("up"))) && outtake.state== Outtake.State.Deafult && outtake.inPosition())
+            if((gamepad2.a || (take==true && extendo.state==Extendo.State.IN && timer.seconds()>0.25 && intake.ramp.state==intake.ramp.states.get("up"))) && outtake.state== Outtake.State.Deafult && outtake.inPosition())
             {
                 take=false;
                 outtake.grabSample();
@@ -175,7 +178,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
             if(gamepad2.dpad_up && outtake.state==Outtake.State.DeafultWithElement)outtake.goUp();
 
-            if((gamepad1.circle || !bbGuide.getState()) && (outtake.state==Outtake.State.DeafultWithElement || outtake.state== Outtake.State.ReleaseSample) && outtake.haveSample==true)
+            if((gamepad1.circle) && (outtake.state==Outtake.State.DeafultWithElement || outtake.state== Outtake.State.ReleaseSample) && outtake.haveSample==true)
             {
                 outtake.releaseSample();
             }
@@ -193,8 +196,8 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
             if(!BB && prevBB)bbtimer.reset();
 
             if((!take && outtake.state!=Outtake.State.TakingElement) && ( (color.state!= SampleColor.State.BLUE && !BB && reverseTimer.seconds()>revereTime) || BB))
-            {if(gamepad2.right_trigger>0)intake.setState(Intake.State.INTAKE_DOWN);
-            else if(gamepad2.left_trigger>0){intake.setState(Intake.State.REVERSE_DOWN);            ActiveIntake.State.REVERSE.power=ActiveIntake.reversePowerTeleOp;}
+            {if(gamepad1.right_bumper)intake.setState(Intake.State.INTAKE_DOWN);
+            else if(gamepad1.left_bumper){intake.setState(Intake.State.REVERSE_DOWN);            ActiveIntake.State.REVERSE.power=ActiveIntake.reversePowerTeleOp;}
             else if(extendo.state== Extendo.State.GOING_IN || Math.abs(power)>0.1)intake.setState(Intake.State.INTAKE_UP);
             else intake.setState(Intake.State.REPAUS_UP);}
 
@@ -204,7 +207,6 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
             {
                 if(color.state== SampleColor.State.BLUE)return;
                 take=true;
-                extendo.setIn();
                 latch.setState("goOpen");
                 intake.setState(Intake.State.INTAKE_UP);
                 timer.reset();
@@ -214,11 +216,12 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
 
 
-            if(latch.inPosition() && take && timer.seconds()<0.15)intake.setState(Intake.State.INTAKE_UP);
-            if(latch.inPosition() && take && timer.seconds()>0.15 && timer.seconds()<0.3){intake.setState(Intake.State.REVERSE_UP);ActiveIntake.State.REVERSE.power=ActiveIntake.reversePowerAuto;}
-            if(take && timer.seconds()>0.3){intake.setState(Intake.State.INTAKE_UP);latch.setState("goClose");}
+            if(latch.inPosition() && take && timer.seconds()<0.1)intake.setState(Intake.State.INTAKE_UP);
+            if(latch.inPosition() && take && timer.seconds()>0.1 && timer.seconds()<0.2){intake.setState(Intake.State.REVERSE_UP);ActiveIntake.State.REVERSE.power=ActiveIntake.reversePowerAuto;                extendo.setIn();
+            }
+            if(take && timer.seconds()>0.2){intake.setState(Intake.State.INTAKE_UP);latch.setState("goClose");}
 
-            if(timer.seconds()>0.3)latch.setState("goClose");
+            if(timer.seconds()>0.2)latch.setState("goClose");
 
 
 
@@ -254,7 +257,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
             pto.update();
 
 
-            telemetry.addData("bbTimer" , bbtimer.seconds());
+            /*telemetry.addData("bbTimer" , bbtimer.seconds());
             telemetry.addData("reverseTimer" , reverseTimer.seconds());
             telemetry.addData("IntakeState" , intake.state);
             telemetry.addData("take" , take);
@@ -266,7 +269,10 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
             telemetry.addData("arm" , outtake.arm.state.name);
             telemetry.addData("heading" , Odo.getHeading());
             telemetry.addData("climbTimer" , climbTimer.seconds());
-            telemetry.addData("IMUOFFSET" , Hardware.IMUOFFSET);
+            telemetry.addData("IMUOFFSET" , Hardware.IMUOFFSET);*/
+
+            telemetry.addData("motor1" , Differential.motor1.motor.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("motor2" , Differential.motor2.motor.getCurrent(CurrentUnit.AMPS));
 
 
 

@@ -13,9 +13,9 @@ public class Arm extends IServoModule {
     public static boolean leftServoReversed=true , rightServoReversed=true ;
 
 
-    public static double deposit=0.04;
+    public static double deposit=0.0375;
 
-    public static double takeSpecimen=0.916;
+    public static double takeSpecimen=0.905;
 
     public static double withElementSample=0.045 , withElementSpecimen=0.27;
 
@@ -29,7 +29,7 @@ public class Arm extends IServoModule {
 
     public static double neutralSpecimen=0.55 , neutralSample=0.55;
 
-    public static double highSpecimen=0.27;
+    public static double highSpecimen=0.255;
 
     public static double scoreSample=0.7;
 
@@ -44,7 +44,7 @@ public class Arm extends IServoModule {
 
         setStates();
         initState=states.get("deposit");
-        setServos(new BetterServo("ServoLeft" , Hardware.sch0 , BetterServo.RunMode.PROFILE , deposit , leftServoReversed),
+        setServos(new BetterServo("ServoLeft" , Hardware.sch1 , BetterServo.RunMode.PROFILE , deposit , leftServoReversed),
                 new BetterServo("ServoRight" , Hardware.sch4 , BetterServo.RunMode.PROFILE ,  deposit , rightServoReversed)
         );
         this.maxVelocity=MaxVelocoty;
@@ -62,7 +62,7 @@ public class Arm extends IServoModule {
 
         setStates();
         initState=states.get(string);
-        setServos(new BetterServo("ServoLeft" , Hardware.sch0 , BetterServo.RunMode.PROFILE , deposit , leftServoReversed),
+        setServos(new BetterServo("ServoLeft" , Hardware.sch1 , BetterServo.RunMode.PROFILE , deposit , leftServoReversed),
                 new BetterServo("ServoRight" , Hardware.sch4 , BetterServo.RunMode.PROFILE ,  deposit , rightServoReversed)
         );
         this.maxVelocity=MaxVelocoty;

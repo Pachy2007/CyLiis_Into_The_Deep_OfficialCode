@@ -23,23 +23,24 @@ public class Extension extends IServoModule {
 
     State initState;
 
-    public static boolean reversed;
+    public static boolean reversed=false;
 
     public static double MaxVelocoty=20 , Acceleration=32  , Deceleration=32;
 
     public Extension()
     {
         moduleName="EXTENSION";
+        setStates();
+        initState=states.get("retrect");
         setServos(
-                new BetterServo("Servo" , Hardware.sch1 , BetterServo.RunMode.PROFILE , retrect , reversed)
+                new BetterServo("Servo" , Hardware.sch2 , BetterServo.RunMode.PROFILE , retrect , reversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;
         this.deceleration=Deceleration;
         setProfileCoefficients();
-        setStates();
-        initState=states.get("retrect");
         atStart();
+        update();
     }
 
     @Override

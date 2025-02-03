@@ -20,7 +20,7 @@ public class PTO extends IServoModule {
     {
         moduleName="PTO";
         setServos(
-                new BetterServo("Latch" , Hardware.sch5  , BetterServo.RunMode.PROFILE , normalPosition , reversed)
+                new BetterServo("Latch" , Hardware.sch0  , BetterServo.RunMode.PROFILE , normalPosition , reversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;

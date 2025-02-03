@@ -32,7 +32,7 @@ public class Lift {
     public static boolean yes=false;
     int nr=0;
 
-    public static double kP=0.0115 , kI=0 , kD=0.00028;
+    public static double kP=0.011 , kI=0 , kD=0.00022;
 
     PIDController controller;
     Encoder encoder;
@@ -71,7 +71,7 @@ public class Lift {
     public boolean inPosition()
     {
         if(climb==true) {if((Math.abs(position- encoder.getPosition())<100) || state==State.DOWN || state==State.GOING_DOWN )return true;}
-        else if(Math.abs(position- encoder.getPosition())<25 || state==State.DOWN || state==State.GOING_DOWN)return true;
+        else if(Math.abs(position- encoder.getPosition())<35 || state==State.DOWN || state==State.GOING_DOWN)return true;
         return false;
     }
     public void decreasePosition(int extra)
@@ -92,7 +92,7 @@ public class Lift {
                 nr=0;
                 break;
             case GOING_DOWN:
-                if((encoder.getVelocity()<0.00000000001 && climb && encoder.getPosition()<60) || (Math.abs(encoder.getVelocity())<0.01 && !climb))
+                if((encoder.getVelocity()<0.00000000001 && climb && encoder.getPosition()<20) || (Math.abs(encoder.getVelocity())<0.01 && !climb))
                 {   nr++;
                     if(nr>=2)
                     {state=state.nextState; encoder.resetPosition();}}

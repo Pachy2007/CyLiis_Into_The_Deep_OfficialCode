@@ -23,12 +23,12 @@ import org.firstinspires.ftc.teamcode.Wrappers.Pose2D;
 @Config
 public class SampleAutoNodes {
 
-    public static Pose2D putSamplePosition=new Pose2D (700 , -200 ,-1);
+    public static Pose2D putSamplePosition=new Pose2D (700 , -190 ,-1);
 
     public static Pose2D[] takeFloorSamplePosition=new Pose2D[]{
-            new Pose2D(700 ,-200 , -1.3) ,
-            new Pose2D(700 ,-200 , -1.6) ,
-            new Pose2D(700 ,-200 , -1.9)};
+            new Pose2D(700 ,-190 , -1.3) ,
+            new Pose2D(700 ,-190 , -1.6) ,
+            new Pose2D(700 ,-190 , -1.9)};
     public static Pose2D parkPosition=new Pose2D(-50 , -1600 , 0);
 
     public static double[] takeFloorSampleExtendoPosition={970 , 880 , 910};

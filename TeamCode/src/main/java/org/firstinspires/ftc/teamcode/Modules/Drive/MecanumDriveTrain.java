@@ -42,18 +42,18 @@ public class MecanumDriveTrain {
     public static double lateralMultiplier=2;
     public static  double realHeading;
 
-    public static double kp=0.0091 , ki=0 , kd=0.0011;
-    public static double KP=1.4 , KI , KD=0.16;
+    public static double kp=0.011 , ki=0 , kd=0.0011;
+    public static double KP=1.63 , KI , KD=0.16;
    public  PIDController controllerX=new PIDController(kp , ki , kd) , controllerY=new PIDController(kp , ki , kd) , controllerHeading=new PIDController(KP , KI , KD);
 
     public MecanumDriveTrain(State initialState)
     {
         state=initialState;
 
-        frontLeft=new BetterMotor(Hardware.mch0 , BetterMotor.RunMode.RUN , frontLeftreversed);
+        frontLeft=new BetterMotor(Hardware.mch1 , BetterMotor.RunMode.RUN , frontLeftreversed);
         frontRight=new BetterMotor(Hardware.meh0 , BetterMotor.RunMode.RUN , frontRightreversed);
 
-        backLeft=new BetterMotor(Hardware.mch1 , BetterMotor.RunMode.RUN , backLeftreversed);
+        backLeft=new BetterMotor(Hardware.mch0 , BetterMotor.RunMode.RUN , backLeftreversed);
         backRight=new BetterMotor(Hardware.meh1 , BetterMotor.RunMode.RUN , backRightreversed);
 
         setTargetVector(0 , 0 , 0);
@@ -68,7 +68,7 @@ public class MecanumDriveTrain {
         error=targetHeading-realHeading;
         if(Math.abs(error)>Math.PI)error=-Math.signum(error)*(2*Math.PI-Math.abs(error));
 
-        if(Math.abs(targetX-Odo.getX())<25 && Math.abs(targetY-Odo.getY())<25 && Math.abs(error)<0.115)return true;
+        if(Math.abs(targetX-Odo.getX())<25 && Math.abs(targetY-Odo.getY())<25 && Math.abs(error)<0.1 && Math.abs(Odo.odo.getHeadingVelocity())<0.5)return true;
         return false;
     }
     public boolean inPosition( double x , double y , double Error)
