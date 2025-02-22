@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Modules.Others;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.internal.network.ApChannel;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
@@ -17,12 +18,12 @@ public class Wheelie {
     public boolean up=false;
 
     public double goDownPower=-1 , keepPositionPower=-0.07;
-    CRServo servoLeft , servoRight;
+    Servo servoLeft , servoRight;
 
     public Wheelie()
     {
-        servoLeft= Hardware.sch3;
-        servoRight=Hardware.sch5;
+        servoLeft= Hardware.ssh4;
+        servoRight=Hardware.ssh5;
         state=State.RELEASE;
     }
 
@@ -43,22 +44,22 @@ public class Wheelie {
         switch (state)
         {
             case RELEASE:
-                servoLeft.setPower(0);
-                servoRight.setPower(0);
+                servoLeft.setPosition(0.5);
+                servoRight.setPosition(0.5);
                 break;
             case GOING_DOWN:
                 if(goDown)
                 {
                     if(!up)
-                    {servoRight.setPower(goDownPower);
-                    servoLeft.setPower(goDownPower);}
+                    {servoRight.setPosition(0);
+                    servoLeft.setPosition(0);}
                     else
-                    {servoRight.setPower(-goDownPower);
-                    servoLeft.setPower(-goDownPower);}
+                    {servoRight.setPosition(1);
+                    servoLeft.setPosition(1);}
                 }
                 else{
-                    servoRight.setPower(keepPositionPower);
-                    servoLeft.setPower(keepPositionPower);
+                    servoRight.setPosition(0.5);
+                    servoLeft.setPosition(0.5);
                 }
                 break;
 

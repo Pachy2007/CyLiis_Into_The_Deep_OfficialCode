@@ -63,8 +63,7 @@ public class PIDController {
 
         double derivative=(error-lastError)/timer.seconds();
         double output=kp*error+kd*derivative;
-        if(error>0)output+=integralSum*ki;
-        else output+=integralSum*ki;
+         output+=integralSum*ki;
         output+=ff1+ff2*state;
         timer.reset();
         lastError=error;

@@ -39,22 +39,27 @@ public class MecanumDriveTrain {
 
     public static boolean frontLeftreversed=true , frontRightreversed=false , backLeftreversed=true , backRightreversed=false;
 
-    public static double lateralMultiplier=2;
+    public static double lateralMultiplier=2.5;
     public static  double realHeading;
 
-    public static double kp=0.011 , ki=0 , kd=0.0011;
-    public static double KP=1.63 , KI , KD=0.16;
+    public static double kp=0.008 , ki=0 , kd=0;
+    public static double KP=1.8 , KI , KD=0.15;
    public  PIDController controllerX=new PIDController(kp , ki , kd) , controllerY=new PIDController(kp , ki , kd) , controllerHeading=new PIDController(KP , KI , KD);
 
     public MecanumDriveTrain(State initialState)
     {
         state=initialState;
 
-        frontLeft=new BetterMotor(Hardware.mch1 , BetterMotor.RunMode.RUN , frontLeftreversed);
-        frontRight=new BetterMotor(Hardware.meh0 , BetterMotor.RunMode.RUN , frontRightreversed);
+        frontLeft=new BetterMotor(Hardware.meh2 , BetterMotor.RunMode.RUN , frontLeftreversed);
+        frontRight=new BetterMotor(Hardware.mch1 , BetterMotor.RunMode.RUN , frontRightreversed);
 
-        backLeft=new BetterMotor(Hardware.mch0 , BetterMotor.RunMode.RUN , backLeftreversed);
-        backRight=new BetterMotor(Hardware.meh1 , BetterMotor.RunMode.RUN , backRightreversed);
+        backLeft=new BetterMotor(Hardware.meh0 , BetterMotor.RunMode.RUN , backLeftreversed);
+        backRight=new BetterMotor(Hardware.mch0 , BetterMotor.RunMode.RUN , backRightreversed);
+
+        frontLeft.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         setTargetVector(0 , 0 , 0);
 
@@ -88,7 +93,6 @@ public class MecanumDriveTrain {
     {
         x*=lateralMultiplier;
 
-        if(state==State.DRIVE)rx=rx/1.25;
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double frontLeftPower = (y + x + rx) / denominator;
         double backLeftPower = (y - x + rx) / denominator;
@@ -139,6 +143,8 @@ public class MecanumDriveTrain {
 
     public void update()
     {
+        if (state !=State.PID) {return;
+        }
         controllerX.kp=kp;
         controllerY.kp=kp;
 
@@ -157,17 +163,17 @@ public class MecanumDriveTrain {
 
 
 
-        if(Double.isNaN(Odo.getX()) || Double.isNaN(Odo.getY()) || Double.isNaN(Odo.getHeading()))
+        if(Double.isNaN(Odo.getX()) || Double.isNaN(Odo.getY()) || Double.isNaN(Odo.getHeading()) || Double.isNaN(Odo.predictedX) ||Double.isNaN(Odo.predictedY) )
         {
             return;
         }
 
 
-            x = controllerX.calculate(targetX, Odo.getX());
+            x = controllerX.calculate(targetX, Odo.predictedX);
 
 
 
-            y=-controllerY.calculate(targetY , Odo.getY());
+            y=-controllerY.calculate(targetY , Odo.predictedY);
 
             double heading= Odo.getHeading();
             if(heading<0)realHeading=Math.abs(heading);

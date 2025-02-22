@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.Modules.Intake.ActiveIntake.State.INTAKE;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -13,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Math.PIDController;
 import org.firstinspires.ftc.teamcode.Modules.Drive.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Intake;
+import org.firstinspires.ftc.teamcode.Modules.Intake.SampleColor;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 import org.opencv.calib3d.Calib3d;
@@ -48,7 +47,7 @@ public class TestSampleDetection extends LinearOpMode {
         DigitalChannel bb;
 
         bb=hardwareMap.get(DigitalChannel.class , "bb");
-        Intake intake=new Intake();
+        Intake intake=new Intake(SampleColor.State.RED, true);
 
         limelight.pipelineSwitch(0);
         limelight.reloadPipeline();

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Modules.Intake;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Math.PIDController;
@@ -32,7 +33,7 @@ public class Extendo {
     int nr=0;
     public PIDController controller;
     public Encoder encoder;
-    public static boolean encoderReversed=false;
+    public static boolean encoderReversed=true;
     public static double kp=0.007 , ki , kd;
     public static double targetPosition;
 
@@ -41,15 +42,16 @@ public class Extendo {
     public static double position;
     private static double maximExtendoPosition=900;
 
+    DigitalChannel isIn;
     double velocity=0;
 
     public Extendo()
     {
         Differential.init();
-        encoder=new Encoder(Hardware.mch0 , encoderReversed);
+        encoder=new Encoder(Hardware.meh0 , encoderReversed);
         controller=new PIDController(kp , ki , kd);
         state=State.OUT;
-
+        isIn=Hardware.extendoBeamBreak;
     }
 
     public void setVelocity(double velocity)
@@ -73,7 +75,7 @@ public class Extendo {
 
     public boolean inPosition()
     {
-        return (state==State.IN || Math.abs(encoder.getPosition()-targetPosition)<25 || encoder.getPosition()>1000) && state!=State.GOING_IN;
+        return (state==State.IN || Math.abs(encoder.getPosition()-targetPosition)<40 || encoder.getPosition()>1000) && state!=State.GOING_IN;
     }
 
     private void updateHardware()
@@ -96,9 +98,9 @@ public class Extendo {
                 break;
             case GOING_IN:
                 Differential.extendoPower=goingInPower;
-                if(Math.abs(encoder.getVelocity())<100){
-                    nr++;
-                    if(nr>=3)
+                Differential.update();
+                if(Math.abs(encoder.getVelocity())<70)nr++;
+                if((Math.abs(encoder.getVelocity())<70 && nr>1)){
                     {state=state.nextState;
                         encoder.resetPosition();}}
                 break;

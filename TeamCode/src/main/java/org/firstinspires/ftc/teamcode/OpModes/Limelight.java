@@ -24,15 +24,16 @@ import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 
+@Config
 public class Limelight {
 
     public static Limelight3A limelight;
     public static double angle=20;
     public static double Height=308.88;
-    public static double distanceIntake=105;
-    public static double lateralDistance=-113;
+    public static double distanceIntake=100;
+    public static double lateralDistance=-96;
     public static LLResult result;
-    public static double k=1.4;
+    public static double k=1.55;
     public static double Distance;
 
     public static double extendoPosition;
@@ -48,6 +49,8 @@ public class Limelight {
 
     public static void update(){
         result=limelight.getLatestResult();
+        if(result==null)return;
+
         Y=Height*Math.tan(Math.toRadians(result.getTy()+90-angle))-distanceIntake;
         X=Height*Math.tan(Math.toRadians(result.getTy()+90-angle))*Math.tan(Math.toRadians(result.getTx()))-lateralDistance;
          Distance=Math.sqrt(X*X+Y*Y);

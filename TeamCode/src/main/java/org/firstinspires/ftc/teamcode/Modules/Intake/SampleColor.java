@@ -1,12 +1,8 @@
-    package org.firstinspires.ftc.teamcode.Modules.Others;
+    package org.firstinspires.ftc.teamcode.Modules.Intake;
 
-    import com.qualcomm.hardware.rev.RevColorSensorV3;
     import com.qualcomm.robotcore.hardware.ColorSensor;
-    import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
     import org.firstinspires.ftc.teamcode.Robot.Hardware;
-    import org.firstinspires.ftc.teamcode.Wrappers.Color;
-    import org.opencv.core.Mat;
 
     public class SampleColor {
 

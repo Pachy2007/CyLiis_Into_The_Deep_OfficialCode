@@ -25,11 +25,17 @@ public class Hardware {
     public static ColorSensor colorSensor;
 
     public static Servo sch4 ;
-    public static CRServo sch5;
+    public static Servo sch5;
     public static Servo sch0 , sch1;
     public static Servo sch2;
-    public static CRServo sch3;
+    public static Servo sch3;
     public static Servo seh0 , seh1 , seh2 , seh3 , seh4 , seh5;
+
+    public static Servo ssh0 , ssh1 , ssh2 , ssh3 , ssh4 , ssh5;
+
+    public static DigitalChannel depositBeamBreak;
+    public static DigitalChannel extendoBeamBreak;
+
 
     public static double IMUOFFSET=0;
 
@@ -45,15 +51,20 @@ public class Hardware {
     {
         IMUOFFSET=0;
         colorSensor=hardwareMap.get(ColorSensor.class , "colorSensor");
+        depositBeamBreak=hardwareMap.get(DigitalChannel.class , "depositBB");
+           extendoBeamBreak=hardwareMap.get(DigitalChannel.class , "extendoBeamBreak");
 
         mch0=hardwareMap.get(DcMotorEx.class , "ch0");
         mch1=hardwareMap.get(DcMotorEx.class , "ch1");
         mch2=hardwareMap.get(DcMotorEx.class , "ch2");
         mch3=hardwareMap.get(DcMotorEx.class , "ch3");
+
+
         unlock(mch0);
         unlock(mch1);
         unlock(mch2);
         unlock(mch3);
+
 
         meh0=hardwareMap.get(DcMotorEx.class , "eh0");
         meh1=hardwareMap.get(DcMotorEx.class , "eh1");
@@ -65,12 +76,22 @@ public class Hardware {
         unlock(meh2);
         unlock(meh3);
 
+
+
         sch0=hardwareMap.get(Servo.class , "sch0");
         sch1=hardwareMap.get(Servo.class , "sch1");
         sch2=hardwareMap.get(Servo.class , "sch2");
-        sch3=hardwareMap.get(CRServo.class , "sch3");
+        sch3=hardwareMap.get(Servo.class , "sch3");
         sch4=hardwareMap.get(Servo.class , "sch4");
-        sch5=hardwareMap.get(CRServo.class , "sch5");
+        sch5=hardwareMap.get(Servo.class , "sch5");
+
+        ssh0=hardwareMap.get(Servo.class , "ssh0");
+        ssh1=hardwareMap.get(Servo.class , "ssh1");
+        ssh2=hardwareMap.get(Servo.class , "ssh2");
+        ssh3=hardwareMap.get(Servo.class , "ssh3");
+        ssh4=hardwareMap.get(Servo.class , "ssh4");
+        ssh5=hardwareMap.get(Servo.class , "ssh5");
+
 
         seh0=hardwareMap.get(Servo.class , "seh0");
         seh1=hardwareMap.get(Servo.class , "seh1");

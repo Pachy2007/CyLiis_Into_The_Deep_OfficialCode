@@ -33,7 +33,7 @@ public class Extension extends IServoModule {
         setStates();
         initState=states.get("retrect");
         setServos(
-                new BetterServo("Servo" , Hardware.sch2 , BetterServo.RunMode.PROFILE , retrect , reversed)
+                new BetterServo("Servo" , Hardware.ssh0 , BetterServo.RunMode.PROFILE , retrect , reversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;

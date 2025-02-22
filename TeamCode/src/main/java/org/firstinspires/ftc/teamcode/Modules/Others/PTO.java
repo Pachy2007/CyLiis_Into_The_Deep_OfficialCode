@@ -11,8 +11,8 @@ public class PTO extends IServoModule {
 
     public static boolean reversed=false;
 
-    public static double climbPosition=0.8;
-    public static double normalPosition=0;
+    public static double climbPosition=0;
+    public static double normalPosition=0.34;
 
     public static double MaxVelocoty=20 , Acceleration=32  , Deceleration=32;
 
@@ -20,7 +20,7 @@ public class PTO extends IServoModule {
     {
         moduleName="PTO";
         setServos(
-                new BetterServo("Latch" , Hardware.sch0  , BetterServo.RunMode.PROFILE , normalPosition , reversed)
+                new BetterServo("PTO" , Hardware.ssh3  , BetterServo.RunMode.PROFILE , normalPosition , reversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;

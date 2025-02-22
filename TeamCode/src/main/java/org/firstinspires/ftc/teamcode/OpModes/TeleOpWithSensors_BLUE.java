@@ -15,10 +15,10 @@ import org.firstinspires.ftc.teamcode.Modules.Intake.ActiveIntake;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Modules.Others.Differential;
-import org.firstinspires.ftc.teamcode.Modules.Others.ExtendoBlocker;
-import org.firstinspires.ftc.teamcode.Modules.Others.Latch;
+import org.firstinspires.ftc.teamcode.Modules.Intake.ExtendoBlocker;
+import org.firstinspires.ftc.teamcode.Modules.Intake.Latch;
 import org.firstinspires.ftc.teamcode.Modules.Others.PTO;
-import org.firstinspires.ftc.teamcode.Modules.Others.SampleColor;
+import org.firstinspires.ftc.teamcode.Modules.Intake.SampleColor;
 import org.firstinspires.ftc.teamcode.Modules.Others.Wheelie;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
@@ -61,7 +61,7 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
         Outtake outtake=new Outtake();
         MecanumDriveTrain driveTrain=new MecanumDriveTrain(MecanumDriveTrain.State.DRIVE);
         Extendo extendo=new Extendo();
-        Intake intake=new Intake();
+        Intake intake=new Intake(SampleColor.State.BLUE , true);
         Latch latch=new Latch();
         ExtendoBlocker extendoBlocker=new ExtendoBlocker();
 

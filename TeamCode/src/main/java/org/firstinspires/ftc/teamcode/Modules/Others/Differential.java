@@ -12,11 +12,15 @@ public class Differential {
 
     public static double power1 , power2;
 
-    public static BetterMotor motor1 , motor2;
+    public static BetterMotor motor1 , motor2, boostLift;
     public static void init()
     {
-        motor1=new BetterMotor(Hardware.mch3 , BetterMotor.RunMode.RUN,false);
+        motor1=new BetterMotor(Hardware.meh1 , BetterMotor.RunMode.RUN,false);
         motor2=new BetterMotor(Hardware.mch2 , BetterMotor.RunMode.RUN,false);
+        boostLift=new BetterMotor(Hardware.mch3 , BetterMotor.RunMode.RUN , true);
+        extendoPower=0;
+        liftPower=0;
+        update();
     }
 
 
@@ -30,9 +34,6 @@ public class Differential {
         liftPower=Math.max(-1 , Math.min(1 , liftPower));
         extendoPower=Math.max(-1 , Math.min(1, extendoPower));
 
-        if(liftPower!=0 && extendoPower==-0.02)extendoPower=0;
-
-
          power1=extendoPower-liftPower;
          power2=liftPower+extendoPower;
 
@@ -41,8 +42,11 @@ public class Differential {
         power1/=denominator;
         power2/=denominator;
 
+        double powerForBoost=(power2-power1)/2;
+
         motor1.setPower(power1);
         motor2.setPower(power2);
+        boostLift.setPower(powerForBoost);
     }
 
 }

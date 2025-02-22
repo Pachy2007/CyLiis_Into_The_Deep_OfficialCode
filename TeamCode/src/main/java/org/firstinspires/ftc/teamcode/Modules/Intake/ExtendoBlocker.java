@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Modules.Others;
+package org.firstinspires.ftc.teamcode.Modules.Intake;
 
 import com.acmerobotics.dashboard.config.Config;
 
@@ -17,7 +17,7 @@ public class ExtendoBlocker extends IServoModule {
     public ExtendoBlocker(){
         moduleName="ExtendoBlocker";
         setServos(
-                new BetterServo("Latch" , Hardware.seh4  , BetterServo.RunMode.Time , open , reversed , time)
+                //new BetterServo("Latch" , Hardware.seh4  , BetterServo.RunMode.Time , open , reversed , time)
         );
 
         setStates();

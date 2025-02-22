@@ -13,19 +13,19 @@ public class Ramp extends IServoModule {
 
     public static boolean rightServoReversed=false;
 
-    public static double upPosition=0.23 , downPosition=0.57;
+    public static double upPosition=0.05 , downPosition=0.515;
 
     public static double MaxVelocoty=17 , Acceleration=20  , Deceleration=20;
 
 
-    public static double rampPositionIn=0.5 , rampPositionOut=0.413;
+    public static double rampPositionIn=0.335 , rampPositionOut=0.223;
     public static double extendoPositionIn=33 , extendoPositionOut=1014;
 
     public Ramp()
     {
         moduleName="RAMP";
         setServos(
-                new BetterServo("Servo" , Hardware.seh2 , BetterServo.RunMode.PROFILE , upPosition, rightServoReversed)
+                new BetterServo("Servo" , Hardware.seh5 , BetterServo.RunMode.PROFILE , upPosition, rightServoReversed)
         );        this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;
         this.deceleration=Deceleration;

@@ -47,10 +47,18 @@ public class Outtake {
     boolean sample=false;
     boolean release=false;
 
+    boolean calculate=false;
+
+    public static double sumChamber , sumBasket;
+    public static double nrChamber , nrBasket;
+
+    ElapsedTime timerForBasket=new ElapsedTime();
+    ElapsedTime timerForChamber=new ElapsedTime();
+
     ElapsedTime retryTimer=new ElapsedTime();
 
     public static boolean prim=false;
-    public static int lowBasketPosition=400  , highBasketPosition=1100  , lowChamberDown=150 ,  highChamberDown=530, climbPosition=500 , autoClimbPosition=190;
+    public static int lowBasketPosition=400  , highBasketPosition=1100  , lowChamberDown=150 ,  highChamberDown=540, climbPosition=500 , autoClimbPosition=190;
 
     public Outtake()
     {
@@ -58,6 +66,7 @@ public class Outtake {
         arm=new Arm();
         lift=new Lift();
         claw=new Claw();
+
     }
     public Outtake(State state)
     {
@@ -86,7 +95,7 @@ public class Outtake {
                 break;
 
             case Specimen:
-                if(arm.inPosition())
+                if(arm.inPosition() && arm.state==arm.states.get("takeSpecimen") && lift.state== Lift.State.DOWN)
                 take=true;
             case DeafultWithElement:
             case TakingElement:
@@ -162,6 +171,7 @@ public class Outtake {
                 arm.setState("goHighSpecimen");
                 break;
             case ReleaseSample:
+                calculate=false;
                 arm.setState("goTakeSpecimen");
                 extension.setState("goTakeSpecimen");
                 if(arm.inPosition() && extension.inPosition() && release)
@@ -171,6 +181,7 @@ public class Outtake {
             break;
 
             case Specimen:
+                calculate=false;
 
                 if((extension.inPosition() && extension.state==extension.states.get("takeSpecimen")) || extension.state!=extension.states.get("deposit"))arm.setState("goTakeSpecimen");
                 extension.setState("goTakeSpecimen");
@@ -182,7 +193,8 @@ public class Outtake {
                 break;
 
             case TakingElement:
-            lift.goDown();
+                calculate=false;
+                lift.goDown();
                 {   haveSample=true;
                     if(arm.inPosition() && extension.inPosition())
                     extension.setState("goDeposit");
@@ -195,6 +207,7 @@ public class Outtake {
 
             case Deafult:
                 take=false;
+                calculate=false;
 
 
                 if(arm.inPosition() && arm.state==arm.states.get("deposit"))
@@ -213,6 +226,7 @@ public class Outtake {
                 break;
 
             case DeafultWithElement:
+                calculate=false;
                 extension.setState("goRetrect");
 
                 if(haveSample)
@@ -227,6 +241,7 @@ public class Outtake {
 
             case GoDown:
 
+                calculate=false;
                 take=false;
                 if(!haveSample)
                 claw.setState("goScoring");
@@ -263,6 +278,7 @@ public class Outtake {
                         break;
 
                     case HighBasket:
+                        if(Lift.position!=highBasketPosition)timerForBasket.reset();
                         lift.goUp();
                         lift.setPosition(highBasketPosition);
                         extension.setState("goRetrect");
@@ -277,6 +293,7 @@ public class Outtake {
                         break;
 
                     case HighChamber:
+                        if(Lift.position!=highChamberDown)timerForBasket.reset();
                         lift.goUp();
                         arm.setState("goHighSpecimen");
 
@@ -290,6 +307,7 @@ public class Outtake {
                         if(extension.state==extension.states.get("retrect"))retry=false;
 
                         lift.setPosition(highChamberDown);
+
                         break;
                 }
             }
@@ -322,5 +340,11 @@ public class Outtake {
 
         updateUpState();
         updateHardware();
+
+        if(lift.inPosition() && state==State.Up && !calculate){
+            calculate=true;
+            if(scoring==Scoring.HighChamber){nrChamber++;sumChamber+=timerForChamber.seconds();}
+            if(scoring==Scoring.HighBasket){nrBasket++;sumBasket+=timerForBasket.seconds();}
+        }
     }
 }

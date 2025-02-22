@@ -19,7 +19,7 @@ public class HubTest  extends LinearOpMode {
 
 
     enum HUB{
-        CONTROL_HUB("ch") , EXPANSION_HUB("eh");
+        CONTROL_HUB("ch") , EXPANSION_HUB("eh") , SERVO_HUB("sh");
 
         String hub;
         HUB(String string)
@@ -58,21 +58,11 @@ public class HubTest  extends LinearOpMode {
 
     DcMotorEx motor;
     Servo servo;
-    IMU imu;
 
     public static double power=0 , position=0;
 
     @Override
     public void runOpMode() throws InterruptedException {
-
-            Hardware.init(hardwareMap);
-
-
-
-
-        servo=Hardware.sch0;
-        motor=Hardware.mch0;
-
             waitForStart();
 
 
@@ -96,8 +86,8 @@ public class HubTest  extends LinearOpMode {
                 if(hardware==HARDWARE.ENCODER)telemetry.addData("Position" , motor.getCurrentPosition());
                 telemetry.update();
 
-                motor.setPower(power);
-                servo.setPosition(position);
+                if(hardware == HARDWARE.MOTOR) motor.setPower(power);
+                if(hardware == HARDWARE.SERVO) servo.setPosition(position);
             }
 
 

@@ -11,8 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Modules.Drive.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Intake;
-import org.firstinspires.ftc.teamcode.Modules.Others.Latch;
-import org.firstinspires.ftc.teamcode.Modules.Outtake.Arm;
+import org.firstinspires.ftc.teamcode.Modules.Intake.Latch;
+import org.firstinspires.ftc.teamcode.Modules.Intake.SampleColor;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Lift;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
@@ -68,7 +68,7 @@ public class SampleAutoNodes {
 
             bb=hardwareMap.get(DigitalChannel.class , "bb");
             driveTrain=new MecanumDriveTrain(MecanumDriveTrain.State.PID);
-            intake=new Intake();
+            intake=new Intake(SampleColor.State.RED , true);
             outtake=new Outtake(Outtake.State.DeafultWithElement);
             outtake.haveSample=true;
             extendo=new Extendo();

@@ -2,14 +2,10 @@ package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-import org.firstinspires.ftc.teamcode.Auto.SpecimenAutoNodes;
-import org.firstinspires.ftc.teamcode.Modules.Drive.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.Auto.Specimen7;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
-import org.firstinspires.ftc.teamcode.Modules.Intake.Intake;
-import org.firstinspires.ftc.teamcode.Modules.Others.Latch;
-import org.firstinspires.ftc.teamcode.Modules.Outtake.Outtake;
+import org.firstinspires.ftc.teamcode.OpModes.Limelight;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 
@@ -21,7 +17,7 @@ public class Sper_ca_Merge extends LinearOpMode {
 
         Odo.init(hardwareMap , telemetry , "a");
 
-        SpecimenAutoNodes nodes=new SpecimenAutoNodes();
+        Specimen7 nodes=new Specimen7();
 
 
         Hardware.init(hardwareMap);
@@ -35,8 +31,7 @@ public class Sper_ca_Merge extends LinearOpMode {
         {
             nodes.intake.update();
             nodes.outtake.update();
-            nodes.extendo.update();
-            nodes.latch.update();
+
             Hardware.IMUOFFSET=Math.PI;
             nodes.timerOuttake.reset();
         }
@@ -44,6 +39,10 @@ public class Sper_ca_Merge extends LinearOpMode {
         while (opModeIsActive())
         {
             nodes.run(hardwareMap  , telemetry);
+
+            telemetry.addData("extendo" , Limelight.extendoPosition);
+            telemetry.addData("extendoPositionTarget" , Extendo.targetPosition);
+            telemetry.update();
 
         }
     }

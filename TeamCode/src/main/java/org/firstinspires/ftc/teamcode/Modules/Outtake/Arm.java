@@ -10,10 +10,10 @@ import org.firstinspires.ftc.teamcode.Wrappers.BetterServo;
 @Config
 public class Arm extends IServoModule {
 
-    public static boolean leftServoReversed=true , rightServoReversed=true ;
+    public static boolean leftServoReversed=true , rightServoReversed=false ;
 
 
-    public static double deposit=0.0375;
+    public static double deposit=0.03;
 
     public static double takeSpecimen=0.905;
 
@@ -44,8 +44,8 @@ public class Arm extends IServoModule {
 
         setStates();
         initState=states.get("deposit");
-        setServos(new BetterServo("ServoLeft" , Hardware.sch1 , BetterServo.RunMode.PROFILE , deposit , leftServoReversed),
-                new BetterServo("ServoRight" , Hardware.sch4 , BetterServo.RunMode.PROFILE ,  deposit , rightServoReversed)
+        setServos(new BetterServo("ServoLeft" , Hardware.ssh2 , BetterServo.RunMode.PROFILE , deposit , leftServoReversed),
+                new BetterServo("ServoRight" , Hardware.ssh1 , BetterServo.RunMode.PROFILE ,  deposit , rightServoReversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;
@@ -62,8 +62,8 @@ public class Arm extends IServoModule {
 
         setStates();
         initState=states.get(string);
-        setServos(new BetterServo("ServoLeft" , Hardware.sch1 , BetterServo.RunMode.PROFILE , deposit , leftServoReversed),
-                new BetterServo("ServoRight" , Hardware.sch4 , BetterServo.RunMode.PROFILE ,  deposit , rightServoReversed)
+        setServos(new BetterServo("ServoLeft" , Hardware.ssh2 , BetterServo.RunMode.PROFILE , deposit , leftServoReversed),
+                new BetterServo("ServoRight" , Hardware.ssh1 , BetterServo.RunMode.PROFILE ,  deposit , rightServoReversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;

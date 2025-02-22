@@ -10,13 +10,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Modules.Drive.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Intake;
+import org.firstinspires.ftc.teamcode.Modules.Intake.SampleColor;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 
 @TeleOp
@@ -50,7 +48,7 @@ public class Limelight_Distance_Test extends LinearOpMode {
         Hardware.init(hardwareMap);
 
         driveTrain=new MecanumDriveTrain(MecanumDriveTrain.State.PID);
-        Intake intake=new Intake();
+        Intake intake=new Intake(SampleColor.State.RED , true);
         extendo=new Extendo();
         timer=new ElapsedTime();
         boolean z=false;

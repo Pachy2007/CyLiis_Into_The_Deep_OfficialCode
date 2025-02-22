@@ -1,27 +1,26 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-@TeleOp(group = "z")
-public class BbTest extends LinearOpMode {
+import org.firstinspires.ftc.teamcode.Robot.Hardware;
 
-
+@TeleOp
+public class ExtendoBeamBreakTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        Hardware.init(hardwareMap);
 
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         DigitalChannel bb;
-        bb=hardwareMap.get(DigitalChannel.class , "depositBB");
+        bb=Hardware.extendoBeamBreak;
 
         waitForStart();
+
         while(opModeIsActive())
         {
-            telemetry.addData( "Sebi e fraier" , bb.getState());
+            telemetry.addData("bb" , bb.getState());
             telemetry.update();
         }
     }

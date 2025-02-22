@@ -32,14 +32,14 @@ public class Lift {
     public static boolean yes=false;
     int nr=0;
 
-    public static double kP=0.011 , kI=0 , kD=0.00022;
+    public static double kP=0.004 , kI=0 , kD=0.000005;
 
     PIDController controller;
     Encoder encoder;
 
     public static double position;
     public static double position1;
-    public static boolean encoderReversed=false;
+    public static boolean encoderReversed=true;
     public Lift()
     {
         Differential.init();
