@@ -15,11 +15,11 @@ public class Extension extends IServoModule {
 
     public static double retrect=0.75;
 
-    public static double deposit=0.35;
+    public static double deposit=0.38;
 
     public static double takeSample=0.38;
 
-    public static double takeSpecimen=0.65;
+    public static double takeSpecimen=0.64;
 
     State initState;
 
@@ -33,7 +33,7 @@ public class Extension extends IServoModule {
         setStates();
         initState=states.get("retrect");
         setServos(
-                new BetterServo("Servo" , Hardware.ssh0 , BetterServo.RunMode.PROFILE , retrect , reversed)
+                new BetterServo("Servo" , Hardware.ssh5 , BetterServo.RunMode.PROFILE , retrect , reversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;

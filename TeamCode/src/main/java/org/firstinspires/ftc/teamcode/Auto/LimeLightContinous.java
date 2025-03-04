@@ -48,9 +48,8 @@ public class LimeLightContinous extends LinearOpMode {
                 intake.update();
                 a=true;
             }
-            if(mecanumDriveTrain.inPosition() && MecanumDriveTrain.targetHeading!=0)
-            {
-                if(intake.hasSample.getState()){
+            /**if(mecanumDriveTrain.inPosition() && MecanumDriveTrain.targetHeading!=0)
+            {if(intake.hasSample.getState()){
                 if(intake.inPosition() && intake.ramp.state==intake.ramp.states.get("up"))
                 intake.extendo.setTargetPosition(Limelight.extendoPosition);
 
@@ -73,7 +72,7 @@ public class LimeLightContinous extends LinearOpMode {
                     a=false;
                 }
             }
-            else if(a==false )intake.extendo.setIn();
+            else if(a==false )intake.extendo.setIn();**/
 
 
             prevX=gamepad1.x;

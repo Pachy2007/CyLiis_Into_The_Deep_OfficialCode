@@ -32,19 +32,19 @@ public class Lift {
     public static boolean yes=false;
     int nr=0;
 
-    public static double kP=0.004 , kI=0 , kD=0.000005;
+    public static double kP=0.0055 , kI=0 , kD=0.0001;
 
     PIDController controller;
     Encoder encoder;
 
     public static double position;
     public static double position1;
-    public static boolean encoderReversed=true;
+    public static boolean encoderReversed=false;
     public Lift()
     {
         Differential.init();
         controller=new PIDController(kP , kI , kD);
-        encoder=new Encoder(Hardware.mch3 , encoderReversed);
+        encoder=new Encoder(Hardware.mch0 , encoderReversed);
     }
 
 
@@ -92,9 +92,9 @@ public class Lift {
                 nr=0;
                 break;
             case GOING_DOWN:
-                if((encoder.getVelocity()<0.00000000001 && climb && encoder.getPosition()<20) || (Math.abs(encoder.getVelocity())<0.01 && !climb))
+                if((Math.abs(encoder.getVelocity())<10))
                 {   nr++;
-                    if(nr>=2)
+                    if(nr>=3)
                     {state=state.nextState; encoder.resetPosition();}}
                 break;
         }

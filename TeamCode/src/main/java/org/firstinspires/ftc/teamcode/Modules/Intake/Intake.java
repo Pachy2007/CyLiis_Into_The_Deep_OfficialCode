@@ -3,15 +3,32 @@ package org.firstinspires.ftc.teamcode.Modules.Intake;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 
 public class Intake {
 
 
     public enum State{
-        REPAUS_DOWN , REPAUS_UP , INTAKE_UP , INTAKE_DOWN , REVERSE_UP , REVERSE_DOWN, PREPARE_TO_TRANSFER, TRANSFER, THROW;
+        REPAUS_DOWN , REPAUS_UP , INTAKE_UP , INTAKE_DOWN , REVERSE_UP , REVERSE_DOWN;
     }
-    public State state;
+
+    public enum TransferLogic{
+        Free , Decide , Throw , Transfer , ReadyToTransfer , PrepareToHuman , ReadyForHuman;
+    }
+
+    public enum Asure1inDeposit{
+        Free , PrepareToClean , Clean , DezactivateCleaning , Done;
+    }
+
+    public Asure1inDeposit asure1inDepositState=Asure1inDeposit.Free;
+
+    public TransferLogic stateTransfer=TransferLogic.Free;
+
+
+    public State state=State.REPAUS_UP , prevState=State.REPAUS_UP;
+    public State driverState=State.REPAUS_UP;
+
     public ActiveIntake activeIntake;
     public Ramp ramp;
     public Extendo extendo;
@@ -19,14 +36,14 @@ public class Intake {
     public Latch latch;
 
     public SampleColor sampleColor;
-    public DigitalChannel hasSample;
+    public DigitalChannel bbDeposit;
 
     SampleColor.State colorAllaiance;
     ElapsedTime timer=new ElapsedTime();
 
+    public boolean sampleInDeposit;
     public double kNR=0;
     public boolean justColorAllaiance=false;
-    public boolean prevHasSample=false;
 
     boolean usingAutomatics=false;
     int nr=0;
@@ -47,7 +64,7 @@ public class Intake {
         extendoBlocker=new ExtendoBlocker();
         latch=new Latch();
         sampleColor=new SampleColor();
-        hasSample= Hardware.depositBeamBreak;
+        bbDeposit= Hardware.depositBeamBreak;
 
 
 
@@ -55,41 +72,61 @@ public class Intake {
     }
     private void updateDeposit()
     {
-        if(having==true && !hasSample.getState() && !justColorAllaiance)having=false;
-        if(havingTimer.seconds()>0.1 && havingTimer.seconds()<0.2){having=false;extendo.setIn();}
-        if(!usingAutomatics || having )return;
-        if(!hasSample.getState() && ((state!=State.PREPARE_TO_TRANSFER && state!=State.TRANSFER && state!=State.THROW)))
+        switch (stateTransfer)
         {
-            activeIntake.setMode(ActiveIntake.State.INTAKE);
-            if(timer.seconds()>0.14 && ( !justColorAllaiance || (extendo.state!= Extendo.State.IN || sampleColor.state!=colorAllaiance)))
-                timer.reset();
-            having=false;
-            kNR=0;
-        }
+            case Free:
+                if(sampleInDeposit)
+                    stateTransfer=TransferLogic.Decide;
+            break;
+            case Decide:
+                if(sampleColor.state!=colorAllaiance && sampleColor.state== SampleColor.State.YELLOW)stateTransfer=TransferLogic.Throw;
+                if(sampleColor.state== SampleColor.State.YELLOW)
+                {
+                    if(justColorAllaiance)stateTransfer=TransferLogic.Throw;
+                    if(!justColorAllaiance)stateTransfer=TransferLogic.Transfer;
+                }
+                if(sampleColor.state==colorAllaiance)
+                {
+                    if(justColorAllaiance)stateTransfer=TransferLogic.PrepareToHuman;
+                    if(!justColorAllaiance)stateTransfer=TransferLogic.Transfer;
+                }
+                if(sampleColor.state!=colorAllaiance && sampleColor.state!= SampleColor.State.YELLOW)stateTransfer=TransferLogic.Throw;
+            break;
+            case Throw:
+                state=State.REVERSE_DOWN;
+                kNR++;
+                if(kNR>=5){kNR=0; stateTransfer=TransferLogic.Free;}
+            break;
+            case PrepareToHuman:
+                if(asure1inDepositState==Asure1inDeposit.Free)asure1inDepositState=Asure1inDeposit.PrepareToClean;
 
-        if(!hasSample.getState() && timer.seconds()>0.1 && timer.seconds()<0.14 && ((extendo.state!= Extendo.State.IN || sampleColor.state!=colorAllaiance) || !justColorAllaiance))
-        {
-            if(sampleColor.state==colorAllaiance || (sampleColor.state== SampleColor.State.YELLOW && !justColorAllaiance))
-            {
-                kNR = 0;
-            activeIntake.setMode(ActiveIntake.State.INTAKE);
-                state=state.PREPARE_TO_TRANSFER;
-            }
-            else state=state.THROW;
+                if(asure1inDepositState==Asure1inDeposit.Done){asure1inDepositState=Asure1inDeposit.Free;stateTransfer=TransferLogic.ReadyForHuman;}
+            break;
 
+            case ReadyForHuman:
+                if(!sampleInDeposit && extendo.state== Extendo.State.GOING_IN)stateTransfer=TransferLogic.Free;
+                if(prevState==State.REVERSE_UP && state==State.REPAUS_UP){extendo.setIn();stateTransfer=TransferLogic.Free;}
+                prevState=state;
+            break;
+
+            case Transfer:
+                if(asure1inDepositState==Asure1inDeposit.Free)asure1inDepositState=Asure1inDeposit.PrepareToClean;
+
+                if(asure1inDepositState==Asure1inDeposit.Done){asure1inDepositState=Asure1inDeposit.Free;stateTransfer=TransferLogic.ReadyToTransfer;}
+            break;
+            case ReadyToTransfer:
+                state=State.INTAKE_UP;
+                if(!sampleInDeposit)stateTransfer=TransferLogic.Free;
+            break;
         }
     }
 
-    public void transfer()
-    {
-        state=State.PREPARE_TO_TRANSFER;
-    }
 
     public void setExtendoVelocity(double velocity)
     {
-        if(state!=State.THROW && state!=State.TRANSFER && state!=State.PREPARE_TO_TRANSFER)
-            if(ramp.state==ramp.states.get("up"))
-            if(Math.abs(velocity)>0.05 && !having)state=State.INTAKE_UP;
+        if(stateTransfer==TransferLogic.Free || stateTransfer==TransferLogic.ReadyForHuman)
+
+        if(Math.abs(velocity)>0.05 && !having)state=State.INTAKE_UP;
         extendo.setVelocity(velocity);
     }
     public void setExtendoTargetPosition(double position)
@@ -102,108 +139,83 @@ public class Intake {
         extendo.setIn();
     }
 
-
+    private void updateAsure1inDeposit()
+    {
+        switch (asure1inDepositState)
+        {
+            case Free:
+            break;
+            case PrepareToClean:
+                latch.setState("goClose");
+                state=State.INTAKE_UP;
+                if(latch.inPosition() && ramp.state==ramp.states.get("up"))asure1inDepositState=Asure1inDeposit.Clean;
+            break;
+            case Clean:
+                activeIntake.setMode(ActiveIntake.State.REVERSE);
+                extendo.setIn();
+                reverseTicks++;
+                if(reverseTicks>=2){asure1inDepositState=Asure1inDeposit.DezactivateCleaning;reverseTicks=0;}
+            break;
+            case DezactivateCleaning:
+                activeIntake.setMode(ActiveIntake.State.INTAKE);
+                latch.setState("goOpen");
+                if(latch.inPosition())
+                asure1inDepositState=Asure1inDeposit.Done;
+            break;
+            case Done:
+                activeIntake.setMode(ActiveIntake.State.INTAKE);
+                extendo.setIn();
+            break;
+        }
+    }
 
     private void updateStates()
     {
+        if(stateTransfer==TransferLogic.Free || stateTransfer==TransferLogic.ReadyForHuman){
+            if(driverState==State.REVERSE_DOWN && stateTransfer==TransferLogic.ReadyForHuman)
+            state=State.REVERSE_UP;
+            else state=driverState;
+        }
+
         switch (state)
         {
-            case REPAUS_UP:
-                ramp.setState("goUp");
-                activeIntake.setMode(ActiveIntake.State.REPAUS);
-                if(usingAutomatics)
-                latch.setState("goOpen");
-                break;
             case INTAKE_UP:
-                ramp.setState("goUp");
                 activeIntake.setMode(ActiveIntake.State.INTAKE);
-                if(usingAutomatics)
-                    latch.setState("goOpen");
-                break;
-            case REVERSE_UP:
                 ramp.setState("goUp");
-                activeIntake.setMode(ActiveIntake.State.REVERSE);
-                if(usingAutomatics)
-                    latch.setState("goOpen");
-                break;
-            case REPAUS_DOWN:
-                ramp.setState("goDown");
+            break;
+            case REPAUS_UP:
                 activeIntake.setMode(ActiveIntake.State.REPAUS);
-                if(usingAutomatics)
-                    latch.setState("goOpen");
-                break;
+                ramp.setState("goUp");
+            break;
             case INTAKE_DOWN:
-                ramp.setState("goDown");
                 activeIntake.setMode(ActiveIntake.State.INTAKE);
-                if(usingAutomatics)
-                    latch.setState("goOpen");
-                break;
+                ramp.setState("goDown");
+            break;
+            case REVERSE_UP:
+                activeIntake.setMode(ActiveIntake.State.REVERSE);
+                ramp.setState("goUp");
+            break;
+            case REPAUS_DOWN:
+                activeIntake.setMode(ActiveIntake.State.REPAUS);
+                ramp.setState("goDown");
+            break;
             case REVERSE_DOWN:
-                ramp.setState("goDown");
                 activeIntake.setMode(ActiveIntake.State.REVERSE);
-                if(usingAutomatics)
-                    latch.setState("goOpen");
-                break;
-            case THROW:
-                latch.setState("goOpen");
                 ramp.setState("goDown");
-                activeIntake.setMode(ActiveIntake.State.REVERSE);
-                ActiveIntake.State.REVERSE.power=ActiveIntake.reversePowerTeleOp;
-
-                if(hasSample.getState())nr++;
-                if(nr>=5){state=state.REPAUS_UP;nr=0;latch.setState("goOpen");
-                }
             break;
-            case PREPARE_TO_TRANSFER:
-                having=true;
-                if(reverseTicks<=3)
-                latch.setState("goClose");
-
-                if(latch.state==latch.states.get("close") && reverseTicks<=3){activeIntake.setMode(ActiveIntake.State.REVERSE);
-                                                            ramp.setState("goUp");
-                                                           reverseTicks++;
-                                                           ActiveIntake.State.REVERSE.power=ActiveIntake.reversePowerAuto;}
-                if(reverseTicks>3){
-
-                    activeIntake.setMode(ActiveIntake.State.REPAUS);
-                    extendo.setIn();
-                    reverseTicks=0;
-                    latch.setState("goOpen");
-                    state=State.TRANSFER;
-                    kNR=0;
-                }
-            break;
-            case TRANSFER:
-                kNR++;
-                if((extendo.state== Extendo.State.GOING_IN || !justColorAllaiance) && latch.state==latch.states.get("open"))activeIntake.setMode(ActiveIntake.State.INTAKE);
-
-                if(extendo.state== Extendo.State.IN && justColorAllaiance){state=State.REPAUS_UP;}
-            break;
-
-
-
-
         }
 
         if(extendo.state== Extendo.State.IN)extendoBlocker.setState("goClose");
         else extendoBlocker.setState("goOpen");
-
-
     }
 
     public boolean inPosition()
     {
-       if(ramp.inPosition())return true;
-        return false;
+       return ramp.inPosition();
     }
 
     public void setState(State state) {
-        if(((this.state==State.TRANSFER && ( (justColorAllaiance && state!=State.REVERSE_DOWN) || (!justColorAllaiance  && ((!hasSample.getState() || kNR<5) || extendo.state!= Extendo.State.IN || ramp.state!=ramp.states.get("up")))))  || this.state==State.THROW || this.state==State.PREPARE_TO_TRANSFER))return;
-        if(having && state==State.REVERSE_DOWN){havingTimer.reset();
-        this.state=state;}
-        else if(!justColorAllaiance || !having){this.state=state;having=false;}
-
-
+        driverState=state;
     }
 
     public void update()
@@ -211,15 +223,16 @@ public class Intake {
         if(usingAutomatics)
         updateDeposit();
         updateStates();
+        updateAsure1inDeposit();
 
 
+        sampleInDeposit=(!bbDeposit.getState());
         ramp.update();
         extendo.update();
         extendoBlocker.update();
         sampleColor.update();
         latch.update();
 
-        prevHasSample=hasSample.getState();
     }
 
 }

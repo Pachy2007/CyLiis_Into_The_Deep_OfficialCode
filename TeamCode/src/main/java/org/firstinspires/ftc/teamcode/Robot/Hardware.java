@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
+import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -35,10 +37,12 @@ public class Hardware {
 
     public static DigitalChannel depositBeamBreak;
     public static DigitalChannel extendoBeamBreak;
-
+    public static RevColorSensorV3 distanceSnsor;
 
     public static double IMUOFFSET=0;
 
+
+    public static AdafruitBNO055IMU imu;
 
     public static void unlock(DcMotorEx motor)
     {
@@ -50,9 +54,11 @@ public class Hardware {
     public static void init(HardwareMap hardwareMap)
     {
         IMUOFFSET=0;
+         distanceSnsor=hardwareMap.get(RevColorSensorV3.class , "colorSensor");
         colorSensor=hardwareMap.get(ColorSensor.class , "colorSensor");
         depositBeamBreak=hardwareMap.get(DigitalChannel.class , "depositBB");
            extendoBeamBreak=hardwareMap.get(DigitalChannel.class , "extendoBeamBreak");
+        imu=hardwareMap.get(AdafruitBNO055IMU.class , "imu");
 
         mch0=hardwareMap.get(DcMotorEx.class , "ch0");
         mch1=hardwareMap.get(DcMotorEx.class , "ch1");
@@ -60,10 +66,10 @@ public class Hardware {
         mch3=hardwareMap.get(DcMotorEx.class , "ch3");
 
 
-        unlock(mch0);
-        unlock(mch1);
-        unlock(mch2);
-        unlock(mch3);
+        //unlock(mch0);
+        //unlock(mch1);
+       // unlock(mch2);
+        //unlock(mch3);
 
 
         meh0=hardwareMap.get(DcMotorEx.class , "eh0");
@@ -71,10 +77,10 @@ public class Hardware {
         meh2=hardwareMap.get(DcMotorEx.class , "eh2");
         meh3=hardwareMap.get(DcMotorEx.class , "eh3");
 
-        unlock(meh0);
-        unlock(meh1);
-        unlock(meh2);
-        unlock(meh3);
+        //unlock(meh0);
+        //unlock(meh1);
+        //unlock(meh2);
+        //unlock(meh3);
 
 
 

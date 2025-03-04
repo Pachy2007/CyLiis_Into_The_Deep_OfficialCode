@@ -40,7 +40,7 @@ public class Extendo {
     private static double inPower=-0.02 , goingInPower=-1;
 
     public static double position;
-    private static double maximExtendoPosition=900;
+    private static double maximExtendoPosition=1300;
 
     DigitalChannel isIn;
     double velocity=0;
@@ -99,8 +99,8 @@ public class Extendo {
             case GOING_IN:
                 Differential.extendoPower=goingInPower;
                 Differential.update();
-                if(Math.abs(encoder.getVelocity())<70)nr++;
-                if((Math.abs(encoder.getVelocity())<70 && nr>1)){
+                if(Math.abs(encoder.getVelocity())<100)nr++;
+                if((Math.abs(encoder.getVelocity())<100 && nr>1)){
                     {state=state.nextState;
                         encoder.resetPosition();}}
                 break;

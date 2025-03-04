@@ -15,26 +15,26 @@ public class Arm extends IServoModule {
 
     public static double deposit=0.03;
 
-    public static double takeSpecimen=0.905;
+    public static double takeSpecimen=0.935;
 
-    public static double withElementSample=0.045 , withElementSpecimen=0.27;
+    public static double withElementSample=0.03 , withElementSpecimen=0.265;
 
     public static double releaseSample=0.2;
 
-    public static double lowSample=0.62;
+    public static double lowSample=0.7;
 
-    public static double putHighSample=0.58;
+    public static double putHighSample=0.7;
 
-    public static double lowSpecimen=0.27;
+    public static double lowSpecimen=0.265;
 
-    public static double neutralSpecimen=0.55 , neutralSample=0.55;
+    public static double neutralSpecimen=0.535 , neutralSample=0.535;
 
-    public static double highSpecimen=0.255;
+    public static double highSpecimen=0.265;
 
     public static double scoreSample=0.7;
 
 
-    public static double MaxVelocoty=20 , Acceleration=32  , Deceleration=32;
+    public static double MaxVelocoty=12.5 , Acceleration=15  , Deceleration=15;
 
     State initState;
 
@@ -45,7 +45,7 @@ public class Arm extends IServoModule {
         setStates();
         initState=states.get("deposit");
         setServos(new BetterServo("ServoLeft" , Hardware.ssh2 , BetterServo.RunMode.PROFILE , deposit , leftServoReversed),
-                new BetterServo("ServoRight" , Hardware.ssh1 , BetterServo.RunMode.PROFILE ,  deposit , rightServoReversed)
+                new BetterServo("ServoRight" , Hardware.ssh4 , BetterServo.RunMode.PROFILE ,  deposit , rightServoReversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;
@@ -63,7 +63,7 @@ public class Arm extends IServoModule {
         setStates();
         initState=states.get(string);
         setServos(new BetterServo("ServoLeft" , Hardware.ssh2 , BetterServo.RunMode.PROFILE , deposit , leftServoReversed),
-                new BetterServo("ServoRight" , Hardware.ssh1 , BetterServo.RunMode.PROFILE ,  deposit , rightServoReversed)
+                new BetterServo("ServoRight" , Hardware.ssh4 , BetterServo.RunMode.PROFILE ,  deposit , rightServoReversed)
         );
         this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;
@@ -76,6 +76,8 @@ public class Arm extends IServoModule {
 
     @Override
     public void setStates()  {
+
+        states.addState("climb" , 0.43 , 0.43);
 
         states.addState("deposit" , deposit , deposit);
         states.addState("goDeposit" , states.get("deposit") , deposit , deposit);

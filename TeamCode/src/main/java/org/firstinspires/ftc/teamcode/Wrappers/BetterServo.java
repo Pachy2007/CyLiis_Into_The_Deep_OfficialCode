@@ -74,8 +74,8 @@ public class BetterServo {
     public void setPosition(double position)
     {
         if(runMode==RunMode.Time)if(this.position==position)return;
-        if(runMode==RunMode.PROFILE)
-        if(position==profile.finalPosition)return;
+        if(runMode==RunMode.PROFILE)if(position==profile.finalPosition)return;
+
 
 
         switch (runMode)
@@ -97,6 +97,7 @@ public class BetterServo {
                 this.position=position;
                 break;
         }
+        update();
     }
     public void setMODE(RunMode mode)
     {

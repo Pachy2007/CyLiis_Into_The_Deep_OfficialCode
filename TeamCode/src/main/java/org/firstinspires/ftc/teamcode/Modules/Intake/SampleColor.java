@@ -1,8 +1,11 @@
     package org.firstinspires.ftc.teamcode.Modules.Intake;
 
+    import com.qualcomm.hardware.rev.RevColorSensorV3;
     import com.qualcomm.robotcore.hardware.ColorSensor;
+    import com.qualcomm.robotcore.hardware.DistanceSensor;
 
     import org.firstinspires.ftc.teamcode.Robot.Hardware;
+    import org.firstinspires.ftc.teamcode.Wrappers.Color;
 
     public class SampleColor {
 
@@ -14,7 +17,7 @@
 
         public float redError, yellowError , blueError;
 
-        ColorSensor colorSensor;
+        public ColorSensor colorSensor;
 
 
 

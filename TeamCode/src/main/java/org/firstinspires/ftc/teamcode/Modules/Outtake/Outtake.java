@@ -21,7 +21,9 @@ public class Outtake {
         DeafultWithElement,
         ReleaseSample,
         Up,
-        PARK
+        PARK,
+        CLIMB2,
+        CLIMB3;
     }
     public State state=State.Deafult;
 
@@ -31,7 +33,7 @@ public class Outtake {
         LowBasket ,
         HighChamber, ScoringHighChamber,
         LowChamber , ScoringLowChamber
-    } public Scoring scoring=Scoring.LowChamber;
+    } public Scoring scoring=Scoring.HighChamber;
 
     public boolean haveSample=false;
     boolean high=true;
@@ -58,7 +60,7 @@ public class Outtake {
     ElapsedTime retryTimer=new ElapsedTime();
 
     public static boolean prim=false;
-    public static int lowBasketPosition=400  , highBasketPosition=1100  , lowChamberDown=150 ,  highChamberDown=540, climbPosition=500 , autoClimbPosition=190;
+    public static int lowBasketPosition=400  , highBasketPosition=1000  , lowChamberDown=150 ,  highChamberDown=530, climbPosition=500 , autoClimbPosition=190 , climb2=520 , climb3=950;
 
     public Outtake()
     {
@@ -77,6 +79,15 @@ public class Outtake {
         claw=new Claw("goCloseSpecimen");
     }
 
+    public void climb2(){
+        state=State.CLIMB2;
+        update();
+    }
+
+    public void climb3(){
+        state=State.CLIMB3;
+        update();
+    }
 
     public void retry()
     {
@@ -100,6 +111,11 @@ public class Outtake {
             case DeafultWithElement:
             case TakingElement:
             case Up:
+            case CLIMB2:
+            case PARK:
+            case GoDown:
+            case ReleaseSample:
+            case CLIMB3:
                 return;
         }
         state=State.TakingElement;
@@ -164,6 +180,14 @@ public class Outtake {
     {
         switch (state)
         {
+            case CLIMB2:
+                lift.setPosition(climb2);
+                lift.goUp();
+                break;
+            case CLIMB3:
+                lift.setPosition(climb3);
+                lift.goUp();
+                break;
             case PARK:
                 lift.setPosition(autoClimbPosition);
                 lift.goUp();
@@ -195,11 +219,10 @@ public class Outtake {
             case TakingElement:
                 calculate=false;
                 lift.goDown();
-                {   haveSample=true;
+                  haveSample=true;
                     if(arm.inPosition() && extension.inPosition())
-                    extension.setState("goDeposit");
-                    if(arm.inPosition() && lift.state==Lift.State.DOWN && extension.inPosition() && extension.state==extension.states.get("deposit"))claw.setState("goClose");
-                if(claw.inPosition() && claw.state==claw.states.get("close"))state=State.DeafultWithElement;}
+                    if(arm.inPosition() && lift.state==Lift.State.DOWN && extension.inPosition())claw.setState("goClose");
+                if(claw.inPosition() && claw.state==claw.states.get("close"))state=State.DeafultWithElement;
                 if(claw.inPosition() && claw.state==claw.states.get("close"))
                 {lift.setPosition(150);
                 lift.goUp();}
@@ -208,7 +231,7 @@ public class Outtake {
             case Deafult:
                 take=false;
                 calculate=false;
-
+                arm.setState("goDeposit");
 
                 if(arm.inPosition() && arm.state==arm.states.get("deposit"))
                 extension.setState("goTakeSample");
@@ -253,12 +276,12 @@ public class Outtake {
                         if(arm.state!=arm.states.get("goNeutralSample") && arm.state!=arm.states.get("neutralSample"))
                         arm.setState("goScoreSample");
                         arm.maxVelocity=16;
-                        if(arm.state==arm.states.get("scoreSample"))claw.setState("goScoring");
+                        if(arm.state==arm.states.get("scoreSample") && arm.inPosition())claw.setState("goScoring");
 
-                        if(claw.state==claw.states.get("scoring"))
+                        if(arm.inPosition() && arm.state==arm.states.get("scoreSample"))
                         {arm.maxVelocity=20; arm.setState("goNeutralSample");}
                     }
-                    else arm.setState("goNeutralSpecimen");
+                    else if(extension.state==extension.states.get("retrect"))arm.setState("goNeutralSpecimen");
                     extension.setState("goRetrect");}
                 if(claw.inPosition() && (arm.state==arm.states.get("neutralSample") || arm.state==arm.states.get("neutralSpecimen")) && claw.state==claw.states.get("scoring"))lift.goDown();
                 if(lift.state== Lift.State.DOWN)

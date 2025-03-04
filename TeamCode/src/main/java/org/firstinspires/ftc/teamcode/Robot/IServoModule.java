@@ -38,7 +38,7 @@ public abstract class IServoModule{
     public void updateState()
     {
          for(int i=0;i<servos.length ; i++)
-             if(!   servos[i].inPosition())return;
+             if(!servos[i].inPosition())return;
 
          state=state.nextState;
     }
@@ -49,7 +49,7 @@ public abstract class IServoModule{
         if(state.positions==states.get(name).positions)return;
         if(state==states.get(name) || state==states.get(name).nextState)return;
         state=states.get(name);
-        updateHardware();
+        update();
     }
 
 

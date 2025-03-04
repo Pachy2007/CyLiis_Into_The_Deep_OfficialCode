@@ -16,7 +16,7 @@ import java.lang.Math;
 public class Odo {
 
     public  static GoBildaPinpointDriver  odo;
-    public static double heading , x ,y, xVelocity, yVelocity, predictedX, predictedY;
+    public static double heading,x ,y, xVelocity, yVelocity, predictedX, predictedY;
     public static boolean INIT=false;
 
     public static Telemetry telemetry;
@@ -27,14 +27,10 @@ public class Odo {
         telemetry=telemetryy;
         INIT=true;
         odo=hardwareMap.get(GoBildaPinpointDriver.class , "odo");
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED , GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD , GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setOffsets(-131.225 , -1.344);
+        odo.setOffsets(130.599 , 1.099);
         odo.resetPosAndIMU();
-
-       // if(!plsMergi)
-        {
-        odo.recalibrateIMU();plsMergi=true;}
     }
 
     public  static void init(HardwareMap hardwareMap , Telemetry telemetryy , String string)
@@ -44,18 +40,14 @@ public class Odo {
         telemetry=telemetryy;
         INIT=true;
         odo=hardwareMap.get(GoBildaPinpointDriver.class , "odo");
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED , GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD , GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setOffsets(-131.225 , -1.344);
-
-        if(!plsMergi)
-        {
-        odo.recalibrateIMU();plsMergi=true;}
+        odo.setOffsets(130.599 , 1.099);
     }
 
     public static void calibrate()
     {
-        odo.recalibrateIMU();
+        //odo.recalibrateIMU();
     }
 
     public static double getHeading()
@@ -75,7 +67,7 @@ public class Odo {
 
     public static void reset()
     {
-        odo.setPosition(new Pose2D(DistanceUnit.MM , 0 , 0 , AngleUnit.RADIANS , 0));
+        //odo.setPosition(new Pose2D(DistanceUnit.MM , 0 , 0 , AngleUnit.RADIANS , 0));
     }
 
     public static double filterParameter = 0.8;
@@ -116,8 +108,6 @@ public class Odo {
             updateGlide();
             predictedX = x + xGlide;
             predictedY = y + yGlide;}
-
-            if(Math.abs(heading)> Math.PI)heading=heading-2*Math.PI*Math.signum(heading);
 
         }
 }

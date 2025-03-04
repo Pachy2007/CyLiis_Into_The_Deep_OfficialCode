@@ -207,13 +207,13 @@ public class Specimen7 {
                             takeSample.next[2]=prepareTakeFloorSample;
                         }
                         else {takeSample.next[0]=prepareGoToHuman;takeSample.next[1]=prepareGoToHuman;takeSample.next[2]=prepareGoToHuman;}
-                        if(!intake.hasSample.getState() && timer2ForSub.seconds()>0.4)timer2ForSub.reset();
+                        /**if(!intake.hasSample.getState() && timer2ForSub.seconds()>0.4)timer2ForSub.reset();
                         if(!intake.hasSample.getState())timerForSub.reset();
 
                             if(timerForSub.seconds()>1 || (!intake.hasSample.getState() && intake.sampleColor.state== RED && timer2ForSub.seconds()<0.4 && timer2ForSub.seconds()>0.15))
                             {                        timer2ForSub.reset();
                                 return true;
-                            }
+                            }**/
                         if(timer2ForSub.seconds()>0.25 && timer2ForSub.seconds()<0.4)intake.setState(Intake.State.REVERSE_UP);
                         return false;
                     },
@@ -260,7 +260,8 @@ public class Specimen7 {
                     ,
                     ()->{
                         if(outtake.inPosition() && driveTrain.inPosition())outtake.grabSample();
-                        return driveTrain.inPosition() && intake.hasSample.getState() && (outtake.claw.state==outtake.claw.states.get("closeSpecimen") || outtake.claw.state==outtake.claw.states.get("goCloseSpecimen"));
+                        return true;
+                        //return driveTrain.inPosition() && intake.hasSample.getState() && (outtake.claw.state==outtake.claw.states.get("closeSpecimen") || outtake.claw.state==outtake.claw.states.get("goCloseSpecimen"));
                     }
                     ,
                     new Node[]{beforePutSpecimen}
@@ -298,10 +299,10 @@ public class Specimen7 {
                     ,
                     ()->{
                         timer.reset();
-                        if(intake.hasSample.getState() && timerForSub.seconds()>1 && driveTrain.inPosition(800 , 600 , 1) && intake.extendo.inPosition() && Extendo.targetPosition==900)timerForSub.reset();
+                        /**if(intake.hasSample.getState() && timerForSub.seconds()>1 && driveTrain.inPosition(800 , 600 , 1) && intake.extendo.inPosition() && Extendo.targetPosition==900)timerForSub.reset();
                         if(intake.hasSample.getState() && timerForSub.seconds()>0.1 && driveTrain.inPosition(800 , 600 , 1) && intake.extendo.inPosition() && Extendo.targetPosition==900){
                             intake.setExtendoIN();
-                        return true;}
+                        return true;}**/
                         return false;
                     }
                     ,
@@ -324,8 +325,9 @@ public class Specimen7 {
                     }
                     ,
                     ()->{
-                        if(timer.seconds()>1){return true;}
-                        return !intake.hasSample.getState();
+                        return true;
+                        //if(timer.seconds()>1){return true;}
+                        //return !intake.hasSample.getState();
                     }
                     ,
                     new Node[]{releaseSample}
@@ -343,7 +345,7 @@ public class Specimen7 {
                     ,
                     ()->{
                         if(reverseTimer.seconds()>0.4 && driveTrain.inPosition(150 , 150 , 0.5) && intake.state== Intake.State.REVERSE_DOWN)reverseTimer.reset();
-                        if(reverseTimer.seconds()>0.3 && reverseTimer.seconds()<0.4 && intake.hasSample.getState() && intake.state== Intake.State.REVERSE_DOWN){intake.setExtendoTargetPosition(450);return true;}
+                        //f(reverseTimer.seconds()>0.3 && reverseTimer.seconds()<0.4 && intake.hasSample.getState() && intake.state== Intake.State.REVERSE_DOWN){intake.setExtendoTargetPosition(450);return true;}
                         return false;
                     }
                     ,

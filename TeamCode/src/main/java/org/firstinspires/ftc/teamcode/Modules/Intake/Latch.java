@@ -13,7 +13,7 @@ public class Latch extends IServoModule {
     public static boolean reversed=false;
 
     public static double close=0.29 , open=0.83;
-    public static double time=0.09   ;
+    public static double time=0.1;
 
     public Latch()
     {
