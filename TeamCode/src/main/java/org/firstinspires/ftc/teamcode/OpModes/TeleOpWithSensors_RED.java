@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.Modules.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Modules.Others.Differential;
 import org.firstinspires.ftc.teamcode.Modules.Others.PTO;
 import org.firstinspires.ftc.teamcode.Modules.Intake.SampleColor;
+import org.firstinspires.ftc.teamcode.Modules.Others.Scissor;
 import org.firstinspires.ftc.teamcode.Modules.Others.Wheelie;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Lift;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Outtake;
@@ -72,6 +73,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         Outtake outtake=new Outtake();
         MecanumDriveTrain driveTrain=new MecanumDriveTrain(MecanumDriveTrain.State.DRIVE);
         Intake intake=new Intake(SampleColor.State.RED , true);
+        Scissor scissor = new Scissor();
 
         PTO pto=new PTO();
         Wheelie wheelie=new Wheelie();
@@ -261,6 +263,9 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
             driveTrain.setTargetVector( X , Y , rotation );
 
+            if(intake.extendo.encoder.getPosition()>100 && intake.extendo.state!= Extendo.State.IN && intake.extendo.state!= Extendo.State.GOING_IN)scissor.setState("goingDeploied");
+            else scissor.setState("goingRetrected");
+
             if(gamepad1.options)Odo.reset();
 
             if(gamepad1.a)intake.setExtendoIN();
@@ -325,6 +330,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
             Odo.update();
             pto.update();
             wheelie.update();
+            scissor.update();
 
             telemetry.addData("SpeedLiftChamber" , Outtake.sumChamber/Outtake.nrChamber);
             telemetry.addData("SpeedLiftBasket" , Outtake.sumBasket/Outtake.nrBasket);
