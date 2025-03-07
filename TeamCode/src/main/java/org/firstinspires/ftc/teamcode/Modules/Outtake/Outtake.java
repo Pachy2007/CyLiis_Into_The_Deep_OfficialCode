@@ -60,7 +60,7 @@ public class Outtake {
     ElapsedTime retryTimer=new ElapsedTime();
 
     public static boolean prim=false;
-    public static int lowBasketPosition=400  , highBasketPosition=1000  , lowChamberDown=150 ,  highChamberDown=530, climbPosition=500 , autoClimbPosition=190 , climb2=520 , climb3=950;
+    public static int lowBasketPosition=400  , highBasketPosition=1000  , lowChamberDown=150 ,  highChamberDown=550, climbPosition=500 , autoClimbPosition=190 , climb2=520 , climb3=950;
 
     public Outtake()
     {
@@ -133,6 +133,7 @@ public class Outtake {
     public void takeSpecimen()
     {
         if(state==State.Up || state==State.DeafultWithElement || state==State.TakingElement || state==State.Specimen)return;
+        if(arm.inPosition() && arm.state!=arm.states.get("highSpecimen"))
         state=State.Specimen;
     }
     public void goDefault()
@@ -310,7 +311,7 @@ public class Outtake {
 
                     case LowChamber:
                         lift.goUp();
-                        arm.setState("goLowSpecimen");
+                        arm.setState("goHighSpecimen");
                         extension.setState("goExtend");
                         lift.setPosition(lowChamberDown);
                         break;

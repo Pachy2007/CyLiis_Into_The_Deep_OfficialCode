@@ -41,13 +41,14 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
     State state=State.CONTROLLING;
 
 
-    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D prepareToTakeSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(150 ,0 , 0);
+    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D prepareToTakeSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(150 ,150 , 0);
     public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D takeSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(0 ,0 , 0);
-    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D beforePutSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(750 , 550 , 0);
-    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D putSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(785 ,650 , -0.15);
+    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D beforePutSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(830 , 475 , -0.6);
+    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D putSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(840 ,650 , 0);
 
 
 
+    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D offset=new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(0  ,-5 ,0);
 
 
     @Override
@@ -90,18 +91,20 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         beforePutSpecimen = new Node("beforePutSpecimen");
         putSpecimen = new Node("putSpecimen");
 
-
-
-
+        prepareToTakeSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(150 ,150 , 0);
+        takeSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(-5 ,0 , 0);
+        beforePutSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(820 , 500 , -0.5);
+        putSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(830 ,700 , 0);
 
         prepareToTakeSpecimen.addConditions(
                 ()->{
+                    if(prepareToTakeSpecimen.index!=0)
                     driveTrain.setTargetPosition(prepareToTakeSpecimenPosition);
                     outtake.takeSpecimen();
                 }
                 ,
                 ()->{
-                    return driveTrain.inPosition(100 , 50 , 0.3) && outtake.inPosition();
+                    return driveTrain.inPosition(400 , 150 , 0.5) && outtake.inPosition();
                 }
                 ,
                 new Node[]{takeSpecimen}
@@ -110,12 +113,14 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         takeSpecimen.addConditions(
                 ()->{
                     driveTrain.setTargetPosition(takeSpecimenPosition);
-                    if(driveTrain.inPosition(25 , 25 , 0.3))
+                    if(driveTrain.inPosition( 20 , 20    , 0.3))
                     outtake.grabSample();
                 }
                 ,
                 ()->{
-                    return outtake.claw.state==outtake.claw.states.get("goCloseSpecimen") || outtake.claw.state==outtake.claw.states.get("closeSpecimen");
+                    if(outtake.claw.state==outtake.claw.states.get("goCloseSpecimen") || outtake.claw.state==outtake.claw.states.get("closeSpecimen"))
+                    {Odo.odo.setPosition(new Pose2D(DistanceUnit.MM ,Odo.getX()+ offset.x , Odo.getY()+offset.y , AngleUnit.RADIANS, Odo.getHeading())); return true;}
+                    return false;
                 }
                 ,
                 new Node[]{beforePutSpecimen}
@@ -127,7 +132,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 }
                 ,
                 ()->{
-                    return outtake.inPosition() && outtake.state== Outtake.State.Up;
+                    return outtake.inPosition() && outtake.state== Outtake.State.Up && driveTrain.inPosition(300 , 50 , 0.15);
                 }
                 ,
                 new Node[]{putSpecimen}
@@ -136,11 +141,11 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         putSpecimen.addConditions(
                 ()->{
                     driveTrain.setTargetPosition(putSpecimenPosition);
-                    if(driveTrain.inPosition(30 , 100 , 0.2))outtake.score();
+                    if(driveTrain.inPosition(150 , 50 , 0.2))outtake.score();
                 }
                 ,
                 ()->{
-                    return outtake.extension.state==outtake.extension.states.get("retrect");
+                    return outtake.state!= Outtake.State.Up;
                 }
                 ,
                 new Node[]{prepareToTakeSpecimen}
@@ -254,9 +259,9 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
             double x=X*Math.cos(heading)-Y*Math.sin(heading);
             double y=X* Math.sin(heading)+Y*Math.cos(heading);
 
-            driveTrain.setTargetVector( x , y , rotation );
+            driveTrain.setTargetVector( X , Y , rotation );
 
-
+            if(gamepad1.options)Odo.reset();
 
             if(gamepad1.a)intake.setExtendoIN();
 
@@ -298,8 +303,10 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
             if(gamepad1.y && prevB)
             {
-                state=State.SCORING_SPECIMEN;
-                Odo.reset();
+                if(state==State.CONTROLLING)
+                {state=State.SCORING_SPECIMEN;
+                    driveTrain.setTargetPosition(0 ,0 ,0);
+                Odo.reset();}
             }
             prevB=gamepad1.y;
 
@@ -325,7 +332,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
             telemetry.addData("IntakeState" , intake.state);
             telemetry.addData("claw" , outtake.claw.state.name);
             telemetry.addData("arm" , outtake.arm.state.name);
-            telemetry.addData("heading" , Odo.getHeading());
+            telemetry.addData("heading" , Odo.getHeading()%(2*Math.PI));
             telemetry.addData("IMUOFFSET" , Hardware.IMUOFFSET);
             telemetry.addData("motor1" , Differential.motor1.motor.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("motor2" , Differential.motor2.motor.getCurrent(CurrentUnit.AMPS));
@@ -338,6 +345,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
             telemetry.addData("TimerClaw" , outtake.claw.servos[0].timer.seconds());
             telemetry.addData("OdoState" , Odo.odo.getDeviceStatus());
             telemetry.addData("LoopTime" , Odo.odo.getLoopTime());
+            telemetry.addData("realIMU" , Odo.odo.getYawScalar());
 
             telemetry.update();
         }

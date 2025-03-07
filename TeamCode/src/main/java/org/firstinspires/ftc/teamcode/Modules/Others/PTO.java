@@ -11,8 +11,8 @@ public class PTO extends IServoModule {
 
     public static boolean reversed=false;
 
-    public static double climbPosition=0.16;
-    public static double normalPosition=0;
+    public static double climbPosition=0.3;
+    public static double normalPosition=0.2;
 
     public static double MaxVelocoty=20 , Acceleration=32  , Deceleration=32;
 

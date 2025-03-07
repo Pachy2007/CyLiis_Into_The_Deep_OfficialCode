@@ -31,7 +31,7 @@ public class OdoTest extends LinearOpMode {
             telemetry.addData("OdoState" , Odo.odo.getDeviceStatus());
             telemetry.addData("LoopTime" , Odo.odo.getLoopTime());
             telemetry.addData("Frequency" , Odo.odo.getFrequency());
-
+            //telemetry.addData("HeadingHub",Odo.imu.getRobotYawPitchRollAngles().getYaw());
             telemetry.update();
             Odo.update();
 

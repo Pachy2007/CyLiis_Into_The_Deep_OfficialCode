@@ -28,12 +28,12 @@ import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 public class Limelight {
 
     public static Limelight3A limelight;
-    public static double angle=20;
-    public static double Height=308.88;
-    public static double distanceIntake=100;
-    public static double lateralDistance=-96;
+    public static double angle=30;
+    public static double Height=306;
+    public static double distanceIntake=93;
+    public static double lateralDistance=82;
     public static LLResult result;
-    public static double k=1.55;
+    public static double k=0.875;
     public static double Distance;
 
     public static double extendoPosition;
@@ -42,8 +42,9 @@ public class Limelight {
     public static double X;
     public static double Y;
 
-    public static void init(HardwareMap hardwareMap){
+    public static void init(HardwareMap hardwareMap , int pipeline){
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.pipelineSwitch(pipeline);
         limelight.start();
     }
 

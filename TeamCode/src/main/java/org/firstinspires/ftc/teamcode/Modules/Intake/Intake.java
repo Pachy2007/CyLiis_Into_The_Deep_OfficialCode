@@ -39,7 +39,7 @@ public class Intake {
     public DigitalChannel bbDeposit;
 
     SampleColor.State colorAllaiance;
-    ElapsedTime timer=new ElapsedTime();
+    ElapsedTime decideTimer = new ElapsedTime();
 
     public boolean sampleInDeposit;
     public double kNR=0;
@@ -77,8 +77,10 @@ public class Intake {
             case Free:
                 if(sampleInDeposit)
                     stateTransfer=TransferLogic.Decide;
+                decideTimer.reset();
             break;
             case Decide:
+                if(decideTimer.seconds()<0.15)return;
                 if(sampleColor.state!=colorAllaiance && sampleColor.state== SampleColor.State.YELLOW)stateTransfer=TransferLogic.Throw;
                 if(sampleColor.state== SampleColor.State.YELLOW)
                 {
@@ -151,19 +153,19 @@ public class Intake {
                 if(latch.inPosition() && ramp.state==ramp.states.get("up"))asure1inDepositState=Asure1inDeposit.Clean;
             break;
             case Clean:
-                activeIntake.setMode(ActiveIntake.State.REVERSE);
+                state=State.REVERSE_UP;
                 extendo.setIn();
                 reverseTicks++;
                 if(reverseTicks>=2){asure1inDepositState=Asure1inDeposit.DezactivateCleaning;reverseTicks=0;}
             break;
             case DezactivateCleaning:
-                activeIntake.setMode(ActiveIntake.State.INTAKE);
+                state=State.INTAKE_UP;
                 latch.setState("goOpen");
                 if(latch.inPosition())
                 asure1inDepositState=Asure1inDeposit.Done;
             break;
             case Done:
-                activeIntake.setMode(ActiveIntake.State.INTAKE);
+                setState(State.INTAKE_UP);
                 extendo.setIn();
             break;
         }
@@ -174,7 +176,7 @@ public class Intake {
         if(stateTransfer==TransferLogic.Free || stateTransfer==TransferLogic.ReadyForHuman){
             if(driverState==State.REVERSE_DOWN && stateTransfer==TransferLogic.ReadyForHuman)
             state=State.REVERSE_UP;
-            else state=driverState;
+            else if(asure1inDepositState==Asure1inDeposit.Free)state=driverState;
         }
 
         switch (state)

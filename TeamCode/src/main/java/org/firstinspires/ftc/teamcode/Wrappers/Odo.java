@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Wrappers;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -13,11 +14,15 @@ import org.opencv.core.Mat;
 
 import java.lang.Math;
 
+@Config
 public class Odo {
 
     public  static GoBildaPinpointDriver  odo;
     public static double heading,x ,y, xVelocity, yVelocity, predictedX, predictedY;
     public static boolean INIT=false;
+    public static double xOffset = 130.5;
+    public static double yOffset = 3.5;
+    //public static long time = System.currentTimeMillis();
 
     public static Telemetry telemetry;
     public static boolean plsMergi=false;
@@ -29,9 +34,11 @@ public class Odo {
         odo=hardwareMap.get(GoBildaPinpointDriver.class , "odo");
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD , GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setOffsets(130.599 , 1.099);
+        odo.setOffsets(130.5 , 3.5);
+        //odo.setOffsets(xOffset , yOffset);
         odo.resetPosAndIMU();
     }
+    //public static IMU imu;
 
     public  static void init(HardwareMap hardwareMap , Telemetry telemetryy , String string)
     {
@@ -40,14 +47,18 @@ public class Odo {
         telemetry=telemetryy;
         INIT=true;
         odo=hardwareMap.get(GoBildaPinpointDriver.class , "odo");
+
+
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD , GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setOffsets(130.599 , 1.099);
+        odo.setOffsets(130.5 , 3.5);
+        //odo.setOffsets(xOffset, yOffset);
+        odo.resetPosAndIMU();
     }
 
     public static void calibrate()
     {
-        //odo.recalibrateIMU();
+        odo.recalibrateIMU();
     }
 
     public static double getHeading()
@@ -60,14 +71,11 @@ public class Odo {
         return x;
     }
 
-    public static double getY()
-    {
-        return y;
-    }
+    public static double getY() {return y;}
 
     public static void reset()
     {
-        //odo.setPosition(new Pose2D(DistanceUnit.MM , 0 , 0 , AngleUnit.RADIANS , 0));
+        odo.setPosition(new Pose2D(DistanceUnit.MM , 0 , 0 , AngleUnit.RADIANS , 0));
     }
 
     public static double filterParameter = 0.8;
@@ -108,6 +116,16 @@ public class Odo {
             updateGlide();
             predictedX = x + xGlide;
             predictedY = y + yGlide;}
+
+//            long newTime = System.currentTimeMillis();
+//            if(newTime-time>100) {
+//                double newHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+//                while(newHeading>2*Math.PI){newHeading-=2*Math.PI;}
+//                while(newHeading<0){newHeading+=2*Math.PI;}
+//                odo.setPosition(new Pose2D(DistanceUnit.MM, x, y, AngleUnit.RADIANS, newHeading));
+//                time = newTime;
+//            }
+
 
         }
 }

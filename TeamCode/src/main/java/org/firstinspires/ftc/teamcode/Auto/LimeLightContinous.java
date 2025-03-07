@@ -23,7 +23,7 @@ public class LimeLightContinous extends LinearOpMode {
         Hardware.init(hardwareMap);
 
         Intake intake=new Intake(SampleColor.State.RED , false);
-        Limelight.init(hardwareMap);
+        Limelight.init(hardwareMap , 0);
         MecanumDriveTrain mecanumDriveTrain=new MecanumDriveTrain(MecanumDriveTrain.State.PID);
 
         mecanumDriveTrain.setTargetPosition(0, 0 ,0);

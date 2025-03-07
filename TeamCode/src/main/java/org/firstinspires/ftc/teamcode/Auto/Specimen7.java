@@ -65,9 +65,6 @@ public class Specimen7 {
     {
         if(!INIT)
         {
-            beforePutSpecimenPosition=new Pose2D (-600 , 200 ,-0.5);
-            putSpecimenPosition=new Pose2D(-920 ,0 ,-0.5);
-
             beforeTakeWallSpecimen=new Node("beforeTakeWallSpecimen");
             beforePutSpecimen=new Node("beforePutSpecimen");
             putSpecimen=new Node("putSpecimen");
@@ -88,7 +85,7 @@ public class Specimen7 {
             timerForSub=new ElapsedTime();
 
             Hardware.init(hardwareMap);
-            Limelight.init(hardwareMap);
+            Limelight.init(hardwareMap , 0);
             INIT=true;
 
             timer2ForSub=new ElapsedTime();

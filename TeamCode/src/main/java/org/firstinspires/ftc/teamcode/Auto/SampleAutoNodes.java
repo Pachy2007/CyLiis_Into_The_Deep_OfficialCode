@@ -106,6 +106,7 @@ public class SampleAutoNodes {
                     ()->{
                         skip=false;
                         driveTrain.setTargetPosition(takeFloorSamplePosition[takefromFloor.index]);
+                        extendo.setTargetPosition(takeFloorSampleExtendoPosition[takefromFloor.index]);
                         if(driveTrain.inPosition())
                         {
                             intake.setState(Intake.State.INTAKE_DOWN);

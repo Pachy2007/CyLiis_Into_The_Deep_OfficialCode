@@ -15,14 +15,12 @@ public class ExternalImuTest extends LinearOpMode {
 
         Hardware.init(hardwareMap);
 
-        Hardware.imu.initialize();
 
 
         waitForStart();
 
         while(opModeIsActive())
         {
-            telemetry.addData("imu" , Hardware.imu.getPosition().x);
             telemetry.update();
         }
     }

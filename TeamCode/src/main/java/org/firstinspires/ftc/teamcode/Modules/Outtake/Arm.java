@@ -13,9 +13,9 @@ public class Arm extends IServoModule {
     public static boolean leftServoReversed=true , rightServoReversed=false ;
 
 
-    public static double deposit=0.03;
+    public static double deposit=0.04;
 
-    public static double takeSpecimen=0.935;
+    public static double takeSpecimen=0.93;
 
     public static double withElementSample=0.03 , withElementSpecimen=0.265;
 
@@ -34,7 +34,7 @@ public class Arm extends IServoModule {
     public static double scoreSample=0.7;
 
 
-    public static double MaxVelocoty=12.5 , Acceleration=15  , Deceleration=15;
+    public static double MaxVelocoty=10 , Acceleration=14  , Deceleration=14;
 
     State initState;
 

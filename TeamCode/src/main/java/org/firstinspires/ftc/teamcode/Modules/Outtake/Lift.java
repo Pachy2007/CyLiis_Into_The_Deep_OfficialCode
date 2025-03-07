@@ -32,7 +32,7 @@ public class Lift {
     public static boolean yes=false;
     int nr=0;
 
-    public static double kP=0.0055 , kI=0 , kD=0.0001;
+    public static double kP=0.005 , kI=0 , kD=0.0001;
 
     PIDController controller;
     Encoder encoder;

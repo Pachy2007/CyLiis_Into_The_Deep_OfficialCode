@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Auto.Specimen7;
+import org.firstinspires.ftc.teamcode.Auto.SpecimenAutoRed;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.OpModes.Limelight;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
@@ -17,7 +18,7 @@ public class Sper_ca_Merge extends LinearOpMode {
 
         Odo.init(hardwareMap , telemetry , "a");
 
-        Specimen7 nodes=new Specimen7();
+        SpecimenAutoRed nodes=new SpecimenAutoRed();
 
 
         Hardware.init(hardwareMap);
@@ -25,7 +26,7 @@ public class Sper_ca_Merge extends LinearOpMode {
 
 
 
-        nodes.run(hardwareMap , telemetry);
+        nodes.init(hardwareMap);
 
         while(opModeInInit())
         {
@@ -33,12 +34,11 @@ public class Sper_ca_Merge extends LinearOpMode {
             nodes.outtake.update();
 
             Hardware.IMUOFFSET=Math.PI;
-            nodes.timerOuttake.reset();
         }
         waitForStart();
         while (opModeIsActive())
         {
-            nodes.run(hardwareMap  , telemetry);
+            nodes.run(telemetry);
 
             telemetry.addData("extendo" , Limelight.extendoPosition);
             telemetry.addData("extendoPositionTarget" , Extendo.targetPosition);
