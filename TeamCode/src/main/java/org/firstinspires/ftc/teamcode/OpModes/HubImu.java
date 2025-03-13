@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import java.util.List;
 
-@TeleOp
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "zzzz")
 public class HubImu extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

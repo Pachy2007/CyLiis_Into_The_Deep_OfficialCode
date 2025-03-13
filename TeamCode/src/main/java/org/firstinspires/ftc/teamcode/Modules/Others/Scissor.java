@@ -6,8 +6,8 @@ import org.firstinspires.ftc.teamcode.Wrappers.BetterServo;
 
 public class Scissor extends IServoModule {
 
-    public static double retrected=0;
-    public static double deploied=0;
+    public static double retrected=0.7;
+    public static double deploied=0.3;
 
     public static boolean reversed=false;
 
@@ -16,7 +16,7 @@ public class Scissor extends IServoModule {
     {
         moduleName="SCISSOR";
         setServos(
-                new BetterServo("Servo" , Hardware.seh5 , BetterServo.RunMode.PROFILE , retrected, reversed)
+                new BetterServo("Servo" , Hardware.seh2 , BetterServo.RunMode.PROFILE , retrected, reversed)
         );        this.maxVelocity=MaxVelocoty;
         this.acceleration=Acceleration;
         this.deceleration=Deceleration;

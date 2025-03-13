@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Modules.Others;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.BetterMotor;
@@ -20,6 +22,11 @@ public class Differential {
         boostLift=new BetterMotor(Hardware.mch2 , BetterMotor.RunMode.RUN , true);
         extendoPower=0;
         liftPower=0;
+
+        motor1.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motor2.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        boostLift.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
         update();
     }
 

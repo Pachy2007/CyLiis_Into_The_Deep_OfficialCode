@@ -20,10 +20,6 @@ public class Odo {
     public  static GoBildaPinpointDriver  odo;
     public static double heading,x ,y, xVelocity, yVelocity, predictedX, predictedY;
     public static boolean INIT=false;
-    public static double xOffset = 130.5;
-    public static double yOffset = 3.5;
-    //public static long time = System.currentTimeMillis();
-
     public static Telemetry telemetry;
     public static boolean plsMergi=false;
     public  static void init(HardwareMap hardwareMap , Telemetry telemetryy)

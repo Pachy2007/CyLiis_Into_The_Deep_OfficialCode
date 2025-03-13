@@ -42,6 +42,7 @@ public class BetterServo {
         if(reversed)this.servo.setDirection(Servo.Direction.REVERSE);
         else this.servo.setDirection(Servo.Direction.FORWARD);
         position=initialPosition;
+        timer.startTime();
     }
     public BetterServo(String name,   Servo servo , RunMode runMode , double initialPosition , boolean reversed , double time)
     {

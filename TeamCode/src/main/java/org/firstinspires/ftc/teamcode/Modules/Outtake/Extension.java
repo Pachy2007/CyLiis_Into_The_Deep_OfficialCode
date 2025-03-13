@@ -15,9 +15,9 @@ public class Extension extends IServoModule {
 
     public static double retrect=0.75;
 
-    public static double deposit=0.38;
+    public static double deposit=0.36;
 
-    public static double takeSample=0.38;
+    public static double takeSample=0.36;
 
     public static double takeSpecimen=0.64;
 
@@ -25,7 +25,7 @@ public class Extension extends IServoModule {
 
     public static boolean reversed=false;
 
-    public static double MaxVelocoty=20 , Acceleration=32  , Deceleration=32;
+    public static double MaxVelocoty=14 , Acceleration=14  , Deceleration=14;
 
     public Extension()
     {
@@ -40,7 +40,6 @@ public class Extension extends IServoModule {
         this.deceleration=Deceleration;
         setProfileCoefficients();
         atStart();
-        update();
     }
 
     @Override

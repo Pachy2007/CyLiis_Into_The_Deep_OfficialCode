@@ -38,7 +38,7 @@ public class Intake {
     public SampleColor sampleColor;
     public DigitalChannel bbDeposit;
 
-    SampleColor.State colorAllaiance;
+    public SampleColor.State colorAllaiance;
     ElapsedTime decideTimer = new ElapsedTime();
 
     public boolean sampleInDeposit;
@@ -50,7 +50,6 @@ public class Intake {
     boolean having;
     int reverseTicks=0;
 
-    ElapsedTime havingTimer=new ElapsedTime();
 
     public Intake(SampleColor.State state , boolean usingAutomatics)
     {
@@ -80,7 +79,8 @@ public class Intake {
                 decideTimer.reset();
             break;
             case Decide:
-                if(decideTimer.seconds()<0.15)return;
+                if(decideTimer.seconds()<0.08)return;
+
                 if(sampleColor.state!=colorAllaiance && sampleColor.state== SampleColor.State.YELLOW)stateTransfer=TransferLogic.Throw;
                 if(sampleColor.state== SampleColor.State.YELLOW)
                 {
@@ -156,10 +156,11 @@ public class Intake {
                 state=State.REVERSE_UP;
                 extendo.setIn();
                 reverseTicks++;
-                if(reverseTicks>=2){asure1inDepositState=Asure1inDeposit.DezactivateCleaning;reverseTicks=0;}
+                if(reverseTicks>=3){asure1inDepositState=Asure1inDeposit.DezactivateCleaning;reverseTicks=0;}
             break;
             case DezactivateCleaning:
                 state=State.INTAKE_UP;
+                activeIntake.setMode(ActiveIntake.State.INTAKE);
                 latch.setState("goOpen");
                 if(latch.inPosition())
                 asure1inDepositState=Asure1inDeposit.Done;

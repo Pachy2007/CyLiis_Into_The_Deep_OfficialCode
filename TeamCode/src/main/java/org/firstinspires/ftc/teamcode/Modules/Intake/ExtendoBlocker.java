@@ -11,13 +11,13 @@ public class ExtendoBlocker extends IServoModule {
 
     public static boolean reversed=false;
 
-    public static double close=0.74 , open=0.6;
+    public static double close=0.63 , open=0.58;
     public static double time=0.007;
 
     public ExtendoBlocker(){
         moduleName="ExtendoBlocker";
         setServos(
-                //new BetterServo("Latch" , Hardware.seh4  , BetterServo.RunMode.Time , open , reversed , time)
+                new BetterServo("Latch" , Hardware.sch5  , BetterServo.RunMode.Time , open , reversed , time)
         );
 
         setStates();

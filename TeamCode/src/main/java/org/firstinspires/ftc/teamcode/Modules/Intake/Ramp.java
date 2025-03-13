@@ -13,12 +13,12 @@ public class Ramp extends IServoModule {
 
     public static boolean rightServoReversed=false;
 
-    public static double upPosition=0.7 , downPosition=0.515;
+    public static double upPosition=0.635 , downPosition=0.515;
 
-    public static double MaxVelocoty=5 , Acceleration=20  , Deceleration=20;
+    public static double MaxVelocoty=10 , Acceleration=10  , Deceleration=10;
 
 
-    public static double rampPositionIn=0.95, rampPositionOut=0.88;
+    public static double rampPositionIn=0.813, rampPositionOut=0.77;
     public static double extendoPositionIn=33 , extendoPositionOut=1250;
 
     public Ramp()
@@ -69,8 +69,9 @@ public class Ramp extends IServoModule {
 
     @Override
     public void update() {
-        if(state==states.get("goDown") || state==states.get("down"))servos[0].runMode= BetterServo.RunMode.GoToPosition;
+        if(state==states.get("goDown") || state==states.get("down")){servos[0].runMode= BetterServo.RunMode.Time;servos[0].time=0.15;}
         else servos[0].runMode= BetterServo.RunMode.PROFILE;
+
         updateRampPosition();
         updateStatesPosition();
         updateState();

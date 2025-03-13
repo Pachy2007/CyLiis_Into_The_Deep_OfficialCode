@@ -34,7 +34,7 @@ public class Extendo {
     public PIDController controller;
     public Encoder encoder;
     public static boolean encoderReversed=true;
-    public static double kp=0.005 , ki , kd;
+    public static double kp=0.0056 , ki , kd=0.0004;
     public static double targetPosition;
 
     private static double inPower=-0.02 , goingInPower=-1;
@@ -99,10 +99,12 @@ public class Extendo {
             case GOING_IN:
                 Differential.extendoPower=goingInPower;
                 Differential.update();
-                if(Math.abs(encoder.getVelocity())<100)nr++;
-                if((Math.abs(encoder.getVelocity())<100 && nr>1)){
-                    {state=state.nextState;
-                        encoder.resetPosition();}}
+                if((encoder.getPosition()<10 && Math.abs(encoder.getVelocity())<30) || Hardware.extendoBeamBreak.getState()){
+
+                        nr++;
+                        if(nr>1)
+                        {state=state.nextState;
+                        encoder.resetPosition();} }
                 break;
             case GO_TO_POSITION:
 

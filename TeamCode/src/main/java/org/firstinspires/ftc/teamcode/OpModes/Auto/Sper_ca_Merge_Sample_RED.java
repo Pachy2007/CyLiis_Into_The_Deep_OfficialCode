@@ -4,12 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Auto.SampleAutoNodes;
+import org.firstinspires.ftc.teamcode.Modules.Intake.SampleColor;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Arm;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 
 @Autonomous
-public class Sper_ca_Merge_Sample extends LinearOpMode {
+public class Sper_ca_Merge_Sample_RED extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -19,14 +20,14 @@ public class Sper_ca_Merge_Sample extends LinearOpMode {
          SampleAutoNodes nodes=new SampleAutoNodes();
 
         Hardware.init(hardwareMap);
-        nodes.run(hardwareMap  , telemetry);
+        nodes.run(hardwareMap  , telemetry , SampleColor.State.RED);
+        nodes.intake.extendo.setIn();
 
         while(opModeInInit())
         {
+            nodes.timerToPark.reset();
             nodes.intake.update();
             nodes.outtake.update();
-            nodes.extendo.update();
-            nodes.latch.update();
             Hardware.IMUOFFSET=-Math.PI/2;
             Arm.withElementSample=0.27;
         }
@@ -35,7 +36,7 @@ public class Sper_ca_Merge_Sample extends LinearOpMode {
         {
             Arm.withElementSample=0.045;
             Odo.update();
-            nodes.run(hardwareMap  , telemetry);
+            nodes.run(hardwareMap  , telemetry , SampleColor.State.RED);
         }
     }
 }

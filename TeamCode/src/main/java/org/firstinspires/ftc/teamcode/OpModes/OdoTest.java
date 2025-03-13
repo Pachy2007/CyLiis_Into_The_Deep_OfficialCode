@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 
-@TeleOp(group = "x")
+@TeleOp(group = "z")
 public class OdoTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Modules.Intake.SampleColor;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 
-@TeleOp
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "zzzz")
 public class ColorSensor extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

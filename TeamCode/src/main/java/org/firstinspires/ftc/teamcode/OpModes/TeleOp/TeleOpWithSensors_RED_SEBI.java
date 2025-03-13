@@ -1,28 +1,21 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
-
-import static org.firstinspires.ftc.teamcode.Wrappers.GoBildaPinpointDriver.DeviceStatus.READY;
-
-import android.provider.ContactsContract;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Modules.Drive.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake.ActiveIntake;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Intake;
-import org.firstinspires.ftc.teamcode.Modules.Others.Differential;
-import org.firstinspires.ftc.teamcode.Modules.Others.PTO;
 import org.firstinspires.ftc.teamcode.Modules.Intake.SampleColor;
+import org.firstinspires.ftc.teamcode.Modules.Others.PTO;
 import org.firstinspires.ftc.teamcode.Modules.Others.Scissor;
 import org.firstinspires.ftc.teamcode.Modules.Others.Wheelie;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Lift;
@@ -33,24 +26,38 @@ import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 
 
 @Config
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "a")
-public class TeleOpWithSensors_RED extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "sebi")
+public class TeleOpWithSensors_RED_SEBI extends LinearOpMode {
 
     enum State{
         CONTROLLING , CLIMB , SCORING_SPECIMEN;
     }
-    State state=State.CONTROLLING;
+    State state= State.CONTROLLING;
 
 
-    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D prepareToTakeSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(150 ,150 , 0);
-    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D takeSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(0 ,0 , 0);
-    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D beforePutSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(830 , 475 , -0.6);
-    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D putSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(840 ,650 , 0);
+    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D[] beforePutSpecimenPosition = {
+            new org.firstinspires.ftc.teamcode.Wrappers.Pose2D( 830 ,-175 ,-0.38)
+    };
+    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D[] putSpecimenPosition = {
+            new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(870 ,0 ,-0.38)
+    };
+
+    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D beforeTakeWallSpecimenPosition[] ={
+            new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(180 ,-750 ,-0.65) ,
+            new org.firstinspires.ftc.teamcode.Wrappers.Pose2D( 180 ,-750 ,-0.65) ,
+            new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(180 ,-750, -0.65)
+    };
+
+    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D[] takeWallSpecimenPosition = {
+            new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(-5 ,-720 ,0)
+    };
+
+    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D[] afterTakeWallSpecimenPosition={
+            new org.firstinspires.ftc.teamcode.Wrappers.Pose2D( 50 , -600 , -0.38)
+    };
 
 
-
-    public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D offset=new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(0  ,-5 ,0);
-
+    public static double minL = 35, maxL = 85;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -64,6 +71,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         Odo.init(hardwareMap , telemetry);
 
 
+         double L=0;
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -85,56 +93,64 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         Node climbState;
 
 
-        Node prepareToTakeSpecimen , takeSpecimen , beforePutSpecimen , putSpecimen;
+        Node beforeTakeWallSpecimen , takeWallSpecimen , afterTakeWallSpecimen , beforePutSpecimen , putSpecimen;
         Node scoringSpecimenState;
 
-        prepareToTakeSpecimen = new Node("prepareToTakeSpecimen");
-        takeSpecimen = new Node("takeSpecimen");
+        afterTakeWallSpecimen = new Node("afterTakeWallSpecimen");
+        beforeTakeWallSpecimen = new Node("prepareToTakeSpecimen");
+        takeWallSpecimen = new Node("takeWallSpecimen");
         beforePutSpecimen = new Node("beforePutSpecimen");
         putSpecimen = new Node("putSpecimen");
 
-        prepareToTakeSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(150 ,150 , 0);
-        takeSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(-5 ,0 , 0);
-        beforePutSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(820 , 500 , -0.5);
-        putSpecimenPosition = new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(830 ,700 , 0);
 
-        prepareToTakeSpecimen.addConditions(
+        beforeTakeWallSpecimen.addConditions(
                 ()->{
-                    if(prepareToTakeSpecimen.index!=0)
-                    driveTrain.setTargetPosition(prepareToTakeSpecimenPosition);
+                    intake.setState(Intake.State.REPAUS_UP);
+                    intake.setExtendoIN();
                     outtake.takeSpecimen();
+                    driveTrain.setTargetPosition(beforeTakeWallSpecimenPosition[Math.min(beforeTakeWallSpecimenPosition.length-1 , beforeTakeWallSpecimen.index)]);
                 }
                 ,
                 ()->{
-                    return driveTrain.inPosition(400 , 150 , 0.5) && outtake.inPosition();
+                    return outtake.arm.inPosition() &&driveTrain.inPosition(400 , 300 , 0.2);
                 }
                 ,
-                new Node[]{takeSpecimen}
+                new Node[]{takeWallSpecimen}
         );
 
-        takeSpecimen.addConditions(
+        takeWallSpecimen.addConditions(
                 ()->{
-                    driveTrain.setTargetPosition(takeSpecimenPosition);
-                    if(driveTrain.inPosition( 20 , 20    , 0.3))
-                    outtake.grabSample();
+                    driveTrain.setTargetPosition(takeWallSpecimenPosition[Math.min(takeWallSpecimenPosition.length-1 , takeWallSpecimen.index)]);
+                    if(driveTrain.inPosition(25 , 150 ,0.5) || (Odo.getX()<50 && Odo.odo.getVelX()<15))
+                        outtake.grabSample();
                 }
                 ,
                 ()->{
-                    if(outtake.claw.state==outtake.claw.states.get("goCloseSpecimen") || outtake.claw.state==outtake.claw.states.get("closeSpecimen"))
-                    {Odo.odo.setPosition(new Pose2D(DistanceUnit.MM ,Odo.getX()+ offset.x , Odo.getY()+offset.y , AngleUnit.RADIANS, Odo.getHeading())); return true;}
-                    return false;
+                    return outtake.claw.state==outtake.claw.states.get("closeSpecimen") || outtake.claw.state==outtake.claw.states.get("goCloseSpecimen");
+                }
+                ,
+                new Node[]{afterTakeWallSpecimen}
+        );
+        afterTakeWallSpecimen.addConditions(
+                ()->{
+                    driveTrain.setTargetPosition(afterTakeWallSpecimenPosition[Math.min(afterTakeWallSpecimenPosition.length-1 , afterTakeWallSpecimen.index)]);
+                }
+                ,
+                ()->{
+                    return driveTrain.inPosition(1000 , 1000 , 0.25);
                 }
                 ,
                 new Node[]{beforePutSpecimen}
         );
+
         beforePutSpecimen.addConditions(
                 ()->{
                     outtake.goUp();
-                    driveTrain.setTargetPosition(beforePutSpecimenPosition);
+                    driveTrain.setTargetPosition( beforePutSpecimenPosition[Math.min(beforePutSpecimenPosition.length-1 , beforePutSpecimen.index)]);
                 }
                 ,
                 ()->{
-                    return outtake.inPosition() && outtake.state== Outtake.State.Up && driveTrain.inPosition(300 , 50 , 0.15);
+                    return driveTrain.inPosition(300 , 350 , 0.6) || (Odo.odo.getVelX()<15 && Odo.getX()>550);
                 }
                 ,
                 new Node[]{putSpecimen}
@@ -142,18 +158,19 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
         putSpecimen.addConditions(
                 ()->{
-                    driveTrain.setTargetPosition(putSpecimenPosition);
-                    if(driveTrain.inPosition(150 , 50 , 0.2))outtake.score();
+                    driveTrain.setTargetPosition(putSpecimenPosition[Math.min(putSpecimenPosition.length-1 , putSpecimen.index)]);
+                    if(driveTrain.inPosition(40 , 100 , 0.6) || (Odo.odo.getVelX()<15 && Odo.getX()>550) )outtake.score();
                 }
                 ,
                 ()->{
-                    return outtake.state!= Outtake.State.Up;
+                    return driveTrain.inPosition(150 , 250 , 0.4) && outtake.state!= Outtake.State.Up || (Odo.odo.getVelX()<15 && Odo.getX()>550);
                 }
                 ,
-                new Node[]{prepareToTakeSpecimen}
+                new Node[]{beforeTakeWallSpecimen}
+
         );
 
-        scoringSpecimenState=prepareToTakeSpecimen;
+        scoringSpecimenState=beforeTakeWallSpecimen;
 
         prepareClimbLvl2 = new Node("prepareClimbLvl2");
         climbLvl2 = new Node("climbLvl2");
@@ -197,7 +214,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 }
                 ,
                 ()->{
-                    return outtake.lift.inPosition() && outtake.lift.state!= Lift.State.DOWN;
+                    return outtake.lift.inPosition() && outtake.lift.state!= Lift.State.DOWN && Math.abs(Hardware.imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.RADIANS))<0.3;
                 }
                 ,
                 new Node[]{climbLvl3}
@@ -221,7 +238,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 ()->{
                     outtake.lift.state= Lift.State.GOING_DOWN;
                     outtake.arm.setState("climb");
-                    if(readyToBeStoppedTimer.seconds()>0.25)
+                    if(readyToBeStoppedTimer.seconds()>0.05)
                         wheelie.goDown();
                 }
                 ,()->{
@@ -248,13 +265,16 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         while(opModeIsActive()){
 
 
-            if(gamepad1.dpad_up){state=State.CLIMB;}
+            if(gamepad1.dpad_up){state= State.CLIMB;}
 
-                if(state==State.CONTROLLING)
+                if(state== State.CONTROLLING)
             {driveTrain.setMode(MecanumDriveTrain.State.DRIVE);
                 double X=gamepad1.left_stick_x * gamepad1.left_stick_x * Math.signum(gamepad1.left_stick_x);
             double Y=gamepad1.left_stick_y * gamepad1.left_stick_y * -Math.signum(gamepad1.left_stick_y);
             double rotation=gamepad1.right_trigger-gamepad1.left_trigger;
+
+             L = ((intake.extendo.encoder.getPosition()/750.0) * (maxL-minL) + minL)/minL;
+            rotation = rotation;
 
             double heading =-Odo.getHeading();
 
@@ -299,23 +319,25 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
             }
 
-            if(state==State.CLIMB)
+            if(state== State.CLIMB)
             {
                 climbState.run();
 
                 if(climbState.transition())climbState=climbState.next[Math.min(climbState.index++ , climbState.next.length-1)];
             }
 
-            if(gamepad1.y && prevB)
+            if(gamepad1.y && !prevB)
             {
-                if(state==State.CONTROLLING)
-                {state=State.SCORING_SPECIMEN;
-                    driveTrain.setTargetPosition(0 ,0 ,0);
-                Odo.reset();}
+                if(state== State.CONTROLLING)
+                {state= State.SCORING_SPECIMEN;
+                    scoringSpecimenState=takeWallSpecimen;
+                    Odo.odo.setPosition(new Pose2D(DistanceUnit.MM , 0 , -730 , AngleUnit.RADIANS , 0));
+                }
+                else state= State.CONTROLLING;
             }
             prevB=gamepad1.y;
 
-            if(state==State.SCORING_SPECIMEN)
+            if(state== State.SCORING_SPECIMEN && !gamepad1.y)
             {
                 driveTrain.setMode(MecanumDriveTrain.State.PID);
                 scoringSpecimenState.run();
@@ -330,30 +352,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
             Odo.update();
             pto.update();
             wheelie.update();
-            scissor.update();
 
-            telemetry.addData("SpeedLiftChamber" , Outtake.sumChamber/Outtake.nrChamber);
-            telemetry.addData("SpeedLiftBasket" , Outtake.sumBasket/Outtake.nrBasket);
-
-            telemetry.addData("IntakeState" , intake.state);
-            telemetry.addData("claw" , outtake.claw.state.name);
-            telemetry.addData("arm" , outtake.arm.state.name);
-            telemetry.addData("heading" , Odo.getHeading()%(2*Math.PI));
-            telemetry.addData("IMUOFFSET" , Hardware.IMUOFFSET);
-            telemetry.addData("motor1" , Differential.motor1.motor.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("motor2" , Differential.motor2.motor.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("IMU" , Odo.getHeading());
-            telemetry.addData("TransferState" , intake.stateTransfer);
-            telemetry.addData("asure1" , intake.asure1inDepositState);
-            telemetry.addData("cimb" , climbState.name);
-            telemetry.addData("outtakeState" , outtake.state);
-            telemetry.addData("extension" , outtake.extension.state.name);
-            telemetry.addData("TimerClaw" , outtake.claw.servos[0].timer.seconds());
-            telemetry.addData("OdoState" , Odo.odo.getDeviceStatus());
-            telemetry.addData("LoopTime" , Odo.odo.getLoopTime());
-            telemetry.addData("realIMU" , Odo.odo.getYawScalar());
-
-            telemetry.update();
         }
     }
 }

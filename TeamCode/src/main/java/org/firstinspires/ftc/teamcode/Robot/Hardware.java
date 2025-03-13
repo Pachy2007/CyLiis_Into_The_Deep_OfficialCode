@@ -15,6 +15,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.ftccommon.internal.manualcontrol.parameters.ImuParameters;
+
 import java.io.BufferedReader;
 
 public class Hardware {
@@ -24,7 +26,7 @@ public class Hardware {
     public static DcMotorEx mch0 , mch1 , mch2 , mch3;
 
     public static DcMotorEx meh0 , meh1 , meh2 , meh3;
-    public static ColorSensor colorSensor;
+    public static RevColorSensorV3 colorSensor;
 
     public static Servo sch4 ;
     public static Servo sch5;
@@ -37,9 +39,14 @@ public class Hardware {
 
     public static DigitalChannel depositBeamBreak;
     public static DigitalChannel extendoBeamBreak;
+    public static DigitalChannel liftLimitSwitch;
     public static RevColorSensorV3 distanceSnsor;
 
+
+
     public static double IMUOFFSET=0;
+
+    public static IMU imu;
 
 
 
@@ -54,9 +61,12 @@ public class Hardware {
     {
         IMUOFFSET=0;
          distanceSnsor=hardwareMap.get(RevColorSensorV3.class , "colorSensor");
-        colorSensor=hardwareMap.get(ColorSensor.class , "colorSensor");
+        colorSensor=hardwareMap.get(RevColorSensorV3.class , "colorSensor");
+        colorSensor.enableLed(true);
+
         depositBeamBreak=hardwareMap.get(DigitalChannel.class , "depositBB");
-           extendoBeamBreak=hardwareMap.get(DigitalChannel.class , "extendoBeamBreak");
+        extendoBeamBreak=hardwareMap.get(DigitalChannel.class , "extendoBeamBreak");
+        liftLimitSwitch=hardwareMap.get(DigitalChannel.class , "liftLimitSwitch");
 
         mch0=hardwareMap.get(DcMotorEx.class , "ch0");
         mch1=hardwareMap.get(DcMotorEx.class , "ch1");
@@ -80,8 +90,6 @@ public class Hardware {
         unlock(meh2);
         unlock(meh3);
 
-
-
         sch0=hardwareMap.get(Servo.class , "sch0");
         sch1=hardwareMap.get(Servo.class , "sch1");
         sch2=hardwareMap.get(Servo.class , "sch2");
@@ -104,7 +112,12 @@ public class Hardware {
         seh4=hardwareMap.get(Servo.class , "seh4");
         seh5=hardwareMap.get(Servo.class , "seh5");
 
+        imu=hardwareMap.get(IMU.class , "imu");
 
+        imu.initialize(new IMU.Parameters(
+                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT , RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD)
+
+        ));
 
 
 

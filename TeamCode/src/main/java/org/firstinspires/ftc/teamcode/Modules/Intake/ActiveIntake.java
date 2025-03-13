@@ -30,7 +30,7 @@ public class ActiveIntake {
     {
         motor= new BetterMotor(Hardware.meh3 , BetterMotor.RunMode.RUN , reversed);
         state=State.REPAUS;
-        motor.motor.setCurrentAlert(7.5 , CurrentUnit.AMPS);
+        motor.motor.setCurrentAlert(8 , CurrentUnit.AMPS);
     }
 
 

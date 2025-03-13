@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.internal.network.ApChannel;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
+import org.firstinspires.ftc.teamcode.Wrappers.Pose2D;
 import org.opencv.core.Mat;
 
 @Config
@@ -17,6 +18,7 @@ public class Outtake {
         GoDown ,
         Deafult ,
         TakingElement ,
+        CLIMBAUTO ,
         Specimen ,
         DeafultWithElement,
         ReleaseSample,
@@ -54,13 +56,16 @@ public class Outtake {
     public static double sumChamber , sumBasket;
     public static double nrChamber , nrBasket;
 
+    public static Pose2D scoringSamplePos;
+
     ElapsedTime timerForBasket=new ElapsedTime();
     ElapsedTime timerForChamber=new ElapsedTime();
 
     ElapsedTime retryTimer=new ElapsedTime();
 
+    public boolean climb3ArmPosition=false;
     public static boolean prim=false;
-    public static int lowBasketPosition=400  , highBasketPosition=1000  , lowChamberDown=150 ,  highChamberDown=550, climbPosition=500 , autoClimbPosition=190 , climb2=520 , climb3=950;
+    public static int lowBasketPosition=400  , highBasketPosition=1100  , lowChamberDown=150 ,  highChamberDown=570, climbPosition=500 , autoClimbPosition=190 , climb2=520 , climb3=1100;
 
     public Outtake()
     {
@@ -95,13 +100,17 @@ public class Outtake {
         retryTimer.reset();
     }
 
+    public void autoCLimb(){
+        state=State.CLIMBAUTO;
+    }
+
     public void grabSample()
     {
-        if(lift.state!= Lift.State.DOWN)return;
+        if(lift.state!= Lift.State.DOWN && arm.inPosition() && extension.inPosition())return;
         switch (state)
         {
             case Deafult:
-                arm.setState("goDeposit");
+                if(arm.state!=arm.states.get("deposit") || extension.state!=extension.states.get("takeSample") || lift.state!= Lift.State.DOWN)return;
                 haveSample=true;
                 break;
 
@@ -133,7 +142,7 @@ public class Outtake {
     public void takeSpecimen()
     {
         if(state==State.Up || state==State.DeafultWithElement || state==State.TakingElement || state==State.Specimen)return;
-        if(arm.inPosition() && arm.state!=arm.states.get("highSpecimen"))
+        if(arm.state!=arm.states.get("highSpecimen") && arm.state!=arm.states.get("goNeutralSpecimen"))
         state=State.Specimen;
     }
     public void goDefault()
@@ -159,10 +168,10 @@ public class Outtake {
     public void score(){
         if(state!=State.Up || !arm.inPosition())return;
 
-            sample=true;
-            state=State.GoDown;
-
+        scoringSamplePos = new Pose2D(Odo.getX() , Odo.getY() , Odo.getHeading());
+        state=State.GoDown;
     }
+
 
 
     public void goUp()
@@ -176,11 +185,15 @@ public class Outtake {
         return arm.inPosition() && claw.inPosition() && lift.inPosition() && extension.inPosition();
     }
 
-
     private void updateHardware()
     {
         switch (state)
         {
+            case CLIMBAUTO:
+                extension.setState("extend");
+                arm.setState("goWithElementSpecimen");
+                lift.goDown();
+                break;
             case CLIMB2:
                 lift.setPosition(climb2);
                 lift.goUp();
@@ -188,6 +201,7 @@ public class Outtake {
             case CLIMB3:
                 lift.setPosition(climb3);
                 lift.goUp();
+                climb3ArmPosition=true;
                 break;
             case PARK:
                 lift.setPosition(autoClimbPosition);
@@ -218,13 +232,20 @@ public class Outtake {
                 break;
 
             case TakingElement:
+                if(claw.state==claw.states.get("close"))
+                state=State.DeafultWithElement;
+
+                if(arm.state==arm.states.get("deposit") && extension.state==extension.states.get("takeSample") && extension.inPosition())
+                claw.setState("goClose");
+                arm.setState("goDeposit");
+
+                if(arm.inPosition() && arm.state==arm.states.get("deposit"))
+                extension.setState("goTakeSample");
+
                 calculate=false;
                 lift.goDown();
                   haveSample=true;
-                    if(arm.inPosition() && extension.inPosition())
-                    if(arm.inPosition() && lift.state==Lift.State.DOWN && extension.inPosition())claw.setState("goClose");
-                if(claw.inPosition() && claw.state==claw.states.get("close"))state=State.DeafultWithElement;
-                if(claw.inPosition() && claw.state==claw.states.get("close"))
+                if( claw.state==claw.states.get("close"))
                 {lift.setPosition(150);
                 lift.goUp();}
                 break;
@@ -232,8 +253,12 @@ public class Outtake {
             case Deafult:
                 take=false;
                 calculate=false;
+                if(!climb3ArmPosition)
                 arm.setState("goDeposit");
-
+                else
+                {
+                    arm.setState("goFinalClimb3");
+                }
                 if(arm.inPosition() && arm.state==arm.states.get("deposit"))
                 extension.setState("goTakeSample");
 
@@ -242,11 +267,9 @@ public class Outtake {
                 claw.setState("goOpen");
                 if(claw.state==claw.states.get("open"))
                         arm.setState("goDeposit");
-                 if(arm.inPosition() && arm.state==arm.states.get("deposit"))
 
-                 if(!climb)
+
                 lift.goDown();
-                 else {lift.setPosition(climbPosition);lift.goUp();}
                 break;
 
             case DeafultWithElement:
@@ -267,26 +290,24 @@ public class Outtake {
 
                 calculate=false;
                 take=false;
-                if(!haveSample)
-                claw.setState("goScoring");
-                extension.setState("goRetrect");
+                if(!haveSample && claw.state!=claw.states.get("goScoring"))
+                {claw.setState("goScoring");
+                extension.setState("goRetrect");}
                 if(claw.inPosition() && arm.state!=arm.states.get("neutral") && arm.state!=arm.states.get("goNeutral") && arm.inPosition()){
 
                     if(haveSample)
                     {
+                        if(arm.state==arm.states.get("highSample"))
                         if(arm.state!=arm.states.get("goNeutralSample") && arm.state!=arm.states.get("neutralSample"))
                         arm.setState("goScoreSample");
-                        arm.maxVelocity=16;
                         if(arm.state==arm.states.get("scoreSample") && arm.inPosition())claw.setState("goScoring");
 
-                        if(arm.inPosition() && arm.state==arm.states.get("scoreSample"))
-                        {arm.maxVelocity=20; arm.setState("goNeutralSample");}
+                        if(arm.inPosition() && arm.state==arm.states.get("scoreSample") && claw.state==claw.states.get("scoring"))
+                        {arm.setState("goNeutralSample");}
                     }
                     else if(extension.state==extension.states.get("retrect"))arm.setState("goNeutralSpecimen");
                     extension.setState("goRetrect");}
-                if(claw.inPosition() && (arm.state==arm.states.get("neutralSample") || arm.state==arm.states.get("neutralSpecimen")) && claw.state==claw.states.get("scoring"))lift.goDown();
-                if(lift.state== Lift.State.DOWN)
-                    state = State.Deafult;
+                if((claw.inPosition() && (arm.state==arm.states.get("neutralSample") && Math.sqrt( (scoringSamplePos.y-Odo.getY())*(scoringSamplePos.y-Odo.getY()) + (scoringSamplePos.x-Odo.getX())*(scoringSamplePos.x-Odo.getX()) )>100 && (scoringSamplePos.x<Odo.getX() || scoringSamplePos.y>Odo.getY())  ) || arm.state==arm.states.get("neutralSpecimen")) && claw.state==claw.states.get("scoring"))state = State.Deafult;
 
                 break;
 
@@ -358,6 +379,7 @@ public class Outtake {
     {
 
         claw.update();
+        if(!climb)
         lift.update();
         arm.update();
         extension.update();

@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Modules.Outtake.Lift;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 
 
-@TeleOp
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "zzzzz")
 @Config
 public class DifferentialTest extends LinearOpMode {
 

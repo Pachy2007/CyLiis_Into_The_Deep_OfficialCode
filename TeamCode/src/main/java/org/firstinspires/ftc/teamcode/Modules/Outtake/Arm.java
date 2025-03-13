@@ -13,28 +13,30 @@ public class Arm extends IServoModule {
     public static boolean leftServoReversed=true , rightServoReversed=false ;
 
 
-    public static double deposit=0.04;
+    public static double deposit=0.045;
 
-    public static double takeSpecimen=0.93;
+    public static double takeSpecimen=0.941;
 
-    public static double withElementSample=0.03 , withElementSpecimen=0.265;
+    public static double withElementSample=0.05 , withElementSpecimen=0.265;
 
     public static double releaseSample=0.2;
 
     public static double lowSample=0.7;
 
-    public static double putHighSample=0.7;
+    public static double putHighSample=0.74;
 
     public static double lowSpecimen=0.265;
 
-    public static double neutralSpecimen=0.535 , neutralSample=0.535;
+    public static double neutralSpecimen=0.7 , neutralSample=0.5;
 
     public static double highSpecimen=0.265;
 
-    public static double scoreSample=0.7;
+    public static double scoreSample=0.74;
+
+    public static double goFinalClimb3=0.27;
 
 
-    public static double MaxVelocoty=10 , Acceleration=14  , Deceleration=14;
+    public static double MaxVelocoty=13 , Acceleration=14  , Deceleration=14;
 
     State initState;
 
@@ -77,7 +79,10 @@ public class Arm extends IServoModule {
     @Override
     public void setStates()  {
 
-        states.addState("climb" , 0.43 , 0.43);
+        states.addState("finalClimb3" , goFinalClimb3 , goFinalClimb3);
+        states.addState("goFinalClimb3" , states.get("finalClimb3") , goFinalClimb3 , goFinalClimb3);
+
+        states.addState("climb" , 0 , 0);
 
         states.addState("deposit" , deposit , deposit);
         states.addState("goDeposit" , states.get("deposit") , deposit , deposit);
@@ -109,8 +114,8 @@ public class Arm extends IServoModule {
         states.addState("neutralSpecimen" , neutralSpecimen , neutralSpecimen);
         states.addState("goNeutralSpecimen" , states.get("neutralSpecimen"), neutralSpecimen , neutralSpecimen);
 
-        states.addState("neutralSample" , neutralSample , neutralSample);
-        states.addState("goNeutralSample" , states.get("neutralSample"), neutralSample , neutralSample);
+        states.addState("neutralSample" , deposit , deposit);
+        states.addState("goNeutralSample" , states.get("neutralSample"), deposit , deposit);
 
         states.addState("scoreSample" , scoreSample , scoreSample);
         states.addState("goScoreSample", states.get("scoreSample"), scoreSample , scoreSample);

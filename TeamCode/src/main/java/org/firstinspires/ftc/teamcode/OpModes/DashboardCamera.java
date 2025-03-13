@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.teamcode.Wrappers.LimeLightStream;
 import org.opencv.videoio.VideoCapture;
 
-@TeleOp
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "zzzz")
 public class DashboardCamera extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
