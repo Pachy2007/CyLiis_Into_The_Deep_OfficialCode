@@ -20,11 +20,11 @@ import org.firstinspires.ftc.teamcode.Wrappers.Pose2D;
 @Config
 public class SampleAutoNodes {
 
-    public static Pose2D putSamplePosition=new Pose2D (-770 , 140 ,-1);
+    public static Pose2D putSamplePosition=new Pose2D (-760 , 130 ,-1);
 
     public static Pose2D[] takeFloorSamplePosition=new Pose2D[]{
             new Pose2D(-570 ,700 , -1.1) ,
-            new Pose2D(-700 ,700 , -1.7) ,
+            new Pose2D(-700 ,700 , -1.55) ,
             new Pose2D(-700 ,700 , -2.3)};
 
     public static Pose2D beforeTakeFromSub = new Pose2D(-50 , 1400 , -1.3);
@@ -96,7 +96,7 @@ public class SampleAutoNodes {
                         if(driveTrain.inPosition(250 , 250 , 0.3))
                         outtake.goUp();
                         driveTrain.setTargetPosition(putSamplePosition);
-                        Limelight.extendoPosition=0;
+                        Limelight.X=-1;
                     }
                     ,
                     ()->{
@@ -117,11 +117,12 @@ public class SampleAutoNodes {
                         outtake.score();
                         intake.setState(Intake.State.REPAUS_DOWN);
                         timerTakeFloor.reset();
-                        Limelight.extendoPosition=0;
+                        Limelight.X=-1;
                     }
                     ,
                     ()->{
                         timer.reset();
+                        Limelight.X=-1;
                         return outtake.claw.state==outtake.claw.states.get("scoring");
                     }
                     ,
@@ -129,6 +130,7 @@ public class SampleAutoNodes {
             );
             takefromFloor.addConditions(
                     ()->{
+                        Limelight.X=-1;
                         outtake.score();
                         skip=false;
                         driveTrain.setTargetPosition(takeFloorSamplePosition[takefromFloor.index]);
@@ -154,6 +156,7 @@ public class SampleAutoNodes {
 
             prepareToTakeFromSub.addConditions(
                     ()->{
+                        outtake.score();
                         intake.setExtendoIN();
                         if(intake.state!= Intake.State.REPAUS_DOWN && intake.extendo.state== Extendo.State.IN && driveTrain.inPosition(30 , 30 , 0.1) && driveTrain.targetX==150){
                         intake.setState(Intake.State.REPAUS_DOWN);timerToWaitIntake.reset();}
@@ -169,7 +172,7 @@ public class SampleAutoNodes {
                     ()->{
                         if( driveTrain.inPosition(30 , 30 , 0.1) && timerToWaitIntake.seconds()>0.2 && intake.extendo.state== Extendo.State.IN && driveTrain.targetX==150 && intake.ramp.state==intake.ramp.states.get("down"))
                         {
-                           Limelight.update();return true;}
+                           Limelight.update();if(Limelight.X!=-1)return true;}
                         return false;
                     }
                     ,
@@ -210,12 +213,12 @@ public class SampleAutoNodes {
                     ()->{
                         if(timerTryingToTake.seconds()>1.5)
                         {
-                            Limelight.extendoPosition=0;
+                            Limelight.X=-1;
                             currentNode=prepareToTakeFromSub;
                         }
                         if( intake.sampleInDeposit && (intake.sampleColor.state== SampleColor.State.YELLOW || intake.sampleColor.state==colorState))
                         {
-                            Limelight.extendoPosition=0;
+                            Limelight.X=-1;
                             return true;
                         }
 
@@ -227,7 +230,7 @@ public class SampleAutoNodes {
             );
             prepareGoPutSample.addConditions(
                     ()->{
-                        Limelight.extendoPosition=0;
+                        Limelight.X=-1;
                         if(intake.asure1inDepositState== Intake.Asure1inDeposit.Free)intake.asure1inDepositState= Intake.Asure1inDeposit.PrepareToClean;
                         driveTrain.setTargetPosition(beforeGoPutSample);
                     },
@@ -239,6 +242,7 @@ public class SampleAutoNodes {
             );
             park.addConditions(
                     ()->{
+                        if(outtake.state!= Outtake.State.CLIMBAUTO)
                         outtake.autoCLimb();
                         driveTrain.setTargetPosition(prepareToTakeFromSubPosition);
                     }

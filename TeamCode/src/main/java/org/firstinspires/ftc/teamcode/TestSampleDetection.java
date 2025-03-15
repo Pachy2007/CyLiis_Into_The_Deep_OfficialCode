@@ -21,7 +21,7 @@ public class TestSampleDetection extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
 
-        Limelight.init(hardwareMap , 2);
+        Limelight.init(hardwareMap , 0);
 
         waitForStart();
 

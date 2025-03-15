@@ -28,7 +28,7 @@ public class Sper_ca_Merge_Sample_BLUE extends LinearOpMode {
             nodes.timerToPark.reset();
             nodes.intake.update();
             nodes.outtake.update();
-            Hardware.IMUOFFSET=-Math.PI/2;
+            Hardware.IMUOFFSET=Math.PI/2;
             Arm.withElementSample=0.27;
         }
         waitForStart();

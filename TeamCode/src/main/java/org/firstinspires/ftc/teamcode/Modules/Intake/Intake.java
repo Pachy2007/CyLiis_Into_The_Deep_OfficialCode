@@ -154,11 +154,11 @@ public class Intake {
             break;
             case Clean:
                 state=State.REVERSE_UP;
-                extendo.setIn();
                 reverseTicks++;
                 if(reverseTicks>=3){asure1inDepositState=Asure1inDeposit.DezactivateCleaning;reverseTicks=0;}
             break;
             case DezactivateCleaning:
+                extendo.setIn();
                 state=State.INTAKE_UP;
                 activeIntake.setMode(ActiveIntake.State.INTAKE);
                 latch.setState("goOpen");
@@ -178,7 +178,10 @@ public class Intake {
             if(driverState==State.REVERSE_DOWN && stateTransfer==TransferLogic.ReadyForHuman)
             state=State.REVERSE_UP;
             else if(asure1inDepositState==Asure1inDeposit.Free)state=driverState;
+
         }
+
+        if(driverState==State.REVERSE_DOWN){state=driverState; asure1inDepositState=Asure1inDeposit.Free;}
 
         switch (state)
         {

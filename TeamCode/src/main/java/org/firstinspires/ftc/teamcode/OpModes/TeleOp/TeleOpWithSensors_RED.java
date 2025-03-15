@@ -39,10 +39,10 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
 
     public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D[] beforePutSpecimenPosition = {
-            new org.firstinspires.ftc.teamcode.Wrappers.Pose2D( 865 ,-125 ,-0.45)
+            new org.firstinspires.ftc.teamcode.Wrappers.Pose2D( 860 ,-125 ,-0.45)
     };
     public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D[] putSpecimenPosition = {
-            new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(890 ,0 ,-0.45)
+            new org.firstinspires.ftc.teamcode.Wrappers.Pose2D(885 ,0 ,-0.45)
     };
 
     public static org.firstinspires.ftc.teamcode.Wrappers.Pose2D beforeTakeWallSpecimenPosition[] ={
@@ -94,6 +94,8 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         Node prepareClimbLvl2 , climbLvl2 , prepareClimbLvl3 , climbLvl3 , readyToBeStopped;
         Node climbState;
 
+
+        ElapsedTime timerBeforeScoring = new ElapsedTime();
 
         Node beforeTakeWallSpecimen , takeWallSpecimen , afterTakeWallSpecimen , beforePutSpecimen , putSpecimen;
         Node scoringSpecimenState;
@@ -359,17 +361,32 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 {state=State.SCORING_SPECIMEN;
                     scoringSpecimenState=takeWallSpecimen;
                     Odo.odo.setPosition(new Pose2D(DistanceUnit.MM , 0 , -730 , AngleUnit.RADIANS , 0));
+                    timerBeforeScoring.reset();
                 }
                 else state=State.CONTROLLING;
             }
             prevB=gamepad1.y;
 
-            if(state==State.SCORING_SPECIMEN && !gamepad1.y)
+            if(state==State.SCORING_SPECIMEN && !gamepad1.y && timerBeforeScoring.seconds()>0.5)
             {
                 driveTrain.setMode(MecanumDriveTrain.State.PID);
                 scoringSpecimenState.run();
                 if(scoringSpecimenState.transition())scoringSpecimenState=scoringSpecimenState.next[Math.min(scoringSpecimenState.index++ , scoringSpecimenState.next.length-1)];
 
+            }
+
+            if(outtake.state== Outtake.State.Up && Lift.position==Outtake.highBasketPosition)
+            {
+                Hardware.meh0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                Hardware.mch1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                Hardware.meh1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                Hardware.mch0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            }
+            else{
+                Hardware.meh0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                Hardware.mch1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                Hardware.meh1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                Hardware.mch0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
 
             telemetry.addData("motorWithGear" , Hardware.meh2.getCurrent(CurrentUnit.AMPS));

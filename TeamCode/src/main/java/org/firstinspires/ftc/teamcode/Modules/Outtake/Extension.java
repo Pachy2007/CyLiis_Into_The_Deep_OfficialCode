@@ -25,7 +25,7 @@ public class Extension extends IServoModule {
 
     public static boolean reversed=false;
 
-    public static double MaxVelocoty=14 , Acceleration=14  , Deceleration=14;
+    public static double MaxVelocoty=16 , Acceleration=15  , Deceleration=15;
 
     public Extension()
     {

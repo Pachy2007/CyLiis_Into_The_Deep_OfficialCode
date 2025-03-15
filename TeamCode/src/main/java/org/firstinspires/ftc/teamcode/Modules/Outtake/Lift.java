@@ -32,7 +32,7 @@ public class Lift {
     public static boolean yes=false;
     int nr=0;
 
-    public static double kP=0.0052 , kI=0 , kD=0.00021;
+    public static double kP=0.0052 , kI=0 , kD=0.00023;
 
     PIDController controller;
     public Encoder encoder;
@@ -92,7 +92,7 @@ public class Lift {
                 nr=0;
                 break;
             case GOING_DOWN:
-                if( Math.abs(encoder.getVelocity())<50)
+                if( Math.abs(encoder.getVelocity())<15)
                     {
                         nr++;
                         if(nr>1)

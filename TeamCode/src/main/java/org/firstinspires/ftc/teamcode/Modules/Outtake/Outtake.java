@@ -65,7 +65,7 @@ public class Outtake {
 
     public boolean climb3ArmPosition=false;
     public static boolean prim=false;
-    public static int lowBasketPosition=400  , highBasketPosition=1100  , lowChamberDown=150 ,  highChamberDown=570, climbPosition=500 , autoClimbPosition=190 , climb2=520 , climb3=1100;
+    public static int lowBasketPosition=400  , highBasketPosition=1150  , lowChamberDown=150 ,  highChamberDown=570, climbPosition=500 , autoClimbPosition=190 , climb2=520 , climb3=1100;
 
     public Outtake()
     {
@@ -101,6 +101,7 @@ public class Outtake {
     }
 
     public void autoCLimb(){
+        extension.setState("goRetrect");
         state=State.CLIMBAUTO;
     }
 
@@ -190,9 +191,10 @@ public class Outtake {
         switch (state)
         {
             case CLIMBAUTO:
-                extension.setState("extend");
+                if(arm.state==arm.states.get("withElementSpecimen"))
+                {extension.setState("goExtend");lift.setPosition(200);}
                 arm.setState("goWithElementSpecimen");
-                lift.goDown();
+                lift.goUp();
                 break;
             case CLIMB2:
                 lift.setPosition(climb2);
@@ -297,7 +299,7 @@ public class Outtake {
 
                     if(haveSample)
                     {
-                        if(arm.state==arm.states.get("highSample"))
+                        if(arm.state==arm.states.get("highSample") || arm.state==arm.states.get("lowSample"))
                         if(arm.state!=arm.states.get("goNeutralSample") && arm.state!=arm.states.get("neutralSample"))
                         arm.setState("goScoreSample");
                         if(arm.state==arm.states.get("scoreSample") && arm.inPosition())claw.setState("goScoring");

@@ -15,7 +15,7 @@ public class Arm extends IServoModule {
 
     public static double deposit=0.045;
 
-    public static double takeSpecimen=0.941;
+    public static double takeSpecimen=0.935;
 
     public static double withElementSample=0.05 , withElementSpecimen=0.265;
 
