@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Wrappers.Pose2D;
 @Config
 public class SampleAutoNodes {
 
-    public static Pose2D putSamplePosition=new Pose2D (-760 , 130 ,-1);
+    public static Pose2D putSamplePosition=new Pose2D (-730 , 140 ,-1);
 
     public static Pose2D[] takeFloorSamplePosition=new Pose2D[]{
             new Pose2D(-570 ,700 , -1.1) ,
@@ -28,10 +28,10 @@ public class SampleAutoNodes {
             new Pose2D(-700 ,700 , -2.3)};
 
     public static Pose2D beforeTakeFromSub = new Pose2D(-50 , 1400 , -1.3);
-    public static Pose2D prepareToTakeFromSubPosition = new Pose2D( 150 , 1300 , 0);
+    public static Pose2D prepareToTakeFromSubPosition = new Pose2D( 200 , 1300 , 0);
     public static Pose2D beforeGoPutSample= new Pose2D(0 , 1300 , -1);
 
-    public static double[] takeFloorSampleExtendoPosition={130 , 150 , 280};
+    public static double[] takeFloorSampleExtendoPosition={130 , 150 , 260};
 
 
     public MecanumDriveTrain driveTrain;
@@ -93,14 +93,14 @@ public class SampleAutoNodes {
                         intake.setExtendoIN();intake.setState(Intake.State.INTAKE_UP);
                         if(intake.extendo.state== Extendo.State.IN && intake.ramp.state==intake.ramp.states.get("up"))outtake.grabSample();
 
-                        if(driveTrain.inPosition(250 , 250 , 0.3))
+                        if(driveTrain.inPosition(350 , 350 , 2))
                         outtake.goUp();
                         driveTrain.setTargetPosition(putSamplePosition);
                         Limelight.X=-1;
                     }
                     ,
                     ()->{
-                        return (driveTrain.inPosition(80 , 80 , 0.3) && outtake.inPosition() && outtake.state==Outtake.State.Up);
+                        return (driveTrain.inPosition(70 , 70 , 0.3) && outtake.inPosition() && outtake.state==Outtake.State.Up);
 
                     }
                    ,
@@ -111,6 +111,7 @@ public class SampleAutoNodes {
 
                         if( intake.ramp.state==intake.ramp.states.get("up"))
                         outtake.grabSample();
+
 
 
                         Arm.putHighSample=0.74;
@@ -158,7 +159,7 @@ public class SampleAutoNodes {
                     ()->{
                         outtake.score();
                         intake.setExtendoIN();
-                        if(intake.state!= Intake.State.REPAUS_DOWN && intake.extendo.state== Extendo.State.IN && driveTrain.inPosition(30 , 30 , 0.1) && driveTrain.targetX==150){
+                        if(intake.state!= Intake.State.REPAUS_DOWN && intake.extendo.state== Extendo.State.IN && driveTrain.inPosition(30 , 30 , 0.15) && driveTrain.targetX==200){
                         intake.setState(Intake.State.REPAUS_DOWN);timerToWaitIntake.reset();}
 
                         if(intake.extendo.state!= Extendo.State.IN)intake.setState(Intake.State.REVERSE_UP);
@@ -170,7 +171,7 @@ public class SampleAutoNodes {
                     }
                     ,
                     ()->{
-                        if( driveTrain.inPosition(30 , 30 , 0.1) && timerToWaitIntake.seconds()>0.2 && intake.extendo.state== Extendo.State.IN && driveTrain.targetX==150 && intake.ramp.state==intake.ramp.states.get("down"))
+                        if( driveTrain.inPosition(30 , 30 , 0.15) && timerToWaitIntake.seconds()>0.5 && intake.extendo.state== Extendo.State.IN && driveTrain.targetX==200 && intake.ramp.state==intake.ramp.states.get("down"))
                         {
                            Limelight.update();if(Limelight.X!=-1)return true;}
                         return false;
@@ -185,18 +186,18 @@ public class SampleAutoNodes {
                             driveTrain.setTargetPosition( Odo.getX() , Odo.getY() , -Odo.getHeading()+Limelight.targetAngle);
                             intake.setState(Intake.State.REPAUS_UP);
                         }
-                        if(driveTrain.inPosition(50 , 50 , 0.1) && intake.ramp.state==intake.ramp.states.get("up"))
+                        if(driveTrain.inPosition(20 , 20 , 0.1) && intake.ramp.state==intake.ramp.states.get("up"))
                         {
-                            intake.setExtendoTargetPosition(Limelight.extendoPosition-70);
+                            intake.setExtendoTargetPosition(Limelight.extendoPosition-130);
                         }
                     }
                     ,
                     ()->{
                         timerTryingToTake.reset();;
-                        if(driveTrain.inPosition(50 , 50 , 0.1) && intake.extendo.state!= Extendo.State.IN && intake.extendo.inPosition())
+                        if(driveTrain.inPosition(20 , 20 , 0.1) && intake.extendo.state!= Extendo.State.IN && intake.extendo.inPosition())
                         {
                             intake.setState(Intake.State.INTAKE_DOWN);
-                            return intake.ramp.state==intake.ramp.states.get("down");
+                            return intake.ramp.state==intake.ramp.states.get("down") && intake.extendo.inPosition();
                         }
                         return false;
                     }
@@ -206,12 +207,11 @@ public class SampleAutoNodes {
             takingFromSub.addConditions(
                     ()->{
                         intake.setState(Intake.State.INTAKE_DOWN);
-                        if(intake.extendo.inPosition() && intake.extendo.state!= Extendo.State.IN && intake.ramp.state==intake.ramp.states.get("down"))
                         intake.setExtendoTargetPosition(Limelight.extendoPosition+200);
                     }
                     ,
                     ()->{
-                        if(timerTryingToTake.seconds()>1.5)
+                        if(timerTryingToTake.seconds()>1)
                         {
                             Limelight.X=-1;
                             currentNode=prepareToTakeFromSub;
@@ -232,16 +232,18 @@ public class SampleAutoNodes {
                     ()->{
                         Limelight.X=-1;
                         if(intake.asure1inDepositState== Intake.Asure1inDeposit.Free)intake.asure1inDepositState= Intake.Asure1inDeposit.PrepareToClean;
+                        if(intake.extendo.state== Extendo.State.GOING_IN)
                         driveTrain.setTargetPosition(beforeGoPutSample);
                     },
                     ()->{
-                        return intake.extendo.state== Extendo.State.IN && intake.latch.state==intake.latch.states.get("open") && intake.asure1inDepositState== Intake.Asure1inDeposit.Done && driveTrain.inPosition(30 , 30 , 0.1);
+                        return intake.extendo.state== Extendo.State.IN && intake.latch.state==intake.latch.states.get("open") && intake.asure1inDepositState== Intake.Asure1inDeposit.Done && driveTrain.inPosition(1000 , 1000 , 0.2);
                     }
                     ,
                     new Node[]{goPutSample}
             );
             park.addConditions(
                     ()->{
+                        intake.setState(Intake.State.REVERSE_DOWN);
                         if(outtake.state!= Outtake.State.CLIMBAUTO)
                         outtake.autoCLimb();
                         driveTrain.setTargetPosition(prepareToTakeFromSubPosition);

@@ -65,8 +65,6 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
 
 
-        if(Odo.INIT)
-            Odo.odo.setPosition(new Pose2D(DistanceUnit.MM , 0 ,0 , AngleUnit.RADIANS , Odo.getHeading()-Hardware.IMUOFFSET));
 
         Hardware.init(hardwareMap);
         Odo.init(hardwareMap , telemetry);
@@ -192,7 +190,8 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 }
                 ,
                 ()->{
-                    return wheelie.inPosition() && outtake.inPosition();
+                    if(wheelie.inPosition() && outtake.inPosition()) {    Lift.treshold=-1;return true;}
+                    return false;
                 }
                 ,
                 new Node[]{climbLvl2}
@@ -203,11 +202,15 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                     if(outtake.lift.encoder.getPosition()<100)wheelie.goDown();
                     pto.setState("goClimb");
                     outtake.goDefault();
+                    if(gamepad1.dpad_left)
+                    {
+                        Lift.treshold=60;
+                    }
                 }
                 ,
                 ()->{
-                    if(Lift.State.DOWN==outtake.lift.state && readyToBeStoppedTimer.seconds()>1.2)readyToBeStoppedTimer.reset();
-                    if(outtake.lift.inPosition() && outtake.lift.state== Lift.State.DOWN && readyToBeStoppedTimer.seconds()>0.8 && readyToBeStoppedTimer.seconds()<1.2)
+                    if(Lift.State.DOWN==outtake.lift.state && readyToBeStoppedTimer.seconds()>1)readyToBeStoppedTimer.reset();
+                    if(outtake.lift.inPosition() && outtake.lift.state== Lift.State.DOWN && readyToBeStoppedTimer.seconds()>0.6 && readyToBeStoppedTimer.seconds()<0.9)
                     {readyToBeStoppedTimer.reset();return true;}
                     return false;
                 }
@@ -217,13 +220,13 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         prepareClimbLvl3.addConditions(
                 ()->{
                     if(!outtake.lift.inPosition())
-                    intake.extendo.setTargetPosition(200);
+                        intake.extendo.setTargetPosition(250);
                     if(outtake.lift.encoder.getPosition()>150)
-                    wheelie.goUp();
+                        wheelie.goUp();
                     if(outtake.arm.state!=outtake.arm.states.get("goFinalClimb3") || outtake.arm.state!=outtake.arm.states.get("finalClimb3"))
-                    outtake.arm.setState("climb");
+                        outtake.arm.setState("climb");
                     if(readyToBeStoppedTimer.seconds()>0.15)
-                      outtake.climb3();
+                        outtake.climb3();
                 }
                 ,
                 ()->{
@@ -241,7 +244,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 ()->{
                     pto.setState("goClimb");
                     if(intake.extendo.state== Extendo.State.IN)
-                    outtake.goDefault();
+                        outtake.goDefault();
                     wheelie.goUp();
                 }
                 ,
@@ -258,7 +261,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         readyToBeStopped.addConditions(
                 ()->{
                     outtake.climb=true;
-                        Differential.liftPower=-1;
+                    Differential.liftPower=-1;
                     outtake.arm.setState("climb");
                     if(readyToBeStoppedTimer.seconds()>0.05)
                         wheelie.goDown();
@@ -272,6 +275,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 new Node[]{readyToBeStopped}
         );
         climbState=prepareClimbLvl2;
+
 
         while(opModeInInit())
         {
@@ -349,6 +353,11 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
             if(state==State.CLIMB)
             {
+                if(gamepad1.dpad_left)
+                {
+                    Lift.treshold=60;
+                }
+
                 if(gamepad1.dpad_down){Differential.liftPower=0;climb=true;}
                 else if(!climb){
                 climbState.run();
@@ -388,13 +397,6 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 Hardware.meh1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 Hardware.mch0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
-
-            telemetry.addData("motorWithGear" , Hardware.meh2.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("motorWithBelt" , Hardware.mch3.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("motorBoost" , Hardware.mch2.getCurrent(CurrentUnit.AMPS));
-
-            telemetry.update();
-
 
             driveTrain.update();
             outtake.update();

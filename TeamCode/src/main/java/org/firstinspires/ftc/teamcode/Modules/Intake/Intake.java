@@ -150,6 +150,7 @@ public class Intake {
             case PrepareToClean:
                 latch.setState("goClose");
                 state=State.INTAKE_UP;
+                reverseTicks=0;
                 if(latch.inPosition() && ramp.state==ramp.states.get("up"))asure1inDepositState=Asure1inDeposit.Clean;
             break;
             case Clean:

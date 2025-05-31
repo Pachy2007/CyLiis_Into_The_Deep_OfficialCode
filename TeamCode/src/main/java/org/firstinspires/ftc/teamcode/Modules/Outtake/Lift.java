@@ -29,7 +29,7 @@ public class Lift {
     public static int maxPosition=1600;
     public double prevVelocity=0;
     public static boolean climb=false;
-    public static boolean yes=false;
+    public static double treshold = 15;
     int nr=0;
 
     public static double kP=0.0052 , kI=0 , kD=0.00023;
@@ -45,6 +45,7 @@ public class Lift {
         Differential.init();
         controller=new PIDController(kP , kI , kD);
         encoder=new Encoder(Hardware.mch0 , encoderReversed);
+        Lift.treshold=15;
     }
 
 
@@ -71,7 +72,7 @@ public class Lift {
     public boolean inPosition()
     {
         if(climb==true) {if((Math.abs(position- encoder.getPosition())<100) || state==State.DOWN || state==State.GOING_DOWN )return true;}
-        else if(Math.abs(position- encoder.getPosition())<50 || state==State.DOWN || state==State.GOING_DOWN)return true;
+        else if(Math.abs(position- encoder.getPosition())<100 || state==State.DOWN || state==State.GOING_DOWN)return true;
         return false;
     }
     public void decreasePosition(int extra)
@@ -84,7 +85,7 @@ public class Lift {
         switch(state)
         {
             case GOING_UP:
-                if(Math.abs(position+ encoder.getPosition())<70)state=state.nextState;
+                if(Math.abs(position+ encoder.getPosition())<100)state=state.nextState;
                 nr=0;
                 break;
             case UP:
@@ -92,7 +93,7 @@ public class Lift {
                 nr=0;
                 break;
             case GOING_DOWN:
-                if( Math.abs(encoder.getVelocity())<15)
+                if( Math.abs(encoder.getVelocity())<treshold)
                     {
                         nr++;
                         if(nr>1)

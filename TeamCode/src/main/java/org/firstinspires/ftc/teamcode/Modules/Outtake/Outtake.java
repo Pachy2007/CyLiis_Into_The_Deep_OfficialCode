@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.internal.network.ApChannel;
+import org.firstinspires.ftc.teamcode.Modules.Others.Differential;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
@@ -26,6 +27,7 @@ public class Outtake {
         PARK,
         CLIMB2,
         CLIMB3;
+
     }
     public State state=State.Deafult;
 
@@ -50,6 +52,7 @@ public class Outtake {
     boolean take=false;
     boolean sample=false;
     boolean release=false;
+    public boolean L=false;
 
     boolean calculate=false;
 
@@ -65,7 +68,7 @@ public class Outtake {
 
     public boolean climb3ArmPosition=false;
     public static boolean prim=false;
-    public static int lowBasketPosition=400  , highBasketPosition=1150  , lowChamberDown=150 ,  highChamberDown=570, climbPosition=500 , autoClimbPosition=190 , climb2=520 , climb3=1100;
+    public static int lowBasketPosition=400  , highBasketPosition=1200  , lowChamberDown=150 ,  highChamberDown=555, climbPosition=500 , autoClimbPosition=190 , climb2=520 , climb3=1100;
 
     public Outtake()
     {
@@ -191,9 +194,12 @@ public class Outtake {
         switch (state)
         {
             case CLIMBAUTO:
+                if(lift.inPosition() && lift.state!= Lift.State.DOWN){
                 if(arm.state==arm.states.get("withElementSpecimen"))
-                {extension.setState("goExtend");lift.setPosition(200);}
-                arm.setState("goWithElementSpecimen");
+                {extension.setState("goExtend");}
+                arm.setState("goWithElementSpecimen");}
+
+                lift.setPosition(300);
                 lift.goUp();
                 break;
             case CLIMB2:
@@ -271,7 +277,9 @@ public class Outtake {
                         arm.setState("goDeposit");
 
 
+                if(!L)
                 lift.goDown();
+                else Differential.liftPower=-1;
                 break;
 
             case DeafultWithElement:
@@ -309,7 +317,7 @@ public class Outtake {
                     }
                     else if(extension.state==extension.states.get("retrect"))arm.setState("goNeutralSpecimen");
                     extension.setState("goRetrect");}
-                if((claw.inPosition() && (arm.state==arm.states.get("neutralSample") && Math.sqrt( (scoringSamplePos.y-Odo.getY())*(scoringSamplePos.y-Odo.getY()) + (scoringSamplePos.x-Odo.getX())*(scoringSamplePos.x-Odo.getX()) )>100 && (scoringSamplePos.x<Odo.getX() || scoringSamplePos.y>Odo.getY())  ) || arm.state==arm.states.get("neutralSpecimen")) && claw.state==claw.states.get("scoring"))state = State.Deafult;
+                if((claw.inPosition() && (arm.state==arm.states.get("neutralSample") && Math.sqrt( (scoringSamplePos.y-Odo.getY())*(scoringSamplePos.y-Odo.getY()) + (scoringSamplePos.x-Odo.getX())*(scoringSamplePos.x-Odo.getX()) )>50 && (scoringSamplePos.x<Odo.getX() || scoringSamplePos.y>Odo.getY())  ) || arm.state==arm.states.get("neutralSpecimen")) && claw.state==claw.states.get("scoring"))state = State.Deafult;
 
                 break;
 
@@ -381,7 +389,7 @@ public class Outtake {
     {
 
         claw.update();
-        if(!climb)
+        if(!climb && !L)
         lift.update();
         arm.update();
         extension.update();

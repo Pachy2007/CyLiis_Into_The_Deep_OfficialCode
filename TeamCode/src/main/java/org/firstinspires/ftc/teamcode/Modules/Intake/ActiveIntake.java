@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Wrappers.BetterMotor;
 
 public class ActiveIntake {
 
-    public static double repausPower=0 , intakePower=1 , reversePowerTeleOp=-0.75 , reversePowerAuto=-1;
+    public static double repausPower=0 , intakePower=1 , reversePowerTeleOp=-0.75 , reversePowerAuto=-0.7;
 
 
 

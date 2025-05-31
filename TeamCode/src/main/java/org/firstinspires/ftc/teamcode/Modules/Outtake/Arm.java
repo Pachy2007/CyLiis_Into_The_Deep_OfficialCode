@@ -13,9 +13,9 @@ public class Arm extends IServoModule {
     public static boolean leftServoReversed=true , rightServoReversed=false ;
 
 
-    public static double deposit=0.045;
+    public static double deposit=0.06;
 
-    public static double takeSpecimen=0.935;
+    public static double takeSpecimen=0.955;
 
     public static double withElementSample=0.05 , withElementSpecimen=0.265;
 
@@ -23,7 +23,7 @@ public class Arm extends IServoModule {
 
     public static double lowSample=0.7;
 
-    public static double putHighSample=0.74;
+    public static double putHighSample=0.7;
 
     public static double lowSpecimen=0.265;
 
@@ -31,9 +31,9 @@ public class Arm extends IServoModule {
 
     public static double highSpecimen=0.265;
 
-    public static double scoreSample=0.74;
+    public static double scoreSample=0.7;
 
-    public static double goFinalClimb3=0.27;
+    public static double goFinalClimb3=0.15;
 
 
     public static double MaxVelocoty=13 , Acceleration=14  , Deceleration=14;

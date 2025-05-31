@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Wrappers.BetterServo;
 public class Wheelie {
 
 
-    public static double ssh5Normal=0.84 , ssh5Up=0;
+    public static double ssh5Normal=0.68 , ssh5Up=0.05;
     public static double ssh4Normal=0.42 , ssh4Up=1;
     BetterServo servo4 , servo5;
     public static double maxVelocity=10 , acc=10;

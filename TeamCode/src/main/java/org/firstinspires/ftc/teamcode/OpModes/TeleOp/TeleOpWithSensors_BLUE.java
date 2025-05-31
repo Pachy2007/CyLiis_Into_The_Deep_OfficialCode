@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.Modules.Others.PTO;
 import org.firstinspires.ftc.teamcode.Modules.Intake.SampleColor;
 import org.firstinspires.ftc.teamcode.Modules.Others.Scissor;
 import org.firstinspires.ftc.teamcode.Modules.Others.Wheelie;
+import org.firstinspires.ftc.teamcode.Modules.Outtake.Arm;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Lift;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
@@ -192,7 +193,8 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
                 }
                 ,
                 ()->{
-                    return wheelie.inPosition() && outtake.inPosition();
+                    if(wheelie.inPosition() && outtake.inPosition()) {    Lift.treshold=-1;return true;}
+                    return false;
                 }
                 ,
                 new Node[]{climbLvl2}
@@ -203,11 +205,15 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
                     if(outtake.lift.encoder.getPosition()<100)wheelie.goDown();
                     pto.setState("goClimb");
                     outtake.goDefault();
+                    if(gamepad1.dpad_left)
+                    {
+                        Lift.treshold=60;
+                    }
                 }
                 ,
                 ()->{
-                    if(Lift.State.DOWN==outtake.lift.state && readyToBeStoppedTimer.seconds()>1.2)readyToBeStoppedTimer.reset();
-                    if(outtake.lift.inPosition() && outtake.lift.state== Lift.State.DOWN && readyToBeStoppedTimer.seconds()>0.8 && readyToBeStoppedTimer.seconds()<1.2)
+                    if(Lift.State.DOWN==outtake.lift.state && readyToBeStoppedTimer.seconds()>0.9)readyToBeStoppedTimer.reset();
+                    if(outtake.lift.inPosition() && outtake.lift.state== Lift.State.DOWN && readyToBeStoppedTimer.seconds()>0.7 && readyToBeStoppedTimer.seconds()<0.9)
                     {readyToBeStoppedTimer.reset();return true;}
                     return false;
                 }
@@ -349,6 +355,11 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
 
             if(state==State.CLIMB)
             {
+                if(gamepad1.dpad_left)
+                {
+                    Lift.treshold=60;
+                }
+
                 if(gamepad1.dpad_down){Differential.liftPower=0;climb=true;}
                 else if(!climb){
                     climbState.run();
@@ -389,13 +400,6 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
                 Hardware.meh1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 Hardware.mch0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
-
-            telemetry.addData("motorWithGear" , Hardware.meh2.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("motorWithBelt" , Hardware.mch3.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("motorBoost" , Hardware.mch2.getCurrent(CurrentUnit.AMPS));
-
-            telemetry.update();
-
 
             driveTrain.update();
             outtake.update();
