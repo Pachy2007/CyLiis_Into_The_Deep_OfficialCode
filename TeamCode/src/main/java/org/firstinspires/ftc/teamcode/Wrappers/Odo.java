@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -19,6 +20,7 @@ public class Odo {
 
     public  static GoBildaPinpointDriver  odo;
     public static double heading,x ,y, xVelocity, yVelocity, predictedX, predictedY;
+    static ElapsedTime timer=new ElapsedTime();
     public static boolean INIT=false;
     public static Telemetry telemetry;
     public static boolean plsMergi=false;
@@ -38,7 +40,6 @@ public class Odo {
 
     public  static void init(HardwareMap hardwareMap , Telemetry telemetryy , String string)
     {
-
         if(INIT){odo.setPosition(new Pose2D(DistanceUnit.MM , 0 , 0 , AngleUnit.RADIANS , 0));return;}
         telemetry=telemetryy;
         INIT=true;
@@ -102,7 +103,9 @@ public class Odo {
             odo.update();
 
             heading=odo.getHeading();
+
             x=odo.getPosX();
+
             y=odo.getPosY();
 
             if(!Double.isNaN(odo.getVelocity().getX(DistanceUnit.MM)) && !Double.isNaN(odo.getVelocity().getY(DistanceUnit.MM)))

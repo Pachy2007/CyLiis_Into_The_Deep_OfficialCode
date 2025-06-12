@@ -36,7 +36,7 @@ public class Intake {
     public Latch latch;
 
     public SampleColor sampleColor;
-    public DigitalChannel bbDeposit;
+    public static DigitalChannel bbDeposit;
 
     public SampleColor.State colorAllaiance;
     ElapsedTime decideTimer = new ElapsedTime();
@@ -44,6 +44,7 @@ public class Intake {
     public boolean sampleInDeposit;
     public double kNR=0;
     public boolean justColorAllaiance=false;
+    public boolean transfer=true;
 
     boolean usingAutomatics=false;
     int nr=0;
@@ -79,7 +80,8 @@ public class Intake {
                 decideTimer.reset();
             break;
             case Decide:
-                if(decideTimer.seconds()<0.08)return;
+                if(!sampleInDeposit)stateTransfer=TransferLogic.Free;
+                if(decideTimer.seconds()<0.12)return;
 
                 if(sampleColor.state!=colorAllaiance && sampleColor.state== SampleColor.State.YELLOW)stateTransfer=TransferLogic.Throw;
                 if(sampleColor.state== SampleColor.State.YELLOW)
@@ -89,8 +91,8 @@ public class Intake {
                 }
                 if(sampleColor.state==colorAllaiance)
                 {
-                    if(justColorAllaiance)stateTransfer=TransferLogic.PrepareToHuman;
-                    if(!justColorAllaiance)stateTransfer=TransferLogic.Transfer;
+                    if(justColorAllaiance && !transfer)stateTransfer=TransferLogic.PrepareToHuman;
+                    else stateTransfer=TransferLogic.Transfer;
                 }
                 if(sampleColor.state!=colorAllaiance && sampleColor.state!= SampleColor.State.YELLOW)stateTransfer=TransferLogic.Throw;
             break;
@@ -127,8 +129,7 @@ public class Intake {
     public void setExtendoVelocity(double velocity)
     {
         if(stateTransfer==TransferLogic.Free || stateTransfer==TransferLogic.ReadyForHuman)
-
-        if(Math.abs(velocity)>0.05 && !having)state=State.INTAKE_UP;
+        if(Math.abs(velocity)>0.05 && !having && !transfer)state=State.INTAKE_UP;
         extendo.setVelocity(velocity);
     }
     public void setExtendoTargetPosition(double position)

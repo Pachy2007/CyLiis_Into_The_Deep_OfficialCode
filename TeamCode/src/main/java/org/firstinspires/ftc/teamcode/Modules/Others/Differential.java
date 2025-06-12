@@ -18,8 +18,8 @@ public class Differential {
     public static void init()
     {
         motor1=new BetterMotor(Hardware.meh2 , BetterMotor.RunMode.RUN,false);
-        motor2=new BetterMotor(Hardware.mch3 , BetterMotor.RunMode.RUN,false);
-        boostLift=new BetterMotor(Hardware.mch2 , BetterMotor.RunMode.RUN , true);
+        motor2=new BetterMotor(Hardware.mch1 , BetterMotor.RunMode.RUN,false);
+        boostLift=new BetterMotor(Hardware.mch0 , BetterMotor.RunMode.RUN , true);
         extendoPower=0;
         liftPower=0;
 

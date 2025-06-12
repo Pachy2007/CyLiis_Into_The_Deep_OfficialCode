@@ -29,7 +29,7 @@ public class Lift {
     public static int maxPosition=1600;
     public double prevVelocity=0;
     public static boolean climb=false;
-    public static double treshold = 15;
+    public static double treshold = 0.00001;
     int nr=0;
 
     public static double kP=0.0052 , kI=0 , kD=0.00023;
@@ -39,13 +39,13 @@ public class Lift {
 
     public static double position;
     public static double position1;
-    public static boolean encoderReversed=false;
+    public static boolean encoderReversed=true;
     public Lift()
     {
         Differential.init();
         controller=new PIDController(kP , kI , kD);
         encoder=new Encoder(Hardware.mch0 , encoderReversed);
-        Lift.treshold=15;
+        Lift.treshold=300;
     }
 
 
@@ -71,8 +71,8 @@ public class Lift {
 
     public boolean inPosition()
     {
-        if(climb==true) {if((Math.abs(position- encoder.getPosition())<100) || state==State.DOWN || state==State.GOING_DOWN )return true;}
-        else if(Math.abs(position- encoder.getPosition())<100 || state==State.DOWN || state==State.GOING_DOWN)return true;
+        if(climb==true) {if((Math.abs(position- encoder.getPosition())<200) || state==State.DOWN || state==State.GOING_DOWN )return true;}
+        else if(Math.abs(position- encoder.getPosition())<200 || state==State.DOWN || state==State.GOING_DOWN)return true;
         return false;
     }
     public void decreasePosition(int extra)
@@ -96,7 +96,7 @@ public class Lift {
                 if( Math.abs(encoder.getVelocity())<treshold)
                     {
                         nr++;
-                        if(nr>1)
+                        if(nr>2)
                         {state=state.nextState; encoder.resetPosition();}}
                 break;
         }

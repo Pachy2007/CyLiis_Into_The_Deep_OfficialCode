@@ -12,13 +12,13 @@ public class Claw extends IServoModule {
 
     public static boolean rightServoReversed=false;
 
-    public static double closeSample=0.37 ,  closeSpecimen=0.435 , openPosition=0.33, takeSpecimenPosition=0.2 , scoring=0.2;
+    public static double closeSample=0.41 ,  closeSpecimen=0.42 , openPosition=0.32, takeSpecimenPosition=0.2 , scoring=0.2;
     State initState;
     public Claw()
     {
         moduleName="CLAW";
         setServos(
-                new BetterServo("Servo" , Hardware.sch0 , BetterServo.RunMode.Time ,  openPosition , rightServoReversed , 0.1)
+                new BetterServo("Servo" , Hardware.sch3 , BetterServo.RunMode.Time ,  openPosition , rightServoReversed , 0.1)
         );
         setStates();
         initState=states.get("goOpen");
@@ -32,7 +32,7 @@ public class Claw extends IServoModule {
         setStates();
         initState=states.get(string);
         setServos(
-                new BetterServo("Servo" , Hardware.sch0 , BetterServo.RunMode.Time ,  initState.getPosition(0) , rightServoReversed , 0.05)
+                new BetterServo("Servo" , Hardware.sch3 , BetterServo.RunMode.Time ,  initState.getPosition(0) , rightServoReversed , 0.05)
         );
 
         atStart();

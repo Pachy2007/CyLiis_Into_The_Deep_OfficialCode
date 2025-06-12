@@ -16,7 +16,7 @@ public class Limelight {
     public static LLResult result;
     public static double k=0.9;
     public static double Distance;
-    public static double r=26.5;
+    public static double r=27;
     public static double targetAngle;
     public static double distanceLimeLight=74.5;
 

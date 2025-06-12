@@ -20,18 +20,18 @@ import org.firstinspires.ftc.teamcode.Wrappers.Pose2D;
 @Config
 public class SampleAutoNodes {
 
-    public static Pose2D putSamplePosition=new Pose2D (-730 , 140 ,-1);
+    public static Pose2D putSamplePosition=new Pose2D (-760 , 140 ,-0.92);
 
     public static Pose2D[] takeFloorSamplePosition=new Pose2D[]{
             new Pose2D(-570 ,700 , -1.1) ,
             new Pose2D(-700 ,700 , -1.55) ,
             new Pose2D(-700 ,700 , -2.3)};
 
-    public static Pose2D beforeTakeFromSub = new Pose2D(-50 , 1400 , -1.3);
-    public static Pose2D prepareToTakeFromSubPosition = new Pose2D( 200 , 1300 , 0);
+    public static Pose2D beforeTakeFromSub = new Pose2D(0 , 1300 , -1.1);
+    public static Pose2D prepareToTakeFromSubPosition = new Pose2D( 150 , 1300 , 0);
     public static Pose2D beforeGoPutSample= new Pose2D(0 , 1300 , -1);
 
-    public static double[] takeFloorSampleExtendoPosition={130 , 150 , 260};
+    public static double[] takeFloorSampleExtendoPosition={150 , 150 , 260};
 
 
     public MecanumDriveTrain driveTrain;
@@ -48,7 +48,7 @@ public class SampleAutoNodes {
     ElapsedTime timerTakeFloor = new ElapsedTime();
     ElapsedTime timerToWaitIntake = new ElapsedTime();
     ElapsedTime timerTryingToTake = new ElapsedTime();
-    ElapsedTime timerWaitingTryAgain = new ElapsedTime();
+    ElapsedTime timerVerifying = new ElapsedTime();
 
     public ElapsedTime timerToPark = new ElapsedTime();
     public Node currentNode;
@@ -89,18 +89,21 @@ public class SampleAutoNodes {
                     ()->{
                         timerToWaitIntake.reset();
                         intake.asure1inDepositState= Intake.Asure1inDeposit.Free;
+                        if(outtake.state!= Outtake.State.Up)
                         Arm.putHighSample=0.5;
                         intake.setExtendoIN();intake.setState(Intake.State.INTAKE_UP);
                         if(intake.extendo.state== Extendo.State.IN && intake.ramp.state==intake.ramp.states.get("up"))outtake.grabSample();
 
-                        if(driveTrain.inPosition(350 , 350 , 2))
+                        if(driveTrain.inPosition(500 , 500 , 1))
                         outtake.goUp();
                         driveTrain.setTargetPosition(putSamplePosition);
                         Limelight.X=-1;
+                        if(outtake.lift.inPosition() && outtake.state== Outtake.State.Up)
+                            Arm.putHighSample=0.74;
                     }
                     ,
                     ()->{
-                        return (driveTrain.inPosition(70 , 70 , 0.3) && outtake.inPosition() && outtake.state==Outtake.State.Up);
+                        return (driveTrain.inPosition(45 , 45 , 0.4) && outtake.inPosition() && outtake.state==Outtake.State.Up);
 
                     }
                    ,
@@ -113,8 +116,6 @@ public class SampleAutoNodes {
                         outtake.grabSample();
 
 
-
-                        Arm.putHighSample=0.74;
                         outtake.score();
                         intake.setState(Intake.State.REPAUS_DOWN);
                         timerTakeFloor.reset();
@@ -159,7 +160,7 @@ public class SampleAutoNodes {
                     ()->{
                         outtake.score();
                         intake.setExtendoIN();
-                        if(intake.state!= Intake.State.REPAUS_DOWN && intake.extendo.state== Extendo.State.IN && driveTrain.inPosition(30 , 30 , 0.15) && driveTrain.targetX==200){
+                        if(intake.state!= Intake.State.REPAUS_DOWN && intake.extendo.state== Extendo.State.IN && driveTrain.inPosition(30 , 30 , 0.15) && driveTrain.targetX==150){
                         intake.setState(Intake.State.REPAUS_DOWN);timerToWaitIntake.reset();}
 
                         if(intake.extendo.state!= Extendo.State.IN)intake.setState(Intake.State.REVERSE_UP);
@@ -171,7 +172,7 @@ public class SampleAutoNodes {
                     }
                     ,
                     ()->{
-                        if( driveTrain.inPosition(30 , 30 , 0.15) && timerToWaitIntake.seconds()>0.5 && intake.extendo.state== Extendo.State.IN && driveTrain.targetX==200 && intake.ramp.state==intake.ramp.states.get("down"))
+                        if( driveTrain.inPosition(20 , 20 , 0.08) && timerToWaitIntake.seconds()>0.5 && intake.extendo.state== Extendo.State.IN && driveTrain.targetX==150 && intake.ramp.state==intake.ramp.states.get("down"))
                         {
                            Limelight.update();if(Limelight.X!=-1)return true;}
                         return false;
@@ -188,7 +189,7 @@ public class SampleAutoNodes {
                         }
                         if(driveTrain.inPosition(20 , 20 , 0.1) && intake.ramp.state==intake.ramp.states.get("up"))
                         {
-                            intake.setExtendoTargetPosition(Limelight.extendoPosition-130);
+                            intake.setExtendoTargetPosition(Limelight.extendoPosition-40);
                         }
                     }
                     ,
@@ -207,7 +208,7 @@ public class SampleAutoNodes {
             takingFromSub.addConditions(
                     ()->{
                         intake.setState(Intake.State.INTAKE_DOWN);
-                        intake.setExtendoTargetPosition(Limelight.extendoPosition+200);
+                        intake.setExtendoTargetPosition(Limelight.extendoPosition+130);
                     }
                     ,
                     ()->{
@@ -216,7 +217,8 @@ public class SampleAutoNodes {
                             Limelight.X=-1;
                             currentNode=prepareToTakeFromSub;
                         }
-                        if( intake.sampleInDeposit && (intake.sampleColor.state== SampleColor.State.YELLOW || intake.sampleColor.state==colorState))
+                        if(intake.sampleInDeposit && timerVerifying.seconds()>0.15)timerVerifying.reset();
+                        if( intake.sampleInDeposit && (intake.sampleColor.state== SampleColor.State.YELLOW || intake.sampleColor.state==colorState) && timerVerifying.seconds()>0.08 && timerVerifying.seconds()<0.15 )
                         {
                             Limelight.X=-1;
                             return true;
