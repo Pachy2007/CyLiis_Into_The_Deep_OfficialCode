@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.Math.LowPassFilter;
 import org.opencv.core.Mat;
 
@@ -18,7 +19,7 @@ import java.lang.Math;
 @Config
 public class Odo {
 
-    public  static GoBildaPinpointDriver  odo;
+    public  static GoBildaPinpointDriver odo;
     public static double heading,x ,y, xVelocity, yVelocity, predictedX, predictedY;
     static ElapsedTime timer=new ElapsedTime();
     public static boolean INIT=false;
@@ -44,7 +45,6 @@ public class Odo {
         telemetry=telemetryy;
         INIT=true;
         odo=hardwareMap.get(GoBildaPinpointDriver.class , "odo");
-
 
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD , GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
@@ -80,7 +80,7 @@ public class Odo {
     private static final LowPassFilter yVelocityFilter = new LowPassFilter(filterParameter, 0);
 
 
-    public static double xDeceleration = 100 * 25.4, yDeceleration = 150 * 25.4;
+    public static double xDeceleration = 120 * 25.4, yDeceleration = 150 * 25.4;
     public static double xRobotVelocity, yRobotVelocity;
     public static double forwardGlide, lateralGlide;
     public static double xGlide, yGlide;
@@ -100,7 +100,8 @@ public class Odo {
 
     public  static void update()
     {
-            odo.update();
+        odo.update();
+        if(Double.isNaN(odo.getHeading()) || Double.isNaN(odo.getPosX()) || Double.isNaN(odo.getPosY()) || Double.isNaN(odo.getVelocity().getX(DistanceUnit.MM)))return;
 
             heading=odo.getHeading();
 
@@ -115,6 +116,7 @@ public class Odo {
             updateGlide();
             predictedX = x + xGlide;
             predictedY = y + yGlide;}
+
 
 //            long newTime = System.currentTimeMillis();
 //            if(newTime-time>100) {

@@ -42,7 +42,7 @@ public class MecanumDriveTrain {
     public static double lateralMultiplier=2.5;
     public static  double realHeading;
 
-    public static double kp=0.0067 , ki=0 , kd=0;
+    public static double kp=0.0084 , ki=0 , kd=0;
     public static double KP=1.6 , KI , KD=0.13;
    public  PIDController controllerX=new PIDController(kp , ki , kd) , controllerY=new PIDController(kp , ki , kd) , controllerHeading=new PIDController(KP , KI , KD);
 
@@ -51,7 +51,7 @@ public class MecanumDriveTrain {
         state=initialState;
 
         frontLeft=new BetterMotor(Hardware.meh0 , BetterMotor.RunMode.RUN , frontLeftreversed);
-        frontRight=new BetterMotor(Hardware.mch3 , BetterMotor.RunMode.RUN , frontRightreversed);
+        frontRight=new BetterMotor(Hardware.mch1 , BetterMotor.RunMode.RUN , frontRightreversed);
 
         backLeft=new BetterMotor(Hardware.meh1 , BetterMotor.RunMode.RUN , backLeftreversed);
         backRight=new BetterMotor(Hardware.mch2 , BetterMotor.RunMode.RUN , backRightreversed);

@@ -83,6 +83,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         PTO pto=new PTO();
         Wheelie wheelie=new Wheelie();
         boolean climb=false;
+        boolean prevA=false;
 
         outtake.extension.setState("goRetrect");
         outtake.arm.setState("goHighSpecimen");
@@ -91,6 +92,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         Node climbState;
 
         ElapsedTime timer=new ElapsedTime();
+        ElapsedTime timerSpec=new ElapsedTime();
 
         prepareClimbLvl2 = new Node("prepareClimbLvl2");
         climbLvl2 = new Node("climbLvl2");
@@ -121,7 +123,9 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         climbLvl2.addConditions(
                 ()->{
                     if(outtake.lift.encoder.getPosition()<100)wheelie.goDown();
+                    if(outtake.lift.state!= Lift.State.DOWN)
                     pto.setState("goClimb");
+                    else pto.setState("goNormal");
                     outtake.goDefault();
                     //intake.extendo.setTargetPosition(350);
                     /*if(gamepad1.dpad_left)
@@ -131,7 +135,8 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 }
                 ,
                 ()->{
-                    if(Lift.State.DOWN==outtake.lift.state && readyToBeStoppedTimer.seconds()>1)readyToBeStoppedTimer.reset();
+                    if(Lift.State.DOWN==outtake.lift.state && readyToBeStoppedTimer.seconds()>1){readyToBeStoppedTimer.reset();
+                                                                                                }
                     if(outtake.lift.inPosition() && outtake.lift.state== Lift.State.DOWN && readyToBeStoppedTimer.seconds()>0.6 && readyToBeStoppedTimer.seconds()<0.9)
                     {readyToBeStoppedTimer.reset();return true;}
                     return false;
@@ -141,9 +146,10 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         );
         prepareClimbLvl3.addConditions(
                 ()->{
-
-                    if(Math.abs(outtake.lift.encoder.getPosition())>110)
-                    pto.setState("goNormal");
+                    if(readyToBeStoppedTimer.seconds()<1.3 && outtake.lift.encoder.getPosition()>100)
+                        pto.setState("goNormal");
+                    if(readyToBeStoppedTimer.seconds()>1.3)
+                    pto.setState("goClimb");
                     if(!outtake.lift.inPosition() && outtake.lift.encoder.getPosition()<900)
                         intake.extendo.setTargetPosition(350);
                     else intake.extendo.setIn();
@@ -242,7 +248,13 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
             if(gamepad1.options)Odo.reset();
 
-            if(gamepad1.a)intake.setExtendoIN();
+
+            if(gamepad1.a && !prevA)
+            {   if(intake.extendo.state!= Extendo.State.IN)
+                intake.setExtendoIN();
+                else intake.extendo.setTargetPosition(850);}
+            prevA=gamepad1.a;
+
 
             if(gamepad2.y && outtake.state!=Outtake.State.TakingElement)outtake.goDefault();
 
@@ -259,6 +271,9 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
 
             if(!intake.transfer && outtake.state== Outtake.State.Deafult && intake.stateTransfer==Intake.TransferLogic.Free)outtake.goDefault();
+
+            if(!gamepad1.circle)timerSpec.reset();
+            if(timerSpec.seconds()>0.3)outtake.state= Outtake.State.Deafult;
 
             if((gamepad1.circle) && (outtake.state==Outtake.State.DeafultWithElement || outtake.state== Outtake.State.ReleaseSample) && outtake.haveSample==true && outtake.inPosition())outtake.releaseSample();
             if(gamepad1.circle)outtake.score();

@@ -3,10 +3,9 @@ package org.firstinspires.ftc.teamcode.OpModes.Auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Auto.SpecimenAuto;
+import org.firstinspires.ftc.teamcode.Auto.BetterSpecimenAuto;
 import org.firstinspires.ftc.teamcode.Modules.Intake.SampleColor;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
-import org.firstinspires.ftc.teamcode.Wrappers.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 
 @Autonomous
@@ -17,7 +16,7 @@ public class Sper_ca_Merge_Spec_RED extends LinearOpMode {
 
         Odo.init(hardwareMap , telemetry , "a");
 
-        SpecimenAuto nodes=new SpecimenAuto();
+        BetterSpecimenAuto nodes=new BetterSpecimenAuto();
 
 
         Hardware.init(hardwareMap);
@@ -28,7 +27,7 @@ public class Sper_ca_Merge_Spec_RED extends LinearOpMode {
         {
             nodes.intake.update();
             nodes.outtake.update();
-
+            Odo.update();
         }
         waitForStart();
         while (opModeIsActive())

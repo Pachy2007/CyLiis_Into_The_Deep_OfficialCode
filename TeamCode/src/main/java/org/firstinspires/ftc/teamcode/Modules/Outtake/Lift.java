@@ -71,8 +71,8 @@ public class Lift {
 
     public boolean inPosition()
     {
-        if(climb==true) {if((Math.abs(position- encoder.getPosition())<200) || state==State.DOWN || state==State.GOING_DOWN )return true;}
-        else if(Math.abs(position- encoder.getPosition())<200 || state==State.DOWN || state==State.GOING_DOWN)return true;
+        if(climb==true) {if((Math.abs(position- encoder.getPosition())<150) || state==State.DOWN || state==State.GOING_DOWN )return true;}
+        else if(Math.abs(position- encoder.getPosition())<150 || state==State.DOWN || state==State.GOING_DOWN)return true;
         return false;
     }
     public void decreasePosition(int extra)
@@ -85,7 +85,7 @@ public class Lift {
         switch(state)
         {
             case GOING_UP:
-                if(Math.abs(position+ encoder.getPosition())<100)state=state.nextState;
+                if(Math.abs(position+ encoder.getPosition())<150)state=state.nextState;
                 nr=0;
                 break;
             case UP:

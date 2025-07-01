@@ -12,7 +12,7 @@ public class Claw extends IServoModule {
 
     public static boolean rightServoReversed=false;
 
-    public static double closeSample=0.41 ,  closeSpecimen=0.42 , openPosition=0.32, takeSpecimenPosition=0.2 , scoring=0.2;
+    public static double closeSample=0.575 ,  closeSpecimen=0.58 , openPosition=0.475, takeSpecimenPosition=0.33 , scoring=0.33;
     State initState;
     public Claw()
     {

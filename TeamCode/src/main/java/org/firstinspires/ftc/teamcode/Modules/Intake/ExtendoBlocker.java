@@ -11,7 +11,7 @@ public class ExtendoBlocker extends IServoModule {
 
     public static boolean reversed=false;
 
-    public static double close=0.61 , open=0.52;
+    public static double close=0.67 , open=0.54;
     public static double time=0.007;
 
     public ExtendoBlocker(){

@@ -81,7 +81,7 @@ public class Intake {
             break;
             case Decide:
                 if(!sampleInDeposit)stateTransfer=TransferLogic.Free;
-                if(decideTimer.seconds()<0.12)return;
+                if(decideTimer.seconds()<0.08)return;
 
                 if(sampleColor.state!=colorAllaiance && sampleColor.state== SampleColor.State.YELLOW)stateTransfer=TransferLogic.Throw;
                 if(sampleColor.state== SampleColor.State.YELLOW)
@@ -150,13 +150,17 @@ public class Intake {
             break;
             case PrepareToClean:
                 latch.setState("goClose");
-                state=State.INTAKE_UP;
                 reverseTicks=0;
+                if(latch.inPosition())
+                {extendo.setIn();state=State.REVERSE_UP;}
+                else state=State.INTAKE_UP;
                 if(latch.inPosition() && ramp.state==ramp.states.get("up"))asure1inDepositState=Asure1inDeposit.Clean;
             break;
             case Clean:
+                ActiveIntake.State.REVERSE.power=ActiveIntake.reverPowerTransfer;
                 state=State.REVERSE_UP;
                 reverseTicks++;
+                extendo.setIn();
                 if(reverseTicks>=3){asure1inDepositState=Asure1inDeposit.DezactivateCleaning;reverseTicks=0;}
             break;
             case DezactivateCleaning:
@@ -213,8 +217,7 @@ public class Intake {
             break;
         }
 
-        if(extendo.state== Extendo.State.IN)extendoBlocker.setState("goClose");
-        else extendoBlocker.setState("goOpen");
+
     }
 
     public boolean inPosition()
@@ -228,18 +231,25 @@ public class Intake {
 
     public void update()
     {
+        if(extendo.state== Extendo.State.IN)extendoBlocker.setState("goClose");
+        else extendoBlocker.setState("goOpen");
+
+
+
+
+        sampleInDeposit=(!bbDeposit.getState());
+        if(sampleInDeposit)
+            sampleColor.update();
+        ramp.update();
+        extendo.update();
+        extendoBlocker.update();
+
+        latch.update();
+
         if(usingAutomatics)
         updateDeposit();
         updateStates();
         updateAsure1inDeposit();
-
-
-        sampleInDeposit=(!bbDeposit.getState());
-        ramp.update();
-        extendo.update();
-        extendoBlocker.update();
-        sampleColor.update();
-        latch.update();
 
     }
 
