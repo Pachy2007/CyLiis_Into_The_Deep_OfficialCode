@@ -58,7 +58,7 @@
         private void updateState()
         {
              redError=distance(red , green , blue , 255 ,0 , 0);
-             yellowError=distance(red , green , blue , 225 , 225 , 0);
+             yellowError=distance(red , green , blue , 255 , 255 , 0);
              blueError=distance(red , green , blue , 0 , 0 ,255);
 
             if(redError<= yellowError && redError<=blueError)state=State.RED;

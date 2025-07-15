@@ -15,7 +15,7 @@ public class Arm extends IServoModule {
 
     public static double deposit=0.039;
 
-    public static double takeSpecimen=0.9235;
+    public static double takeSpecimen=0.924;
 
     public static double withElementSample=0.05 , withElementSpecimen=0.27;
 
@@ -55,6 +55,7 @@ public class Arm extends IServoModule {
 
         setProfileCoefficients();
         atStart();
+        Arm.putHighSample=0.7;
 
     }
 
@@ -73,6 +74,9 @@ public class Arm extends IServoModule {
 
         setProfileCoefficients();
         atStart();
+
+        Arm.putHighSample=0.7;
+
 
     }
 

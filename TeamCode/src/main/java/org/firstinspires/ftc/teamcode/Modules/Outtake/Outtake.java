@@ -70,7 +70,7 @@ public class Outtake {
 
     public boolean climb3ArmPosition=false;
     public static boolean prim=false;
-    public static int lowBasketPosition=400  , highBasketPosition=1210  , lowChamberDown=150 ,  highChamberDown=545 , autoClimbPosition=190 , climb2=520 , climb3=1050;
+    public static int lowBasketPosition=400  , highBasketPosition=1210  , lowChamberDown=150 ,  highChamberDown=545 , autoClimbPosition=190 , climb2=520 , climb3=1000;
 
     public Outtake()
     {

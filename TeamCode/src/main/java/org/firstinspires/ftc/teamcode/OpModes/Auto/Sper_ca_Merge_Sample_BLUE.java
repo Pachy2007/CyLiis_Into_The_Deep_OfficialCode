@@ -36,7 +36,7 @@ public class Sper_ca_Merge_Sample_BLUE extends LinearOpMode {
         {
             Arm.withElementSample=0.045;
             Odo.update();
-            nodes.run(hardwareMap  , telemetry , SampleColor.State.RED);
+            nodes.run(hardwareMap  , telemetry , SampleColor.State.BLUE);
         }
     }
 }

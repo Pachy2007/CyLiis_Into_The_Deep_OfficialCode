@@ -99,7 +99,7 @@ public class SampleAutoNodes {
                         driveTrain.setTargetPosition(putSamplePosition);
                         Limelight.X=-1;
                         if(outtake.lift.inPosition() && outtake.lift.state== Lift.State.UP)
-                            Arm.putHighSample=0.74;
+                            Arm.putHighSample=0.7;
                     }
                     ,
                     ()->{
@@ -214,19 +214,19 @@ public class SampleAutoNodes {
             takingFromSub.addConditions(
                     ()->{
                         intake.setState(Intake.State.INTAKE_DOWN);
-                        if(timerTryingToTake.seconds()>0.3)
-                        intake.setExtendoTargetPosition(Limelight.extendoPosition+130);
+                        if(timerTryingToTake.seconds()>0.5)
+                        intake.setExtendoTargetPosition(Limelight.extendoPosition+90);
                         else intake.setExtendoVelocity(0);
                     }
                     ,
                     ()->{
-                        if(timerTryingToTake.seconds()>1.2)
+                        if(timerTryingToTake.seconds()>1.4)
                         {
                             Limelight.X=-1;
                             currentNode=prepareToTakeFromSub;
                         }
                         if(intake.sampleInDeposit && timerVerifying.seconds()>0.15)timerVerifying.reset();
-                        if( intake.sampleInDeposit && (intake.sampleColor.state== SampleColor.State.YELLOW || intake.sampleColor.state==colorState) && timerVerifying.seconds()>0.1 && timerVerifying.seconds()<0.15 )
+                        if( intake.sampleInDeposit && (intake.sampleColor.state== SampleColor.State.YELLOW || intake.sampleColor.state==colorState) && timerVerifying.seconds()>0.01 && timerVerifying.seconds()<0.15 )
                         {
                             Limelight.X=-1;
                             return true;

@@ -21,6 +21,7 @@ public class Sper_ca_Merge_Spec_RED extends LinearOpMode {
 
         Hardware.init(hardwareMap);
         nodes.init(hardwareMap , SampleColor.State.RED , 0);
+
         nodes.intake.extendo.setIn();
 
         while(opModeInInit())

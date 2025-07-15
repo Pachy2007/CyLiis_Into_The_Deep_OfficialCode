@@ -11,15 +11,15 @@ import org.firstinspires.ftc.teamcode.Wrappers.BetterServo;
 public class Extension extends IServoModule {
 
 
-    public static double extend=0.205;
+    public static double extend=0.19;
 
-    public static double retrect=0.75;
+    public static double retrect=0.735;
 
-    public static double deposit=0.37;
+    public static double deposit=0.355;
 
-    public static double takeSample=0.37;
+    public static double takeSample=0.355;
 
-    public static double takeSpecimen=0.62;
+    public static double takeSpecimen=0.605;
 
     State initState;
 

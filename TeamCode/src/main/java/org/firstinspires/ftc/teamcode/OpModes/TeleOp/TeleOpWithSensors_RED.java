@@ -69,7 +69,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         Odo.init(hardwareMap , telemetry);
 
 
-         double L=0;
+        double L=0;
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -124,7 +124,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 ()->{
                     if(outtake.lift.encoder.getPosition()<100)wheelie.goDown();
                     if(outtake.lift.state!= Lift.State.DOWN)
-                    pto.setState("goClimb");
+                        pto.setState("goClimb");
                     else pto.setState("goNormal");
                     outtake.goDefault();
                     //intake.extendo.setTargetPosition(350);
@@ -136,7 +136,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 ,
                 ()->{
                     if(Lift.State.DOWN==outtake.lift.state && readyToBeStoppedTimer.seconds()>1){readyToBeStoppedTimer.reset();
-                                                                                                }
+                    }
                     if(outtake.lift.inPosition() && outtake.lift.state== Lift.State.DOWN && readyToBeStoppedTimer.seconds()>0.6 && readyToBeStoppedTimer.seconds()<0.9)
                     {readyToBeStoppedTimer.reset();return true;}
                     return false;
@@ -146,12 +146,12 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
         );
         prepareClimbLvl3.addConditions(
                 ()->{
-                    if(readyToBeStoppedTimer.seconds()<1.3 && outtake.lift.encoder.getPosition()>100)
+                    if(readyToBeStoppedTimer.seconds()<1.3 && outtake.lift.encoder.getPosition()>170)
                         pto.setState("goNormal");
                     if(readyToBeStoppedTimer.seconds()>1.3)
-                    pto.setState("goClimb");
+                        pto.setState("goClimb");
                     if(!outtake.lift.inPosition() && outtake.lift.encoder.getPosition()<900)
-                        intake.extendo.setTargetPosition(350);
+                        intake.extendo.setTargetPosition(410);
                     else intake.extendo.setIn();
                     if(outtake.lift.encoder.getPosition()>150)
                         wheelie.goUp();
@@ -177,7 +177,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                     pto.setState("goClimb");
                     if(intake.extendo.state== Extendo.State.IN)
                         outtake.goDefault();
-                    wheelie.goUp();
+                    wheelie.goDown();
                 }
                 ,
                 ()->{
@@ -227,68 +227,68 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 state=State.CLIMB;
             }
 
-                if(state==State.CONTROLLING)
+            if(state==State.CONTROLLING)
             {
                 readyToBeStoppedTimer.reset();
                 driveTrain.setMode(MecanumDriveTrain.State.DRIVE);
                 double X=gamepad1.left_stick_x * gamepad1.left_stick_x * Math.signum(gamepad1.left_stick_x);
-            double Y=gamepad1.left_stick_y * gamepad1.left_stick_y * -Math.signum(gamepad1.left_stick_y);
-            double rotation=gamepad1.right_trigger-gamepad1.left_trigger;
+                double Y=gamepad1.left_stick_y * gamepad1.left_stick_y * -Math.signum(gamepad1.left_stick_y);
+                double rotation=gamepad1.right_trigger-gamepad1.left_trigger;
 
-             L = ((intake.extendo.encoder.getPosition()/750.0) * (maxL-minL) + minL)/minL;
-            rotation = rotation;
+                L = ((intake.extendo.encoder.getPosition()/750.0) * (maxL-minL) + minL)/minL;
+                rotation = rotation;
 
-            double heading =-Odo.getHeading();
+                double heading =-Odo.getHeading();
 
-            double x=X*Math.cos(heading)-Y*Math.sin(heading);
-            double y=X* Math.sin(heading)+Y*Math.cos(heading);
+                double x=X*Math.cos(heading)-Y*Math.sin(heading);
+                double y=X* Math.sin(heading)+Y*Math.cos(heading);
 
-            driveTrain.setTargetVector( x , y , rotation );
-
-
-            if(gamepad1.options)Odo.reset();
+                driveTrain.setTargetVector( x , y , rotation );
 
 
-            if(gamepad1.a && !prevA)
-            {   if(intake.extendo.state!= Extendo.State.IN)
-                intake.setExtendoIN();
+                if(gamepad1.options)Odo.reset();
+
+
+                if(gamepad1.a && !prevA)
+                {   if(intake.extendo.state!= Extendo.State.IN)
+                    intake.setExtendoIN();
                 else intake.extendo.setTargetPosition(850);}
-            prevA=gamepad1.a;
+                prevA=gamepad1.a;
 
 
-            if(gamepad2.y && outtake.state!=Outtake.State.TakingElement)outtake.goDefault();
+                if(gamepad2.y && outtake.state!=Outtake.State.TakingElement)outtake.goDefault();
 
-            if(((gamepad2.a || (intake.stateTransfer== Intake.TransferLogic.ReadyToTransfer && intake.extendo.state== Extendo.State.IN))) && intake.ramp.state==intake.ramp.states.get("up") && intake.transfer && outtake.inPosition() && outtake.claw.state==outtake.claw.states.get("open")){outtake.grabSample();timer.reset();
-            }
+                if(((gamepad2.a || (intake.stateTransfer== Intake.TransferLogic.ReadyToTransfer && intake.extendo.state== Extendo.State.IN))) && intake.ramp.state==intake.ramp.states.get("up") && intake.transfer && outtake.inPosition() && outtake.claw.state==outtake.claw.states.get("open")){outtake.grabSample();timer.reset();
+                }
 
-            if(!Intake.bbDeposit.getState() && intake.justColorAllaiance && intake.transfer && outtake.state== Outtake.State.Specimen && intake.stateTransfer==Intake.TransferLogic.Transfer)outtake.state= Outtake.State.Deafult;
-            if(gamepad1.circle && outtake.state==Outtake.State.Specimen && !prevCircle)outtake.grabSample();
-            prevCircle=gamepad1.circle;
-            if(gamepad2.x)outtake.retry(); //failsafePusSpecimen
+                if(!Intake.bbDeposit.getState() && intake.justColorAllaiance && intake.transfer && outtake.state== Outtake.State.Specimen && intake.stateTransfer==Intake.TransferLogic.Transfer)outtake.state= Outtake.State.Deafult;
+                if(gamepad1.circle && outtake.state==Outtake.State.Specimen && !prevCircle)outtake.grabSample();
+                prevCircle=gamepad1.circle;
+                if(gamepad2.x)outtake.retry(); //failsafePusSpecimen
 
-            if(gamepad2.dpad_up){outtake.goUp();outtake.goForHigh();}
-            if(gamepad2.dpad_down){outtake.goUp();outtake.goForLow();}
+                if(gamepad2.dpad_up){outtake.goUp();outtake.goForHigh();}
+                if(gamepad2.dpad_down){outtake.goUp();outtake.goForLow();}
 
 
-            if(!intake.transfer && outtake.state== Outtake.State.Deafult && intake.stateTransfer==Intake.TransferLogic.Free)outtake.goDefault();
+                if(!intake.transfer && outtake.state== Outtake.State.Deafult && intake.stateTransfer==Intake.TransferLogic.Free)outtake.goDefault();
 
-            if(!gamepad1.circle)timerSpec.reset();
-            if(timerSpec.seconds()>0.3)outtake.state= Outtake.State.Deafult;
+                if(!gamepad1.circle)timerSpec.reset();
+                if(timerSpec.seconds()>0.3)outtake.state= Outtake.State.Deafult;
 
-            if((gamepad1.circle) && (outtake.state==Outtake.State.DeafultWithElement || outtake.state== Outtake.State.ReleaseSample) && outtake.haveSample==true && outtake.inPosition())outtake.releaseSample();
-            if(gamepad1.circle)outtake.score();
-            if(gamepad2.circle)outtake.takeSpecimen();
+                if((gamepad1.circle) && (outtake.state==Outtake.State.DeafultWithElement || outtake.state== Outtake.State.ReleaseSample) && outtake.haveSample==true && outtake.inPosition())outtake.releaseSample();
+                if(gamepad1.circle)outtake.score();
+                if(gamepad2.circle)outtake.takeSpecimen();
 
-            if(gamepad2.left_bumper){intake.justColorAllaiance=false;intake.transfer=true; outtake.onSpec=false;outtake.goDefault();}
-            if(gamepad2.right_bumper){intake.justColorAllaiance=true;intake.transfer=false; outtake.onSpec=true;outtake.goDefault();}
-            if(gamepad2.touchpad){intake.justColorAllaiance=true; intake.transfer=true; outtake.onSpec=true;outtake.goDefault();}
+                if(gamepad2.left_bumper){intake.justColorAllaiance=false;intake.transfer=true; outtake.onSpec=false;outtake.goDefault();}
+                if(gamepad2.right_bumper){intake.justColorAllaiance=true;intake.transfer=false; outtake.onSpec=true;outtake.goDefault();}
+                if(gamepad2.touchpad){intake.justColorAllaiance=true; intake.transfer=true; outtake.onSpec=true;outtake.goDefault();}
 
-            if(gamepad1.right_bumper)intake.setState(Intake.State.INTAKE_DOWN);
-            else if(gamepad1.left_bumper){intake.setState(Intake.State.REVERSE_DOWN);ActiveIntake.State.REVERSE.power=ActiveIntake.reversePowerTeleOp;}
-            else intake.setState(Intake.State.REPAUS_UP);
+                if(gamepad1.right_bumper)intake.setState(Intake.State.INTAKE_DOWN);
+                else if(gamepad1.left_bumper){intake.setState(Intake.State.REVERSE_DOWN);ActiveIntake.State.REVERSE.power=ActiveIntake.reversePowerTeleOp;}
+                else intake.setState(Intake.State.REPAUS_UP);
 
-            double power=-gamepad1.right_stick_y;
-            intake.setExtendoVelocity(power);
+                double power=-gamepad1.right_stick_y;
+                intake.setExtendoVelocity(power);
 
             }
 
@@ -301,8 +301,8 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
 
                 if(gamepad1.dpad_down){Differential.liftPower=0;climb=true;}
                 else if(!climb){
-                climbState.run();
-                if(climbState.transition())climbState=climbState.next[Math.min(climbState.index++ , climbState.next.length-1)];}
+                    climbState.run();
+                    if(climbState.transition())climbState=climbState.next[Math.min(climbState.index++ , climbState.next.length-1)];}
             }
 
 
