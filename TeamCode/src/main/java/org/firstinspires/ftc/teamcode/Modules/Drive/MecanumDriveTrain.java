@@ -158,20 +158,11 @@ public class MecanumDriveTrain {
         controllerHeading.ki=KI;
         controllerHeading.kd=KD;
 
-
-
-
-
-
-        if(Double.isNaN(Odo.getX()) || Double.isNaN(Odo.getY()) || Double.isNaN(Odo.getHeading()) || Double.isNaN(Odo.predictedX) ||Double.isNaN(Odo.predictedY) )
+        if(Double.isNaN(Odo.x) || Double.isNaN(Odo.y) || Double.isNaN(Odo.heading))
         {
             return;
         }
-
-
             x = controllerX.calculate(targetX, Odo.predictedX);
-
-
 
             y=-controllerY.calculate(targetY , Odo.predictedY);
 

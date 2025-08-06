@@ -57,7 +57,7 @@
 
         private void updateState()
         {
-             redError=distance(red , green , blue , 255 ,0 , 0);
+             redError=distance(red , green , blue , 245 ,0 , 0);
              yellowError=distance(red , green , blue , 255 , 255 , 0);
              blueError=distance(red , green , blue , 0 , 0 ,255);
 

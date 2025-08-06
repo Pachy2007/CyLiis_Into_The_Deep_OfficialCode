@@ -10,8 +10,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.Math.LowPassFilter;
+import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.opencv.core.Mat;
 
 import java.lang.Math;
@@ -19,7 +19,7 @@ import java.lang.Math;
 @Config
 public class Odo {
 
-    public  static GoBildaPinpointDriver odo;
+    public  static org.firstinspires.ftc.teamcode.Wrappers.GoBildaPinpointDriver odo;
     public static double heading,x ,y, xVelocity, yVelocity, predictedX, predictedY;
     static ElapsedTime timer=new ElapsedTime();
     public static boolean INIT=false;
@@ -30,9 +30,9 @@ public class Odo {
         if(INIT)return;
         telemetry=telemetryy;
         INIT=true;
-        odo=hardwareMap.get(GoBildaPinpointDriver.class , "odo");
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD , GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odo=hardwareMap.get(org.firstinspires.ftc.teamcode.Wrappers.GoBildaPinpointDriver.class , "odo");
+        odo.setEncoderDirections(org.firstinspires.ftc.teamcode.Wrappers.GoBildaPinpointDriver.EncoderDirection.FORWARD , org.firstinspires.ftc.teamcode.Wrappers.GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.setEncoderResolution(org.firstinspires.ftc.teamcode.Wrappers.GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setOffsets(130.5 , 3.5);
         //odo.setOffsets(xOffset , yOffset);
         odo.resetPosAndIMU();
@@ -44,10 +44,10 @@ public class Odo {
         if(INIT){odo.setPosition(new Pose2D(DistanceUnit.MM , 0 , 0 , AngleUnit.RADIANS , 0));return;}
         telemetry=telemetryy;
         INIT=true;
-        odo=hardwareMap.get(GoBildaPinpointDriver.class , "odo");
+        odo=hardwareMap.get(org.firstinspires.ftc.teamcode.Wrappers.GoBildaPinpointDriver.class , "odo");
 
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD , GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odo.setEncoderDirections(org.firstinspires.ftc.teamcode.Wrappers.GoBildaPinpointDriver.EncoderDirection.FORWARD , org.firstinspires.ftc.teamcode.Wrappers.GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.setEncoderResolution(org.firstinspires.ftc.teamcode.Wrappers.GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setOffsets(130.5 , 3.5);
         //odo.setOffsets(xOffset, yOffset);
         odo.resetPosAndIMU();
@@ -101,7 +101,6 @@ public class Odo {
     public  static void update()
     {
         odo.update();
-        if(Double.isNaN(odo.getHeading()) || Double.isNaN(odo.getPosX()) || Double.isNaN(odo.getPosY()) || Double.isNaN(odo.getVelocity().getX(DistanceUnit.MM)))return;
 
             heading=odo.getHeading();
 
@@ -109,7 +108,7 @@ public class Odo {
 
             y=odo.getPosY();
 
-            if(!Double.isNaN(odo.getVelocity().getX(DistanceUnit.MM)) && !Double.isNaN(odo.getVelocity().getY(DistanceUnit.MM)))
+            if(!Double.isNaN(x) && !Double.isNaN(y))
             {
             xVelocity = xVelocityFilter.getValue(odo.getVelocity().getX(DistanceUnit.MM));
             yVelocity = yVelocityFilter.getValue(odo.getVelocity().getY(DistanceUnit.MM));

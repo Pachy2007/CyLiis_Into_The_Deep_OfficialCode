@@ -29,11 +29,11 @@ public class SpecimenAuto {
     public static Pose2D[] putSpecimenPosition = {
             new Pose2D ( 840 , 100 ,0) ,
             new Pose2D ( 860 , 100 ,0) ,
-            new Pose2D (943 ,-50 ,-0.4) ,
-            new Pose2D (943 ,-50 ,-0.4) ,
-            new Pose2D (943 ,-50 ,-0.4) ,
-            new Pose2D (943 ,-50 ,-0.4) ,
-            new Pose2D (943 ,-50 ,-0.4) ,
+            new Pose2D (950 ,-50 ,-0.4) ,
+            new Pose2D (950 ,-50 ,-0.4) ,
+            new Pose2D (950 ,-50 ,-0.4) ,
+            new Pose2D (950 ,-50 ,-0.4) ,
+            new Pose2D (950 ,-50 ,-0.4) ,
     };
 
     public static Pose2D[] releaseSamplePosition = {

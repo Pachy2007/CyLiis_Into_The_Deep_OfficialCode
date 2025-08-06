@@ -21,11 +21,13 @@ public class Extension extends IServoModule {
 
     public static double takeSpecimen=0.605;
 
+    public static double takeSpecimenSpecial=0.43;
+
     State initState;
 
     public static boolean reversed=false;
 
-    public static double MaxVelocoty=15 , Acceleration=12  , Deceleration=12;
+    public static double MaxVelocoty=18 , Acceleration=14  , Deceleration=14;
 
     public Extension()
     {
@@ -58,10 +60,15 @@ public class Extension extends IServoModule {
 
         states.addState("takeSample" , takeSample);
         states.addState("goTakeSample" , states.get("takeSample") , takeSample);
+
+        states.addState("takeSpecimenSpecial" , takeSpecimenSpecial);
     }
 
     @Override
     public void updateStatesPosition() {
+
+        states.get("takeSpecimenSpecial").updatePositions(takeSpecimenSpecial);
+
         states.get("extend").updatePositions(extend);
         states.get("goExtend").updatePositions(extend);
 

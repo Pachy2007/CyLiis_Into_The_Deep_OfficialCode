@@ -29,7 +29,7 @@ public class Lift {
     public static int maxPosition=1600;
     public double prevVelocity=0;
     public static boolean climb=false;
-    public static double treshold = 30;
+    public static double treshold = 40;
     int nr=0;
 
     public static double kP=0.0052 , kI=0 , kD=0.00023;
@@ -45,7 +45,7 @@ public class Lift {
         Differential.init();
         controller=new PIDController(kP , kI , kD);
         encoder=new Encoder(Hardware.mch0 , encoderReversed);
-        Lift.treshold=30;
+        Lift.treshold=1;
     }
 
 
@@ -118,6 +118,7 @@ public class Lift {
                 break;
             case GOING_DOWN:
                 Differential.liftPower=-1;
+                //else Differential.liftPower=0;
                 //motorLeft.setPower(-1);
                 //motorRight.setPower(-1);
                 break;

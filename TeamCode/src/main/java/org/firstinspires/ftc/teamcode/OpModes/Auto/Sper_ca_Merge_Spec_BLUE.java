@@ -22,7 +22,7 @@ public class Sper_ca_Merge_Spec_BLUE extends LinearOpMode {
 
         Hardware.init(hardwareMap);
         nodes.init(hardwareMap , SampleColor.State.BLUE, 3);
-
+        nodes.outtake.usingSpecialPosition=false;
         nodes.intake.extendo.setIn();
 
         while(opModeInInit())

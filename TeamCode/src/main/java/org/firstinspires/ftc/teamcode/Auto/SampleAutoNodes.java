@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.Wrappers.Pose2D;
 @Config
 public class SampleAutoNodes {
 
-    public static Pose2D putSamplePosition=new Pose2D (-730 , 180    ,-1);
+    public static Pose2D putSamplePosition=new Pose2D (-740 , 170    ,-1);
 
     public static Pose2D[] takeFloorSamplePosition=new Pose2D[]{
             new Pose2D(-570 ,700 , -1.15) ,
@@ -103,7 +103,7 @@ public class SampleAutoNodes {
                     }
                     ,
                     ()->{
-                        return (driveTrain.inPosition(25 , 25 , 0.3) && outtake.state==Outtake.State.Up);
+                        return (driveTrain.inPosition(60 , 60 , 0.3) && outtake.state==Outtake.State.Up);
 
                     }
                    ,

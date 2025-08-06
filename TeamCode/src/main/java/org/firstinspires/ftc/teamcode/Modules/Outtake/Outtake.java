@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.Wrappers.Odo;
 import org.firstinspires.ftc.teamcode.Wrappers.Pose2D;
 import org.opencv.core.Mat;
 
+import java.util.function.DoubleToIntFunction;
+
 @Config
 public class Outtake {
 
@@ -60,6 +62,10 @@ public class Outtake {
 
     public static double sumChamber , sumBasket;
     public static double nrChamber , nrBasket;
+
+
+    public boolean usingSpecialPosition=true;
+    boolean specialPositionGrabSample=false;
 
     public static Pose2D scoringSamplePos;
 
@@ -122,7 +128,7 @@ public class Outtake {
 
             case Specimen:
                 if(onSpec && !Intake.bbDeposit.getState()){haveSample=true;break;}
-                if(arm.inPosition() && arm.state==arm.states.get("takeSpecimen") && lift.state== Lift.State.DOWN)
+                if(arm.inPosition() && (arm.state==arm.states.get("takeSpecimen") || arm.state==arm.states.get("takeSpecimenSpecial")) && lift.state== Lift.State.DOWN)
                 take=true;
             case DeafultWithElement:
             case TakingElement:
@@ -141,7 +147,7 @@ public class Outtake {
     {
         if(state!=State.DeafultWithElement && state!=State.ReleaseSample)return;
 
-         if(state==State.ReleaseSample && arm.state==arm.states.get("takeSpecimen"))release=true;
+         if(state==State.ReleaseSample && arm.state==arm.states.get("takeSpecimenSpecial"))release=true;
         else release=false;
         state=State.ReleaseSample;
     }
@@ -224,9 +230,17 @@ public class Outtake {
             case ReleaseSample:
                 calculate=false;
                 if(extension.state==extension.states.get("retrect"))
-                arm.setState("goTakeSpecimen");
-                if(arm.state==arm.states.get("takeSpecimen"))
-                extension.setState("goTakeSpecimen");
+                {
+                    if(specialPositionGrabSample)
+                    arm.setState("takeSpecimenSpecial");
+                    else arm.setState("goTakeSpecimen");
+                }
+                if(arm.servos[1].getPosition()>0.3)
+                {
+                    if(specialPositionGrabSample)
+                    extension.setState("takeSpecimenSpecial");
+                    else extension.setState("goTakeSpecimen");
+                }
                 else extension.setState("goRetrect");
                 if(arm.inPosition() && extension.inPosition() && release)
                     claw.setState("goOpen");
@@ -236,14 +250,29 @@ public class Outtake {
 
             case Specimen:
                 release=false;
+                if(!specialPositionGrabSample)
                 calculate=false;
+                {
                 if(arm.state==arm.states.get("goTakeSpecimen") || arm.state==arm.states.get("takeSpecimen"))
                     lift.goDown();
 
                 if((extension.state==extension.states.get("takeSpecimen") && extension.inPosition()) )arm.setState("goTakeSpecimen");
                 if(extension.state!=extension.states.get("goTakeSpecimen") && extension.state!=extension.states.get("tkeSpecimen"))
-                extension.setState("goTakeSpecimen");
+                    if(extension.state!=extension.states.get("specialPosition"))
+                    extension.setState("goTakeSpecimen");}
+
+
+                if(specialPositionGrabSample)
+                {
+                    arm.setState("takeSpecimenSpecial");
+                    extension.setState("takeSpecimenSpecial");
+                }
+
                 haveSample=false;
+
+
+
+
                 if(take==true && claw.state==claw.states.get("takeSpecimen"))claw.setState("goCloseSpecimen");
                 else if (arm.state==arm.states.get("takeSpecimen"))claw.setState("goTakeSpecimen");
                 else if(arm.servos[1].getPosition()>0.2)claw.setState("goTakeSpecimen");
@@ -256,8 +285,10 @@ public class Outtake {
                 release=false;
                 take=false;
                 if(claw.state==claw.states.get("close"))
-                {state=State.DeafultWithElement;
-                if(onSpec && haveSample){state=State.ReleaseSample;break;}}
+                {
+                    if(!onSpec)
+                    state=State.DeafultWithElement;
+                if(onSpec && haveSample && lift.state!= Lift.State.DOWN){state=State.ReleaseSample;break;}}
 
                 if(arm.state==arm.states.get("deposit") && extension.state==extension.states.get("takeSample") && extension.inPosition())
                 claw.setState("goClose");
@@ -271,7 +302,7 @@ public class Outtake {
                 lift.goDown();
                   haveSample=true;
                 if( claw.state==claw.states.get("close"))
-                {lift.setPosition(150);
+                {lift.setPosition(220);
                 lift.goUp();}
                 break;
 
@@ -312,7 +343,7 @@ public class Outtake {
                 if(haveSample)
                 claw.setState("goClose");
                 else claw.setState("goCloseSpecimen");
-                lift.setPosition(150);
+                lift.setPosition(250);
                 break;
 
             case GoDown:
@@ -408,7 +439,10 @@ public class Outtake {
 
     public void update()
     {
+        if(state==State.ReleaseSample && usingSpecialPosition)specialPositionGrabSample=true;
+        else if(state!=State.ReleaseSample && state!=State.Specimen) specialPositionGrabSample=false;
 
+        if(!usingSpecialPosition)specialPositionGrabSample=false;
         claw.update();
         arm.update();
         extension.update();

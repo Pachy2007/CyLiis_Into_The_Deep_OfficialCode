@@ -13,7 +13,7 @@ public class Arm extends IServoModule {
     public static boolean leftServoReversed=true , rightServoReversed=false ;
 
 
-    public static double deposit=0.039;
+    public static double deposit=0.043;
 
     public static double takeSpecimen=0.924;
 
@@ -34,6 +34,8 @@ public class Arm extends IServoModule {
     public static double scoreSample=0.7;
 
     public static double goFinalClimb3=0.15;
+
+    public static double takeSpecimenSpecial=0.91;
 
 
     public static double MaxVelocoty=15.5 , Acceleration=12  , Deceleration=12;
@@ -83,6 +85,8 @@ public class Arm extends IServoModule {
     @Override
     public void setStates()  {
 
+        states.addState("takeSpecimenSpecial" , takeSpecimenSpecial , takeSpecimenSpecial);
+
         states.addState("finalClimb3" , goFinalClimb3 , goFinalClimb3);
         states.addState("goFinalClimb3" , states.get("finalClimb3") , goFinalClimb3 , goFinalClimb3);
 
@@ -130,6 +134,8 @@ public class Arm extends IServoModule {
 
     @Override
     public void updateStatesPosition(){
+
+        states.get("takeSpecimenSpecial").updatePositions(takeSpecimenSpecial , takeSpecimenSpecial);
 
         states.get("neutralSample").updatePositions(neutralSample , neutralSample);
         states.get("goNeutralSample").updatePositions(neutralSample , neutralSample);

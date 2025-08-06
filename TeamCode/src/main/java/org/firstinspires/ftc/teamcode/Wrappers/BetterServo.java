@@ -38,7 +38,6 @@ public class BetterServo {
         this.name=name;
         this.servo=servo;
         this.runMode=runMode;
-        this.servo.setPosition(initialPosition);
         if(reversed)this.servo.setDirection(Servo.Direction.REVERSE);
         else this.servo.setDirection(Servo.Direction.FORWARD);
         position=initialPosition;
