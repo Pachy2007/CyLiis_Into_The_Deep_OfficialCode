@@ -35,6 +35,10 @@ public class Sper_ca_Merge_Spec_RED extends LinearOpMode {
         while (opModeIsActive())
         {
             nodes.run(telemetry);
+
+
+            telemetry.addData("STATUS" , Odo.odo.getDeviceStatus());
+            telemetry.update();
         }
     }
 }

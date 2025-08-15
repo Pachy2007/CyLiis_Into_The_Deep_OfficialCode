@@ -29,7 +29,8 @@
         {
             distanceSensor=Hardware.colorSensor;
             colorSensor= Hardware.colorSensor;
-        }
+
+       }
 
 
 
@@ -60,7 +61,7 @@
         private void updateState()
         {
              redError=distance(red , green , blue , 255 ,0 , 0);
-             yellowError=distance(red , green , blue , 240 , 240 , 0);
+             yellowError=distance(red , green , blue , 230 , 230 , 0);
              blueError=distance(red , green , blue , 0 , 0 ,255);
 
             if(redError<= yellowError && redError<=blueError)state=State.RED;
