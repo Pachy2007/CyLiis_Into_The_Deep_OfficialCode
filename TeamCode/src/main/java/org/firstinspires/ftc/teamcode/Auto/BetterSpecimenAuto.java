@@ -23,13 +23,13 @@ import org.firstinspires.ftc.teamcode.Wrappers.Pose2D;
 public class BetterSpecimenAuto {
 
     public static Pose2D[] beforePutSpecimenPosition = {
-            new Pose2D(800 ,110 ,0 ) ,
-            new Pose2D(800 ,50 ,-0.28 ) ,
+            new Pose2D(800 ,70 ,0 ) ,
+            new Pose2D(800 ,70 ,-0.28 ) ,
             new Pose2D ( 880 ,-90 ,-0.33)
     };
     public static Pose2D[] putSpecimenPosition = {
-            new Pose2D ( 800 , 110 ,0) ,
-            new Pose2D ( 800 , 110 ,0) ,
+            new Pose2D ( 800 , 90 ,0) ,
+            new Pose2D ( 800 , 90 ,0) ,
             new Pose2D (890 ,-90 ,-0.35) ,
             new Pose2D (890 ,-90 ,-0.35) ,
             new Pose2D (890 ,-90 ,-0.35) ,
@@ -38,7 +38,9 @@ public class BetterSpecimenAuto {
     };
 
     public static Pose2D[] releaseSamplePosition = {
-            new Pose2D(180 ,-750 ,-1.15)
+            new Pose2D(150 ,-750 ,-0) ,
+            new Pose2D(180 ,-700 ,-1.2)
+
     };
 
     public static Pose2D[] takeFloorSamplePosition = {
@@ -50,29 +52,28 @@ public class BetterSpecimenAuto {
     public static Pose2D throwPosition = new Pose2D(500, -850 ,2.3);
 
     public static Pose2D beforeTakeWallSpecimenPosition[] ={
-            new Pose2D(110 ,-720 ,0) ,
             new Pose2D ( 125 , -720 ,0) ,
-            new Pose2D(55 ,-740 ,-0.7) ,
-            new Pose2D( 55 ,-740 ,-0.7) ,
-            new Pose2D(55 ,-740, -0.7)
+            new Pose2D ( 110 , -720 ,0) ,
+            new Pose2D( 55 ,-720 ,-0.7) ,
+            new Pose2D( 55 ,-720 ,-0.7) ,
+            new Pose2D( 55 ,-720, -0.7)
     };
 
     public static Pose2D[] takeWallSpecimenPosition = {
-            new Pose2D(4 ,-710 ,0) ,
-            new Pose2D(4 ,-710 ,0) ,
-            new Pose2D(4 ,-710 ,0),
-            new Pose2D(4 ,-710 ,0),
-            new Pose2D(4 ,-710 ,0),
+            new Pose2D(45 ,-710 ,0) ,
+            new Pose2D(5 ,-710 ,0) ,
+            new Pose2D(5 ,-710 ,0),
+            new Pose2D(5 ,-710 ,0),
+            new Pose2D(5 ,-710 ,0),
 
     };
 
-
     public static Pose2D[] afterTakeWallSpecimenPosition={
-            new Pose2D( 150 , -560 , -0.68)
+            new Pose2D( 150 , -600 , -0.68)
     };
 
     public static double releaseSampleExtendoPosition=750;
-    public static double[] extendoPositionPreextend={170, 170 , 180 , 0};
+    public static double[] extendoPositionPreextend={200, 200 , 200 , 0};
     public static double[] takeFromFloorEstendoPosition={430 ,610 ,840 , 0};
     public static double throwExtendoPosition = 360;
     boolean tookFromFLoor=false;
@@ -80,7 +81,6 @@ public class BetterSpecimenAuto {
     public MecanumDriveTrain driveTrain;
     public Intake intake;
     public Outtake outtake;
-
 
     ElapsedTime timerVerifying=new ElapsedTime();
     ElapsedTime timerToWait =new ElapsedTime();
@@ -130,11 +130,10 @@ public class BetterSpecimenAuto {
                     driveTrain.setTargetPosition( beforePutSpecimenPosition[Math.min(beforePutSpecimenPosition.length-1 , beforePutSpecimen.index)]);
                     if(beforePutSpecimen.index==0 || beforePutSpecimen.index==1)
                     intake.setState(Intake.State.REPAUS_DOWN);
-
                 }
                 ,
                 ()->{
-                    return (driveTrain.inPosition(450 , 450 , 1) || (Odo.odo.getVelX()<30 && Odo.getX()>700)) && outtake.inPosition() && (outtake.lift.state== Lift.State.GOING_UP || outtake.lift.state== Lift.State.UP);
+                    return (driveTrain.inPosition(450 , 450 , 1) || (Odo.xVelocity<30 && Odo.getX()>700)) && outtake.inPosition() && (outtake.lift.state== Lift.State.GOING_UP || outtake.lift.state== Lift.State.UP);
                 }
                 ,
                 new Node[]{putSpecimen}
@@ -142,21 +141,22 @@ public class BetterSpecimenAuto {
 
         putSpecimen.addConditions(
                 ()->{
+                    outtake.usingSpecialPosition=false;
                     if(intake.sampleInDeposit)intake.setState(Intake.State.REVERSE_UP);
                     driveTrain.setTargetPosition(putSpecimenPosition[Math.min(putSpecimenPosition.length-1 , putSpecimen.index)]);
-                    if(driveTrain.inPosition(100 , 80 , 0.13) || (driveTrain.inPosition(150 , 330 , 0.4) && putSpecimen.index>1))
+                    if(driveTrain.inPosition(100 , 80 , 0.13) || (driveTrain.inPosition(190 , 330 , 0.4) && putSpecimen.index>1))
                     {outtake.score();outtake.takeSpecimen();}
                     intake.asure1inDepositState= Intake.Asure1inDeposit.Free;
                 }
                 ,
                 ()->{
-                    if(putSpecimen.index<=2 && driveTrain.inPosition(30 , 30 , 0.1))
+                    if(putSpecimen.index<2 && driveTrain.inPosition(30 , 30 , 0.1))
                     Limelight.update();
                     timerTryingToTake.reset();
                     prepareToTakeFromSub.index=0;
                     takeFromSub.index=0;
                     takeAgain.index=0;
-                    if(( outtake.state!= Outtake.State.Up && putSpecimen.index>1) ||(driveTrain.inPosition(10 , 20 , 0.2)) || (Math.abs(Odo.odo.getVelX())<2 && Odo.getX()>700))
+                    if(( outtake.state!= Outtake.State.Up && putSpecimen.index>1) ||(driveTrain.inPosition(10 , 20 , 0.2)) || (Math.abs(Odo.xVelocity)<2 && Odo.getX()>700))
                     {
                         outtake.score();
                         outtake.takeSpecimen();
@@ -215,14 +215,14 @@ public class BetterSpecimenAuto {
                     if(outtake.inPosition())outtake.goDefault();
                     if(intake.asure1inDepositState== Intake.Asure1inDeposit.Free)
                     {
-                        if(timerDropDown.seconds()>0.4)
-                        intake.setExtendoTargetPosition(Limelight.extendoPosition+90);
+                        if(timerDropDown.seconds()>0.7)
+                        intake.setExtendoTargetPosition(Limelight.extendoPosition+80);
                         if(!intake.sampleInDeposit)
                     intake.setState(Intake.State.INTAKE_DOWN);}
                 }
                 ,
                 ()->{
-                    if(timerTryingToTake.seconds()>1.4)
+                    if(timerTryingToTake.seconds()>1.5)
                     {
                         takeFromSub.next[0]=takeAgain;
                         if(!tookFromFLoor && takeFromSub.index==1)
@@ -239,7 +239,7 @@ public class BetterSpecimenAuto {
 
                     if(intake.sampleInDeposit && timerVerifying.seconds()>0.17)
                     {timerVerifying.reset();intake.setState(Intake.State.INTAKE_UP);}
-                    if(intake.sampleInDeposit && this.state==intake.sampleColor.state && timerVerifying.seconds()>0.017 && timerVerifying.seconds()<0.15){
+                    if(intake.sampleInDeposit && this.state==intake.sampleColor.state && timerVerifying.seconds()>0.07 && timerVerifying.seconds()<0.17){
                         intake.asure1inDepositState= Intake.Asure1inDeposit.PrepareToClean;
                         takeFromSub.next[takeFromSub.index]=takeFromSub.next[0]=prepareReleaseSampleFromSub;
                         takeFromSub.next[takeFromSub.index]=takeFromSub.next[1]=prepareReleaseSampleFromSub;
@@ -272,6 +272,8 @@ public class BetterSpecimenAuto {
 
         prepareReleaseSampleFromSub.addConditions(
                 ()->{
+                    if(prepareReleaseSampleFromSub.index==0 && takeAgain.index==0)
+                    outtake.usingSpecialPosition=true;
                     if(intake.extendo.state== Extendo.State.GOING_IN && MecanumDriveTrain.targetHeading==-1-Math.floor((-1/ (Math.PI*2)))*Math.PI*2 && driveTrain.inPosition(1000 , 1000 , 0.55))
                     driveTrain.setTargetPosition(releaseSamplePosition[Math.min(releaseSamplePosition.length-1 , prepareReleaseSampleFromSub.index)]);
                     else if(intake.extendo.encoder.getPosition()<300)driveTrain.setTargetPosition(Odo.getX() , Odo.getY() , -1);
@@ -280,7 +282,7 @@ public class BetterSpecimenAuto {
                 ()->{
                     if(intake.extendo.state== Extendo.State.IN)intake.asure1inDepositState= Intake.Asure1inDeposit.Free;
 
-                    return driveTrain.inPosition(300 , 300 , 0.55) && MecanumDriveTrain.targetHeading==-1-Math.floor((-1/ (Math.PI*2)))*Math.PI*2;
+                    return ((driveTrain.inPosition(350 , 350 , 0.55))) && MecanumDriveTrain.targetHeading==-1-Math.floor((-1/ (Math.PI*2)))*Math.PI*2;
                 }
                 ,
                 new Node[]{releaseSample}
@@ -294,22 +296,22 @@ public class BetterSpecimenAuto {
                     {
                         intake.setState(Intake.State.REPAUS_UP);
                         outtake.releaseSample();
-                        outtake.release=false;
                     }
                     driveTrain.setTargetPosition(releaseSamplePosition[Math.min(releaseSamplePosition.length-1 , releaseSample.index)]);
                         if(intake.extendo.state== Extendo.State.IN)intake.asure1inDepositState= Intake.Asure1inDeposit.Free;
 
-                    if(driveTrain.inPosition(400 , 400  , 0.3) && outtake.state== Outtake.State.ReleaseSample && (outtake.arm.inPosition() || outtake.arm.servos[1].getPosition()>0.92)){outtake.takeSpecimen();}
+                    if(driveTrain.inPosition(450 , 450  , 0.4) && outtake.state== Outtake.State.ReleaseSample && (outtake.arm.servos[1].getPosition()>0.9)){outtake.takeSpecimen();}
                 }
                 ,
                 ()->{
                     if(tookFromFLoor)releaseSample.next[0]=beforeTakeWallSpecimen;
                     if(!intake.sampleInDeposit && timerToReverse.seconds()>0.5)timerToReverse.reset();
-                    if(outtake.state== Outtake.State.Specimen){ timerTryingToTake.reset(); intake.setExtendoIN(); return true;}
+                    if(outtake.state== Outtake.State.Specimen){
+                        timerTryingToTake.reset(); intake.setExtendoIN(); return true;}
                     return false;
                 }
                 ,
-                new Node[]{takeFloorSample , beforeTakeWallSpecimen }
+                new Node[]{beforeTakeWallSpecimen , takeFloorSample}
 
         );
 
@@ -327,8 +329,8 @@ public class BetterSpecimenAuto {
                         intake.setState(Intake.State.REVERSE_UP);
                         else intake.setState(Intake.State.REPAUS_DOWN);}
 
-                    if(!driveTrain.inPosition(95 , 95 , 0.46) && intake.extendo.state!= Extendo.State.GOING_IN){timerTryingToTake.reset();}
-                    else if(driveTrain.inPosition(95 , 95 , 0.46)){
+                    if(!driveTrain.inPosition(95 , 95 , 0.22) && intake.extendo.state!= Extendo.State.GOING_IN){timerTryingToTake.reset();}
+                    else if(driveTrain.inPosition(95 , 95 , 0.22)){
                         intake.setExtendoTargetPosition(takeFromFloorEstendoPosition[takeFloorSample.index]);
                         if(intake.extendo.encoder.getPosition()>50 && intake.extendo.state!= Extendo.State.GOING_IN)
                         intake.setState(Intake.State.INTAKE_DOWN);
@@ -339,7 +341,7 @@ public class BetterSpecimenAuto {
                 ()->{
                     if(takeFloorSample.next[takeFloorSample.index]==beforeTakeWallSpecimen)return true;
 
-                        return (intake.sampleInDeposit || timerTryingToTake.seconds()>0.8) && driveTrain.inPosition(105 , 105 , 0.42);
+                        return (intake.sampleInDeposit || timerTryingToTake.seconds()>1) && driveTrain.inPosition(105 , 105 , 0.42);
                 }
                 ,
                 new Node[]{throwNode , throwNode , throwNode , beforeTakeWallSpecimen}
@@ -350,14 +352,14 @@ public class BetterSpecimenAuto {
                     driveTrain.setTargetPosition(throwPosition);
                     intake.setExtendoTargetPosition(throwExtendoPosition);
 
-                    if(driveTrain.inPosition(1000 , 1000 , 1.1))intake.setState(Intake.State.REVERSE_UP);
+                    if(driveTrain.inPosition(1000 , 1000 , 1.2))intake.setState(Intake.State.REVERSE_UP);
                 }
                 ,
                 ()->{
                     timerTryingToTake.reset();
                     if(!intake.sampleInDeposit && timerToReverse.seconds()>0.3 && driveTrain.inPosition(1000 , 1000 ,1.3))timerToReverse.reset();
                     if(timerToReverse.seconds()>0.1 && timerToReverse.seconds()<0.3 && driveTrain.inPosition(1000 , 1000 , 1.3))
-                    {intake.setExtendoTargetPosition(extendoPositionPreextend[releaseSample.index+1]);return true;}
+                    {intake.setExtendoTargetPosition(extendoPositionPreextend[throwNode.index+1]);return true;}
                     return false;
                 }
                 ,
@@ -372,7 +374,7 @@ public class BetterSpecimenAuto {
                 }
                 ,
                 ()->{
-                    return( (driveTrain.inPosition(470 , 330 , 0.25)&& beforeTakeWallSpecimen.index>0) || (driveTrain.inPosition(100 ,100 , 0.3) && beforeTakeWallSpecimen.index==0));
+                    return driveTrain.inPosition(470 , 330 , 0.25);
                 }
                 ,
                 new Node[]{takeWallSpecimen}
@@ -383,7 +385,7 @@ public class BetterSpecimenAuto {
                     if(intake.sampleInDeposit)intake.setState(Intake.State.REVERSE_UP);
                     intake.setState(Intake.State.REPAUS_UP);
                     driveTrain.setTargetPosition(takeWallSpecimenPosition[Math.min(takeWallSpecimenPosition.length-1 , takeWallSpecimen.index)]);
-                    if(driveTrain.inPosition(50 , 200 ,0.2) || Math.abs(Odo.odo.getVelX())<0.5)
+                    if(driveTrain.inPosition(50 , 200 ,0.2) || Math.abs(Odo.xVelocity)<5)
                     outtake.grabSample();
                 }
                 ,
@@ -413,17 +415,15 @@ public class BetterSpecimenAuto {
     ElapsedTime timer=new ElapsedTime();
     public void run(Telemetry telemetry)
     {
+
         currentNode.run();
 
-        if(currentNode.transition())currentNode=currentNode.next[Math.min(currentNode.index++ , currentNode.next.length-1)];
-
         Odo.update();
-
         driveTrain.update();
+
         intake.update();
         outtake.update();
-        telemetry.addData("loopTime" , 1/timer.seconds());
-        telemetry.update();
-        timer.reset();
+
+        if(currentNode.transition())currentNode=currentNode.next[Math.min(currentNode.index++ , currentNode.next.length-1)];
     }
 }

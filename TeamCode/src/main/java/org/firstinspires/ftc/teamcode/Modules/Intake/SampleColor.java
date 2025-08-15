@@ -17,6 +17,7 @@
 
         public float redError, yellowError , blueError;
 
+        public RevColorSensorV3 distanceSensor;
         public ColorSensor colorSensor;
 
 
@@ -26,6 +27,7 @@
 
         public SampleColor()
         {
+            distanceSensor=Hardware.colorSensor;
             colorSensor= Hardware.colorSensor;
         }
 
@@ -57,8 +59,8 @@
 
         private void updateState()
         {
-             redError=distance(red , green , blue , 245 ,0 , 0);
-             yellowError=distance(red , green , blue , 255 , 255 , 0);
+             redError=distance(red , green , blue , 255 ,0 , 0);
+             yellowError=distance(red , green , blue , 240 , 240 , 0);
              blueError=distance(red , green , blue , 0 , 0 ,255);
 
             if(redError<= yellowError && redError<=blueError)state=State.RED;

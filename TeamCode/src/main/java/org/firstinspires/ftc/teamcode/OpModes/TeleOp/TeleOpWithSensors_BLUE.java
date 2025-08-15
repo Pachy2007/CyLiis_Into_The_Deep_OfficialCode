@@ -119,7 +119,7 @@ public class TeleOpWithSensors_BLUE extends LinearOpMode {
                     if(readyToBeStoppedTimer.seconds()>2)
                         pto.setState("goClimb");
                     if(!outtake.lift.inPosition() && outtake.lift.encoder.getPosition()<900)
-                        intake.extendo.setTargetPosition(410);
+                        intake.extendo.setTargetPosition(500);
                     else intake.extendo.setIn();
                     if(outtake.lift.encoder.getPosition()>150)
                         wheelie.goUp();

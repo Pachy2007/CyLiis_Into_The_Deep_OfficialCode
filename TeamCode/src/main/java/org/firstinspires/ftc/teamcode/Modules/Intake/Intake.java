@@ -81,7 +81,7 @@ public class Intake {
             break;
             case Decide:
                 if(!sampleInDeposit)stateTransfer=TransferLogic.Free;
-                if(decideTimer.seconds()<0.08)return;
+                if(decideTimer.seconds()<0.1)return;
 
                 if(sampleColor.state!=colorAllaiance && sampleColor.state== SampleColor.State.YELLOW)stateTransfer=TransferLogic.Throw;
                 if(sampleColor.state== SampleColor.State.YELLOW)
@@ -129,7 +129,7 @@ public class Intake {
     public void setExtendoVelocity(double velocity)
     {
         if(stateTransfer==TransferLogic.Free || stateTransfer==TransferLogic.ReadyForHuman)
-        if(Math.abs(velocity)>0.05 && !having && !transfer)state=State.INTAKE_UP;
+        if(Math.abs(velocity)>0.07 && !having && !transfer)state=State.INTAKE_UP;
         extendo.setVelocity(velocity);
     }
     public void setExtendoTargetPosition(double position)
@@ -238,8 +238,7 @@ public class Intake {
 
 
         sampleInDeposit=(!bbDeposit.getState());
-        if(sampleInDeposit)
-            sampleColor.update();
+        sampleColor.update();
         ramp.update();
         extendo.update();
         extendoBlocker.update();

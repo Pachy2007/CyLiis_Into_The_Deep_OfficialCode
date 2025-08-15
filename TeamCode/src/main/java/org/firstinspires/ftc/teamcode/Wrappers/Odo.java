@@ -21,10 +21,8 @@ public class Odo {
 
     public  static org.firstinspires.ftc.teamcode.Wrappers.GoBildaPinpointDriver odo;
     public static double heading,x ,y, xVelocity, yVelocity, predictedX, predictedY;
-    static ElapsedTime timer=new ElapsedTime();
     public static boolean INIT=false;
     public static Telemetry telemetry;
-    public static boolean plsMergi=false;
     public  static void init(HardwareMap hardwareMap , Telemetry telemetryy)
     {
         if(INIT)return;
@@ -55,7 +53,7 @@ public class Odo {
 
     public static void calibrate()
     {
-        odo.recalibrateIMU();
+        odo.resetPosAndIMU();
     }
 
     public static double getHeading()
@@ -101,6 +99,9 @@ public class Odo {
     public  static void update()
     {
         odo.update();
+
+        if(Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(heading))return;
+
 
             heading=odo.getHeading();
 

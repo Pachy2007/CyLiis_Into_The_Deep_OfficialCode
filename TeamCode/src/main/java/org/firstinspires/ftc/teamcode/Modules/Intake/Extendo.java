@@ -75,7 +75,7 @@ public class Extendo {
 
     public boolean inPosition()
     {
-        return (state==State.IN || Math.abs(encoder.getPosition()-targetPosition)<70 || encoder.getPosition()>850) && state!=State.GOING_IN;
+        return (state==State.IN || Math.abs(encoder.getPosition()-targetPosition)<50 || encoder.getPosition()>850) && state!=State.GOING_IN;
     }
 
     private void updateHardware()

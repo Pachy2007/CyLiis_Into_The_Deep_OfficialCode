@@ -29,7 +29,7 @@ public class Lift {
     public static int maxPosition=1600;
     public double prevVelocity=0;
     public static boolean climb=false;
-    public static double treshold = 40;
+    public static double treshold = 1;
     int nr=0;
 
     public static double kP=0.0052 , kI=0 , kD=0.00023;
@@ -96,7 +96,7 @@ public class Lift {
                 if( Math.abs(encoder.getVelocity())<treshold)
                     {
                         nr++;
-                        if(nr>2)
+                        if(nr>1)
                         {state=state.nextState; encoder.resetPosition();}}
                 break;
         }

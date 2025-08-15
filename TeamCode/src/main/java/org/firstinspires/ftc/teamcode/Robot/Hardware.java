@@ -46,7 +46,6 @@ public class Hardware {
 
     public static double IMUOFFSET=0;
 
-    public static IMU imu;
 
 
 
@@ -66,7 +65,6 @@ public class Hardware {
 
         depositBeamBreak=hardwareMap.get(DigitalChannel.class , "depositBB");
         extendoBeamBreak=hardwareMap.get(DigitalChannel.class , "extendoBeamBreak");
-        liftLimitSwitch=hardwareMap.get(DigitalChannel.class , "liftLimitSwitch");
 
         mch0=hardwareMap.get(DcMotorEx.class , "ch0");
         mch1=hardwareMap.get(DcMotorEx.class , "ch1");
@@ -112,12 +110,6 @@ public class Hardware {
         seh4=hardwareMap.get(Servo.class , "seh4");
         seh5=hardwareMap.get(Servo.class , "seh5");
 
-        imu=hardwareMap.get(IMU.class , "imu");
-
-        imu.initialize(new IMU.Parameters(
-                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT , RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD)
-
-        ));
 
 
 

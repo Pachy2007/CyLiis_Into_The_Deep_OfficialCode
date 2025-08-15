@@ -105,7 +105,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 ()->{
                     if(Lift.State.DOWN==outtake.lift.state && readyToBeStoppedTimer.seconds()>1.5){wheelie.goDown();readyToBeStoppedTimer.reset();
                     }
-                    if(outtake.lift.inPosition() && outtake.lift.state== Lift.State.DOWN && readyToBeStoppedTimer.seconds()>0.8 && readyToBeStoppedTimer.seconds()<1.5)
+                    if(outtake.lift.inPosition() && outtake.lift.state== Lift.State.DOWN && readyToBeStoppedTimer.seconds()>0.3 && readyToBeStoppedTimer.seconds()<1.5)
                     {readyToBeStoppedTimer.reset();return true;}
                     return false;
                 }
@@ -119,7 +119,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                     if(readyToBeStoppedTimer.seconds()>2)
                         pto.setState("goClimb");
                     if(!outtake.lift.inPosition() && outtake.lift.encoder.getPosition()<900)
-                        intake.extendo.setTargetPosition(410);
+                        intake.extendo.setTargetPosition(500);
                     else intake.extendo.setIn();
                     if(outtake.lift.encoder.getPosition()>150)
                         wheelie.goUp();
@@ -229,7 +229,7 @@ public class TeleOpWithSensors_RED extends LinearOpMode {
                 prevCircle=gamepad1.circle;
                 if(gamepad2.x)outtake.retry(); //failsafePusSpecimen
 
-                //if(gamepad2.dpad_up)
+                if(gamepad2.dpad_up)
                 {outtake.goUp();outtake.goForHigh();}
                 if(gamepad2.dpad_down){outtake.goUp();outtake.goForLow();}
 
