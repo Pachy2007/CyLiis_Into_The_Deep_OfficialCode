@@ -21,7 +21,7 @@ public class Extension extends IServoModule {
 
     public static double takeSpecimen=0.605;
 
-    public static double takeSpecimenSpecial=0.43;
+    public static double takeSpecimenSpecial=0.4;
 
     State initState;
 

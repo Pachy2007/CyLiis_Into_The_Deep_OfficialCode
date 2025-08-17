@@ -229,13 +229,12 @@ public class Outtake {
                 break;
             case ReleaseSample:
                 calculate=false;
-                if(extension.state==extension.states.get("retrect"))
-                {
+
                     if(specialPositionGrabSample)
                     arm.setState("takeSpecimenSpecial");
                     else arm.setState("goTakeSpecimen");
-                }
-                if(arm.servos[1].getPosition()>0.3)
+
+                if(arm.servos[1].getPosition()>0.25)
                 {
                     if(specialPositionGrabSample)
                     extension.setState("takeSpecimenSpecial");

@@ -34,7 +34,7 @@ public class Extendo {
     public PIDController controller;
     public Encoder encoder;
     public static boolean encoderReversed=true;
-    public static double kp=0.0059 , ki , kd=0.0004;
+    public static double kp=0.0057 , ki , kd=0.0004;
     public static double targetPosition;
 
     private static double inPower=-0.02 , goingInPower=-1;
