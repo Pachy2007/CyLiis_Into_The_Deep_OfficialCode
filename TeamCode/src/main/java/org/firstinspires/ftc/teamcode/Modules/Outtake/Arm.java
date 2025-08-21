@@ -35,7 +35,7 @@ public class Arm extends IServoModule {
 
     public static double goFinalClimb3=0.15;
 
-    public static double takeSpecimenSpecial=0.918;
+    public static double takeSpecimenSpecial=0.9;
 
 
     public static double MaxVelocoty=16 , Acceleration=12.5  , Deceleration=12.5;

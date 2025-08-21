@@ -154,7 +154,7 @@ public class Intake {
                 if(latch.inPosition())
                 {extendo.setIn();state=State.REVERSE_UP;}
                 else state=State.INTAKE_UP;
-                if(latch.inPosition() && ramp.servos[0].getPosition()>Ramp.upPosition-0.15)asure1inDepositState=Asure1inDeposit.Clean;
+                if(latch.inPosition() && ramp.servos[0].getPosition()>Ramp.upPosition-0.35)asure1inDepositState=Asure1inDeposit.Clean;
             break;
             case Clean:
                 ActiveIntake.State.REVERSE.power=ActiveIntake.reverPowerTransfer;

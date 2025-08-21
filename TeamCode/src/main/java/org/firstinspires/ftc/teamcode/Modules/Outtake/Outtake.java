@@ -234,7 +234,7 @@ public class Outtake {
                     arm.setState("takeSpecimenSpecial");
                     else arm.setState("goTakeSpecimen");
 
-                if(arm.servos[1].getPosition()>0.25)
+                if(arm.servos[1].getPosition()>0.1)
                 {
                     if(specialPositionGrabSample)
                     extension.setState("takeSpecimenSpecial");
@@ -301,7 +301,7 @@ public class Outtake {
                 lift.goDown();
                   haveSample=true;
                 if( claw.state==claw.states.get("close"))
-                {lift.setPosition(220);
+                {lift.setPosition(200);
                 lift.goUp();}
                 break;
 
@@ -342,7 +342,7 @@ public class Outtake {
                 if(haveSample)
                 claw.setState("goClose");
                 else claw.setState("goCloseSpecimen");
-                lift.setPosition(250);
+                lift.setPosition(200);
                 break;
 
             case GoDown:

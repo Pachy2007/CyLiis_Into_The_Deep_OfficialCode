@@ -42,8 +42,8 @@ public class MecanumDriveTrain {
     public static double lateralMultiplier=2.5;
     public static  double realHeading;
 
-    public static double kp=0.008 , ki=0 , kd=0;
-    public static double KP=1.66 , KI , KD=0.16;
+    public static double kp=0.0095 , ki=0 , kd=0;
+    public static double KP=1.78 , KI , KD=0.16;
    public  PIDController controllerX=new PIDController(kp , ki , kd) , controllerY=new PIDController(kp , ki , kd) , controllerHeading=new PIDController(KP , KI , KD);
 
     public MecanumDriveTrain(State initialState)

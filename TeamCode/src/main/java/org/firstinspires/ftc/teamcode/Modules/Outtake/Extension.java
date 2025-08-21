@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Wrappers.BetterServo;
 public class Extension extends IServoModule {
 
 
-    public static double extend=0.19;
+    public static double extend=0.2;
 
     public static double retrect=0.735;
 
@@ -21,13 +21,13 @@ public class Extension extends IServoModule {
 
     public static double takeSpecimen=0.605;
 
-    public static double takeSpecimenSpecial=0.4;
+    public static double takeSpecimenSpecial=0.39;
 
     State initState;
 
     public static boolean reversed=false;
 
-    public static double MaxVelocoty=18 , Acceleration=14  , Deceleration=14;
+    public static double MaxVelocoty=20 , Acceleration=15  , Deceleration=15;
 
     public Extension()
     {
